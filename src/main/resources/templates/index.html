@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  xmlns:th="http://www.thymeleaf.org" >
 <head>
     <meta charset="UTF-8">
     <title>测试</title>
 </head>
 <body>
 <div>
-    测试主页
+    动态页面测试主页
+    <span th:text="${text}"></span>
 </div>
 </body>
 </html>
