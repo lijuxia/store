@@ -1,5 +1,7 @@
 package org.ljx.service.store;
 
+import com.github.pagehelper.PageInfo;
+import org.ljx.entity.web.PageSearch;
 import org.ljx.entity.Store;
 
 import java.util.List;
@@ -11,11 +13,19 @@ public interface StoreService {
 
     public List<Store> list();
 
-    public void insert(Store store);
+    public void insertMD(Store store);
+
+    public void insertZP(Store store);
 
     public void delete(int id);
 
     public void update(Store store);
 
+    public void updatePassword(int id,String password);
+
     public Store findById(int id);
+
+    public PageInfo list(PageSearch pageSearch);
+
+    public PageInfo list(PageSearch pageSearch,byte type);
 }

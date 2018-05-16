@@ -1,6 +1,8 @@
 package org.ljx.controller;
 
 import org.ljx.entity.Store;
+import org.ljx.entity.web.PageSearch;
+import org.ljx.entity.web.ResponseMessage;
 import org.ljx.service.store.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,14 +21,42 @@ public class StoreController extends BaseController{
 
     @ResponseBody
     @RequestMapping(value = "find/{id}",method = RequestMethod.GET)
-    public Store find(@PathVariable int id){
-        return storeService.findById(id);
+    public ResponseMessage find(@PathVariable int id){
+        return success(storeService.findById(id));
     }
 
     @ResponseBody
-    @RequestMapping(value = "add",method = RequestMethod.POST)
-    public void add(Store store){
-        storeService.insert(store);
+    @RequestMapping(value = "addMD",method = RequestMethod.POST)
+    public ResponseMessage addMD(Store store){
+        storeService.insertMD(store);
+        return success();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "addZP",method = RequestMethod.POST)
+    public ResponseMessage addZP(Store store){
+        storeService.insertZP(store);
+        return success();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "list",method = RequestMethod.GET)
+    public ResponseMessage list(PageSearch pageSearch,byte type){
+        return success(storeService.list(pageSearch,type));
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "update",method = RequestMethod.POST)
+    public ResponseMessage update(Store store){
+        storeService.update(store);
+        return success();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "delete",method = RequestMethod.POST)
+    public ResponseMessage dalete(int id){
+        storeService.delete(id);
+        return success();
     }
 
     @GetMapping("/login")
