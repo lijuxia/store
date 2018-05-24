@@ -13,10 +13,10 @@ public class Product implements Serializable {
     private String unit;//单位
     private byte status;
     private byte type;//原料、商品
-    public static byte STATUS_ON = 1;
-    public static byte STATUS_OFF = 2;
-    public static byte TYPE_MATERIAL = 1;
-    public static byte TYPE_GOODS = 2;
+    public static final byte STATUS_ON = 1;
+    public static final byte STATUS_OFF = 2;
+    public static final byte TYPE_MATERIAL = 1;
+    public static final byte TYPE_GOODS = 2;
 
     public int getId() {
         return id;

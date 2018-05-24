@@ -11,4 +11,45 @@ public class WarehouseRecordDetail implements Serializable {
     private String oddId;
     private int productId;
     private double num;
+    private String productName;
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getOddId() {
+        return oddId;
+    }
+
+    public void setOddId(String oddId) {
+        this.oddId = oddId;
+    }
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
+
+    public double getNum() {
+        return num;
+    }
+
+    public void setNum(double num) {
+        this.num = num;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
 }

@@ -8,7 +8,6 @@ public class ResponseMessage {
     private boolean succeed;
     private Integer code;
     private String msg;
-    private String token;
     private Object value;
 
     public boolean isSucceed() {
@@ -41,13 +40,5 @@ public class ResponseMessage {
 
     public void setMsg(String msg) {
         this.msg = msg;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 }
