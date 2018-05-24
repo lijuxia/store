@@ -1,6 +1,7 @@
 package org.ljx.dao;
 
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.jdbc.SQL;
 import org.ljx.entity.Product;
 import org.springframework.stereotype.Repository;
 
@@ -22,17 +23,29 @@ public interface ProductMapper {
 
     @Insert(INSERT_SQL)
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    void insert(Product sroduct);
+    void insert(Product product);
 
     @Delete(DELETE_SQL)
     void delete(int id);
 
     @Update(UPDATE_SQL)
-    void update(Product sroduct);
+    void update(Product product);
 
-    @Select(SELECT_SQL)
+    @SelectProvider(type = ProductMapper.class ,method = "buildList")
     @ResultType(Product.class)
-    List<Product> list();
+    List<Product> list(@Param("type") byte type);
+
+    static String buildList(@Param("type") byte type) {
+        return new SQL(){{
+            SELECT("*");
+            FROM("sys_product");
+            if (type != 0) {
+                WHERE("type = #{type}");
+            }
+            WHERE("status = 1");
+        }}.toString();
+    }
+
 
     @Select(FIND_SQL)
     @ResultType(Product.class)

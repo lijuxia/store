@@ -46,6 +46,7 @@ public interface StoreMapper {
             if (type != 0) {
                 WHERE("type = #{type}");
             }
+            WHERE("status = 1");
         }}.toString();
     }
 

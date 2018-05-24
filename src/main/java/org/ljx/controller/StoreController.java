@@ -22,6 +22,7 @@ public class StoreController extends BaseController{
     @ResponseBody
     @RequestMapping(value = "find/{id}",method = RequestMethod.GET)
     public ResponseMessage find(@PathVariable int id){
+        getSession().setAttribute("user","admin");
         return success(storeService.findById(id));
     }
 
