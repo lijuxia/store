@@ -13,7 +13,7 @@ public class Warehouse implements Serializable {
     private int productId;
     private byte status;
     public static final byte STATUS_ON = 1;
-    public static final byte STATUS_OFF = 1;
+    public static final byte STATUS_OFF = 2;
 
     public int getId() {
         return id;

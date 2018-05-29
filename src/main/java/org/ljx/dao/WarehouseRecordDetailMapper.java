@@ -14,14 +14,13 @@ import java.util.List;
 @Repository
 public interface WarehouseRecordDetailMapper {
 
-    final String INSERT_SQL = "insert into sys_warehouse_record_detail (name,username,password,type,status)values(#{name},#{username},#{password},#{type},#{status})";
-    final String UPDATE_SQL = "update sys_warehouse_record_detail set name = #{name},username = #{username},password = #{password},type = #{type},status = #{status} where id = #{id}";
-    final String SELECT_SQL = "select * from sys_warehouse_record_detail where status = 1";
-    final String FIND_SQL = "select * from sys_warehouse_record_detail  where id = #{id}";
-    final String DELETE_SQL = "delete from sys_warehouse_record_detail where id = #{id}";
+    final String INSERT_SQL = "insert into sys_warehouse_record_detail (uuid,oddId,productId,num,productName)values(#{uuid},#{oddId},#{productId},#{num},#{productName})";
+    final String UPDATE_SQL = "update sys_warehouse_record_detail set oddId = #{oddId},productId = #{productId},num = #{num},productName = #{productName} where uuid = #{uuid}";
+    final String SELECT_SQL = "select * from sys_warehouse_record_detail";
+    final String FIND_SQL = "select * from sys_warehouse_record_detail  where uuid = #{uuid}";
+    final String DELETE_SQL = "delete from sys_warehouse_record_detail where uuid = #{uuid}";
 
     @Insert(INSERT_SQL)
-    @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(WarehouseRecordDetail warehouseRecordDetail);
 
     @Delete(DELETE_SQL)
@@ -36,20 +35,19 @@ public interface WarehouseRecordDetailMapper {
 
     @SelectProvider(type = WarehouseRecordDetailMapper.class, method = "buildList")
     @ResultType(WarehouseRecordDetail.class)
-    List<WarehouseRecordDetail> listType(@Param("type") byte type);
+    List<WarehouseRecordDetail> listType(@Param("oddId") String oddId);
 
-    static String buildList(@Param("type") byte type) {
+    static String buildList(@Param("oddId") String oddId) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse_record_detail");
-            if (type != 0) {
-                WHERE("type = #{type}");
+            if (oddId !=null && !"".equals(oddId)) {
+                WHERE("oddId = #{oddId}");
             }
-            WHERE("status = 1");
         }}.toString();
     }
 
     @Select(FIND_SQL)
     @ResultType(WarehouseRecordDetail.class)
-    WarehouseRecordDetail findById(int id);
+    WarehouseRecordDetail findById(String uuid);
 }

@@ -28,4 +28,6 @@ public interface StoreService {
     public PageInfo list(PageSearch pageSearch);
 
     public PageInfo list(PageSearch pageSearch,byte type);
+
+    public Store login(String username,String password) throws Exception;
 }

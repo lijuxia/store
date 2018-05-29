@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,6 +29,8 @@ public class MyControllerAdvice {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         binder.registerCustomEditor(Date.class, new CustomDateEditor(format,true));
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:S");
+        binder.registerCustomEditor(Timestamp.class, new CustomDateEditor(dateFormat, true));
     }
 //
 //    /**

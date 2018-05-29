@@ -73,4 +73,15 @@ public class StoreServiceImpl implements StoreService {
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
         return new PageInfo(mapper.listType(type));
     }
+
+    public Store login(String username,String password) throws Exception{
+        Store store = mapper.findByUsername(username);
+        if(store==null){
+            throw new Exception("账号不存在");
+        }else if(!password.equals(store.getPassword())){
+            throw new Exception("密码错误");
+        }else{
+            return store;
+        }
+    }
 }

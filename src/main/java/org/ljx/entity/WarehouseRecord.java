@@ -10,18 +10,20 @@ import java.sql.Timestamp;
 public class WarehouseRecord implements Serializable {
     private String oddId;
     private int storeId;
-    private int storeName;
-    private byte type;//销售、报废、配送、采购
+    private String storeName;
+    private byte type;//销售、报废、配送、采购、消耗
     private byte status;//状态：有效、无效
     private byte inOrOut;  //出库、入库
     private Timestamp creatTime;
     private byte confirmFlag;//确认标志
+    private String remark;//备注
     public static final byte TYPE_SELL_OUT = 1;
     public static final byte TYPE_SEND = 2;
     public static final byte TYPE_SCRAP = 3;
     public static final byte TYPE_BUY = 4;
+    public static final byte TYPE_CONSUME = 5;
     public static final byte STATUS_ON = 1;
-    public static final byte STATUS_YES = 2;
+    public static final byte STATUS_OFF = 2;
     public static final byte INOROUT_IN = 1;
     public static final byte INOROUT_OUT = 2;
     public static final byte CONFIRMFLAG_YES = 1;
@@ -43,11 +45,11 @@ public class WarehouseRecord implements Serializable {
         this.storeId = storeId;
     }
 
-    public int getStoreName() {
+    public String getStoreName() {
         return storeName;
     }
 
-    public void setStoreName(int storeName) {
+    public void setStoreName(String storeName) {
         this.storeName = storeName;
     }
 
@@ -89,5 +91,13 @@ public class WarehouseRecord implements Serializable {
 
     public void setConfirmFlag(byte confirmFlag) {
         this.confirmFlag = confirmFlag;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

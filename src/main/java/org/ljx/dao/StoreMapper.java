@@ -20,7 +20,7 @@ public interface StoreMapper {
     final String SELECT_SQL = "select * from sys_store where status = 1";
     final String FIND_SQL = "select * from sys_store  where id = #{id}";
     final String DELETE_SQL = "delete from sys_store where id = #{id}";
-
+    final String FIND_BY_USERNAME_SQL = "select * from sys_store where username = #{username}";
     @Insert(INSERT_SQL)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(Store store);
@@ -53,4 +53,8 @@ public interface StoreMapper {
     @Select(FIND_SQL)
     @ResultType(Store.class)
     Store findById(int id);
+
+    @Select(FIND_BY_USERNAME_SQL)
+    @ResultType(Store.class)
+    Store findByUsername(String username);
 }
