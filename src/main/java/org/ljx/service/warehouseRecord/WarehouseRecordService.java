@@ -1,6 +1,7 @@
 package org.ljx.service.warehouseRecord;
 
 import org.ljx.entity.WarehouseRecord;
+import org.ljx.entity.web.PageSearch;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface WarehouseRecordService {
 
-    public List<WarehouseRecord> list();
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId);
 
     public void insert(WarehouseRecord warehouseRecord);
 

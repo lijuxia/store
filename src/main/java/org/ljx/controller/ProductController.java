@@ -25,6 +25,12 @@ public class ProductController extends BaseController {
         return success(productService.list(pageSearch,type));
     }
 
+
+    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
+    public ResponseMessage listAll(byte type){
+        return success(productService.list(type));
+    }
+
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public ResponseMessage add(Product product){
         productService.insert(product);

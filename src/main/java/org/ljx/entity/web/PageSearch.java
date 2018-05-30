@@ -8,6 +8,10 @@ public class PageSearch {
     private int pageSize = 10;
     private int pageNum = 1;
 
+    public PageSearch(int pageSize,int pageNum){
+        this.pageSize = pageSize;
+        this.pageNum = pageNum;
+    }
     public int getPageSize() {
         return pageSize;
     }

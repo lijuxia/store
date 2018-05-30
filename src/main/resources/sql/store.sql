@@ -70,6 +70,8 @@ CREATE TABLE `sys_warehouse_record`(
 `creatTime` TIMESTAMP not null,
 `confirmFlag` TINYINT(4) not null DEFAULT 0,
 `remark` VARCHAR(255) not null DEFAULT '',
+`sendStoreId` int(11) not null DEFAULT 0,
+`sendStoreName` varchar(50) not null DEFAULT '',
 PRIMARY KEY(oddId)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
