@@ -1,5 +1,6 @@
 package org.ljx.controller;
 
+import org.ljx.entity.Store;
 import org.ljx.entity.web.ResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,14 @@ public class BaseController {
      */
     public HttpSession getSession(){
         return getRequest().getSession();
+    }
+
+    /**
+     * 获取当前登陆的账号
+     * @return
+     */
+    public Store getCurrentStore(){
+        return (Store)getSession().getAttribute("user");
     }
 
     public ResponseMessage success(){

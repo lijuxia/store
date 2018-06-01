@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">店铺信息</h1>
+	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
+	</header>
+	<div class="mui-content">
+		<div style="height: 20px;"></div>
+	    <form class="mui-input-group" id="storeForm">
+	        <div class="mui-input-row">
+	            <label>登录名</label>
+	            <input type="text" class="mui-input-clear" name="username" placeholder="字母、数字">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>店铺名称</label>
+	            <input type="text" class="mui-input-clear" name="name" placeholder="中文、英文">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>密码</label>
+	            <input type="password" class="mui-input-clear" name="password" placeholder="8-16位，只能包含数字/字母">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>类型</label>
+	            <input type="hidden" value="2" name="type" id="type" />
+	            <input type="text" class="mui-input-clear"  id="typeName" placeholder="请选择类型">
+	        </div>
+	    </form>
+	</div>
+    <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/jquery-3.3.1.min.js" ></script>
+    <script type="text/javascript" src="../../plugin/picker/dist/js/mui.picker.min.js" ></script>
+	<script type="text/javascript" src="/js/ljx.error.js" ></script>
+    <script type="text/javascript">
+    	function parseURL(){
+    		var url=location.search;
+    		var reqParms = new Object();
+			if(url.indexOf("?")!=-1)
+			{
+			var str = url.substr(1)　//去掉?号
+			　　strs = str.split("&");
+			for(var i=0;i<strs.length;i++)
+			{
+			 　 reqParms[strs[i ].split("=")[0]]=unescape(strs[ i].split("=")[1]);
+			}
+			}
+		    return reqParms;
+		}
+    mui.init()
+    $(function(){
+    	var parms = parseURL();
+    	if(parms["id"]!=undefined){
+    		//调用登陆方法，验证登陆
+			mui.ajax("/store/find/"+parms["id"],{
+				dataType:'json',
+				type:'get',
+				success:function (data){
+					if(data.succeed){
+						console.log(data)
+					}else{
+						errorHandle(data);
+					}
+				}
+			});
+    	}
+    })
+    
+	var picker = new mui.PopPicker();
+	picker.setData([{
+	    value: "2",
+	    text: "门店"
+	}, {
+	    value: "1",
+	    text: "配送中心"
+	}]);
+    var typeName = document.getElementById('typeName');
+    var type = document.getElementById('type');
+	typeName.addEventListener('tap', function(event) {
+		picker.show(function(items) {
+			typeName.value = items[0].text;
+			type.value = items[0].value;
+		});
+	}, true);
+	
+    var submit = function(){
+    	var formData = $("#storeForm").serializeArray();
+		//调用登陆方法，验证登陆
+		mui.ajax("/store/add",{
+			data:formData,
+			dataType:'json',
+			type:'post',
+			success:function (data){
+				if(data.succeed){
+					mui.toast("保存成功",{ duration:'long', type:'div' }) 
+					window.location.href = "/work/store/store_list.html";
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+    }
+    </script>
+</body>
+</html>
+

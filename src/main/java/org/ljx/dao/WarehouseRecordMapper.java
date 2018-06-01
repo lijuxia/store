@@ -14,14 +14,13 @@ import java.util.List;
 @Repository
 public interface WarehouseRecordMapper {
 
-    final String INSERT_SQL = "insert into sys_warehouse_record (oddId,storeId,storeName,type,status,inOrOut,creatTime,confirmFlag,remark)values(#{oddId},#{username},#{password},#{type},#{status})";
-    final String UPDATE_SQL = "update sys_warehouse_record set name = #{name},username = #{username},password = #{password},type = #{type},status = #{status} where id = #{id}";
+    final String INSERT_SQL = "insert into sys_warehouse_record (oddId,storeId,storeName,type,status,inOrOut,creatTime,confirmFlag,remark,sendStoreId,sendStoreName)values(#{oddId},#{storeId},#{storeName},#{type},#{status},#{inOrOut},#{creatTime},#{confirmFlag},#{remark},#{sendStoreId},#{sendStoreName})";
+    final String UPDATE_SQL = "update sys_warehouse_record set storeId = #{storeId},storeName = #{storeName},type = #{type},status = #{status},inOrOut = #{inOrOut},creatTime = #{creatTime},remark = #{remark},sendStoreId = #{sendStoreId},sendStoreName = #{sendStoreName} where oddId = #{oddId}";
     final String SELECT_SQL = "select * from sys_warehouse_record where status = 1";
-    final String FIND_SQL = "select * from sys_warehouse_record  where id = #{id}";
-    final String DELETE_SQL = "delete from sys_warehouse_record where id = #{id}";
+    final String FIND_SQL = "select * from sys_warehouse_record  where oddId = #{oddId}";
+    final String DELETE_SQL = "delete from sys_warehouse_record where oddId = #{oddId}";
 
     @Insert(INSERT_SQL)
-    @Options(useGeneratedKeys = true, keyProperty = "id")
     void insert(WarehouseRecord warehouseRecord);
 
     @Delete(DELETE_SQL)
@@ -36,20 +35,24 @@ public interface WarehouseRecordMapper {
 
     @SelectProvider(type = WarehouseRecordMapper.class, method = "buildList")
     @ResultType(WarehouseRecord.class)
-    List<WarehouseRecord> listType(@Param("type") byte type);
+    List<WarehouseRecord> listType(@Param("storeId") int storeId,@Param("inOrOut") byte inOrOut);
 
-    static String buildList(@Param("type") byte type) {
+    static String buildList(@Param("storeId") int storeId,@Param("inOrOut") byte inOrOut) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse_record");
-            if (type != 0) {
-                WHERE("type = #{type}");
+            if (storeId != 0) {
+                WHERE("storeId = #{storeId}");
+            }
+            if (inOrOut != 0) {
+                WHERE("inOrOut = #{inOrOut}");
             }
             WHERE("status = 1");
+            ORDER_BY(" creatTime desc");
         }}.toString();
     }
 
     @Select(FIND_SQL)
     @ResultType(WarehouseRecord.class)
-    WarehouseRecord findById(int id);
+    WarehouseRecord findById(String oddId);
 }

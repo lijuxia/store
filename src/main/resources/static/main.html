@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			.fun-9-view{
+				background-color: white;
+			}
+			.mui-table-view-cell{
+				background-color: #333;
+				color: white;
+			}
+			/*点击变蓝色高亮*/
+			.mui-table-view-cell.mui-active{
+				background-color: #535353;
+			}
+			.mui-table-view-cell:after{
+				background-color: #333;
+			}
+			.mui-card-content-inner1{
+		        overflow: hidden;
+			    text-overflow: ellipsis;
+			    display: -webkit-box;
+			    -webkit-line-clamp: 2;（行数）
+			    -webkit-box-orient: vertical;
+		    }
+		    .pro-content{
+		    	width: 100%;
+	            height: 82px;
+	            overflow:hidden;
+	            text-overflow:ellipsis; 
+	            display: -webkit-box;
+	            -webkit-box-orient: vertical;
+	            -webkit-line-clamp: 4;
+	            overflow: hidden;
+		    }
+		</style>
+	</head>
+
+	<body>
+		<!-- 主界面不动、菜单移动 -->
+		<!-- 侧滑导航根容器 -->
+		<div class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+		  <!-- 菜单容器 -->
+		  <aside class="mui-off-canvas-left" id="offCanvasSide">
+		    <div class="mui-scroll-wrapper">
+		      <div class="mui-scroll">
+		        <!-- 菜单具体展示内容 -->
+		        	<div style="text-align: center;color: white;line-height: 80px;">老南塘馄饨</div>
+		        	<ul class="mui-table-view">
+	        	        <li class="mui-table-view-cell" id="storeListBtn">
+	        	            <span class="mui-icon mui-icon-home" style="margin-right: 20px;"></span>店铺管理
+	        	        </li>
+	        	        <li class="mui-table-view-cell" id="changePSW">
+	        	            <span class="mui-icon mui-icon-locked" style="margin-right: 20px;"></span>密码修改
+	        	        </li>
+	        	        <li class="mui-table-view-cell" id="logout">
+	        	            <span class="mui-icon mui-icon-close" style="margin-right: 20px;"></span>退出
+	        	        </li>
+	        	    </ul>
+		      </div>
+		    </div>
+		  </aside>
+		  <!-- 主页面容器 -->
+		  <div class="mui-inner-wrap">
+		    <!-- 主页面标题 -->
+		    <header class="mui-bar mui-bar-nav">
+		      <a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left" href="#offCanvasSide"></a>
+		      <h1 class="mui-title">总配中心</h1>
+		    </header>
+		    <div class="mui-content mui-scroll-wrapper">
+		      <div class="mui-scroll">
+		        <!-- 主界面具体展示内容 -->
+		        
+			<div class="mui-slider" id="sider-group">
+			</div>
+			<!--九宫格功能块-->
+			<ul style="background-color: white;" class="mui-table-view mui-grid-view mui-grid-9">
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/purchase.html">
+				        <span class="mui-icon mui-icon-download"></span>
+				        <div class="mui-media-body">进货</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/consume.html">
+				        <span class="mui-icon mui-icon-loop"></span>
+				        <div class="mui-media-body">消耗</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/sendout.html">
+				        <span class="mui-icon mui-icon-paperplane"></span>
+				        <div class="mui-media-body">配送</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="#">
+				        <span class="mui-icon mui-icon-home"></span>
+				        <div class="mui-media-body">库存</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/saleout.html">
+				        <span class="mui-icon mui-icon-redo"></span>
+				        <div class="mui-media-body">销售</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="#">
+				        <span class="mui-icon mui-icon-compose"></span>
+				        <div class="mui-media-body">盘点</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/scrap.html">
+				        <span class="mui-icon mui-icon-trash"></span>
+				        <div class="mui-media-body">报废</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="#">
+				        <span class="mui-icon mui-icon-more"></span>
+				        <div class="mui-media-body">其他</div>
+				    </a>
+				</li>
+			</ul>
+		      </div>
+		    </div>  
+		    <div class="mui-off-canvas-backdrop"></div>
+		  </div>
+		</div>
+		<script type="text/html" id="whrList">
+			  <div class="mui-slider-group" >
+		<% if(value.length > 0){ %>
+			<% for(var i=0;i<value.length;i++){ %>
+			    <div class="mui-slider-item" style="height: 184px;">
+			      <!-- 具体内容 -->
+					<div class="mui-card">
+						<!--内容区-->
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner" style="height: 120px;">
+								<span class="mui-badge mui-badge-danger" style="float: left;"><%=value[i].typeStr%></span>
+								<% if(value[i].type==2){%>
+								<span class="mui-badge mui-badge-success" style="float: left;margin-left: 5px;"><%=value[i].sendStoreName%></span>
+								<%}%>
+								<span style="float: right;"><%=value[i].creatTimeStr%></span><br />
+								<div class="pro-content"><%=value[i].detailsStr%></div>
+							</div>
+						</div>
+						<!--页脚，放置补充信息或支持的操作-->
+						<div class="mui-card-footer">
+							<% if(value[i].confirmFlag!=1) {%>
+							<a class="mui-card-link">有误</a>
+							<button type="button" data-loading-text="确认中" style="margin-top: -4px;margin-bottom: -5px;" class="mui-btn mui-btn-primary" oddId="<%=value[i].oddId%>">确认</button>
+							<%}else{%>
+							<a class="mui-card-link"></a>
+							<a class="mui-card-link">已完成</a>
+							<%}%>
+						</div>
+					</div>
+			    </div>
+			<% } %>
+		<% }else{ %>
+			    <div class="mui-slider-item">
+			      <!-- 具体内容 -->
+					<div class="mui-card">
+						<!--内容区-->
+						<div class="mui-card-content">
+							<div class="mui-card-content-inner" style="min-height: 70px;">
+								无记录
+							</div>
+						</div>
+					</div>
+			    </div>
+		<% } %>
+		
+			  </div>
+		
+		  <!--轮播圆点-->
+		  <div class="mui-slider-indicator">
+		  	
+		<% if(value.length > 0){ %>
+			<% for(var i=0;i<value.length;i++){ if(i==0){%>
+			<div class="mui-indicator mui-active"></div>
+			<%}else{%>
+			<div class="mui-indicator"></div>
+			<% }} %>
+		<% }else{ %>
+			<div class="mui-indicator mui-active"></div>
+		<% } %>
+		  </div>
+		</script>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
+		<script type="text/javascript" src="js/template-web.js" ></script>
+		<script type="text/javascript" src="js/ljx.error.js" ></script>
+		<script>
+			mui(document.body).on('tap', '.mui-btn', function(e) {
+				var btn = this;
+				mui.confirm("是否确认无误","确认配送单",['确认','取消'],function(e){
+					if(e.index==0){
+					    mui(btn).button('loading');
+					    mui.ajax("/warehouserecord/confirmeRecord",{
+					    	data:{
+					    		oddId:btn.getAttribute("oddId")
+					    	},
+							dataType:'json',
+							type:'post',
+							success:function (data){
+								if(data.succeed){
+			    					getMainList();
+								}else{
+									errorHandle(data);
+								}
+							}
+						});
+					}
+				})
+			});
+			mui(document.body).on('tap', '#storeListBtn', function(e) {
+				mui('.mui-off-canvas-wrap').offCanvas().close();
+			    window.location.href = "/work/store/store_list.html"
+			});
+			mui(document.body).on('tap', 'a', function(e) {
+				window.location.href = $(this).attr("href");
+			});
+			mui(document.body).on('tap', '#changePSW', function(e) {
+				mui('.mui-off-canvas-wrap').offCanvas().close();
+			    window.location.href = "/changePassword.html"
+			});
+			mui(document.body).on('tap', '#logout', function(e) {
+				mui.ajax("/logout",{
+					dataType:'json',
+					type:'post',
+					success:function (data){
+						if(data.succeed){
+	    					location.reload();
+						}else{
+							errorHandle(data);
+						}
+					}
+				});
+			});
+			function getMainList(){
+				mui.ajax("/warehouserecord/listMain",{
+					dataType:'json',
+					type:'get',
+					success:function (data){
+						if(data.succeed){
+							var Carouselhtml = template('whrList', data);
+							$("#sider-group").html(Carouselhtml);
+							mui(".mui-slider").slider({});
+						}else{
+							errorHandle(data);
+						}
+					}
+				});
+			}
+			$(function(){
+				getMainList();
+			})
+		</script>
+	</body>
+
+</html>
