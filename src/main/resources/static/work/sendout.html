@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link rel="stylesheet" href="../plugin/picker/dist/css/mui.picker.min.css" />
+    <script type="text/javascript" src="../js/template-web.js" ></script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">配送</h1>
+	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
+	    <!--<a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-right"></a>-->
+	</header>
+	<div class="mui-content">
+		<div style="height: 20px;"></div>
+    <form id="purchaseList" >
+			<div class="mui-input-group">
+        <div class="mui-input-row">
+            <label id="userResult" style="width: 40%;">门店</label>
+            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择门店" name="sendStoreName" id="sendStoreName">
+            <input type="hidden" id="sendStoreId" name="sendStoreId">
+    	</div>
+    </div>
+    </form>
+	</div>
+	
+<script type="text/html" id="productList">
+		<% if(value.length > 0){ %>
+		<% for(var i=0;i<value.length;i++){ %>
+			<div class="mui-input-group">
+        <div class="mui-input-row">
+            <label><%=value[i].name%>(<%=value[i].unit%>)</label>
+			<div class="mui-numbox" style="width: 200px;" data-numbox-step='1' data-numbox-min='0' >
+				<input type="hidden" name="listDetails[<%=i%>].productId" value="<%=value[i].id%>" />
+				<input type="hidden" name="listDetails[<%=i%>].productName" value="<%=value[i].name%>" />
+				<input type="hidden" name="listDetails[<%=i%>].unit" value="<%=value[i].unit%>" />
+			  <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+			  <input class="mui-numbox-input details" type="number" name="listDetails[<%=i%>].num" value="0"/>
+			  <button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+			</div>
+        </div>
+        </div>
+	<%}%>
+	<%}%>
+	<h5 style="margin: 5px;">备注：</h5>
+	<div class="mui-input-row" style="margin: 10px 5px;">
+		<textarea id="textarea" name="remark" rows="5" placeholder="备注"></textarea>
+	</div>
+</script>
+	<script src="../js/mui.min.js"></script>
+	<script type="text/javascript" src="../plugin/picker/dist/js/mui.picker.min.js" ></script>
+	<script type="text/javascript" src="../js/mui.numbox.float.js" ></script>
+	<script type="text/javascript" src="../js/jquery-3.3.1.min.js" ></script>
+	<script type="text/javascript" src="/js/ljx.error.js" ></script>
+    <script type="text/javascript">
+    mui.init({
+    })
+    
+	var picker = new mui.PopPicker();
+	//调用登陆方法，获配送门店列表
+	mui.ajax("/store/listAll",{
+		dataType:'json',
+		type:'get',
+		success:function (data){
+			var a = [];
+			if(data.succeed){
+				for(var i=0;i<data.value.length;i++){
+					a.push({text:data.value[i].name,value:data.value[i].id});
+				}
+				picker.setData(a);
+			}else{
+				errorHandle(data);
+			}
+		}
+	});
+//	picker.setData([{
+//	    value: "first",
+//	    text: "第一项"
+//	}, {
+//	    value: "second",
+//	    text: "第一项"
+//	}, {
+//	    value: "third",
+//	    text: "第三项"
+//	}, {
+//	    value: "fourth",
+//	    text: "第四项"
+//	}, {
+//	    value: "fifth",
+//	    text: "第五项"
+//	}]);
+    var sendStoreName = document.getElementById('sendStoreName');
+    var sendStoreId = document.getElementById('sendStoreId');
+	sendStoreName.addEventListener('tap', function(event) {
+		picker.show(function(items) {
+			sendStoreName.value = items[0].text;
+			sendStoreId.value = items[0].value;
+		});
+	}, false);
+	
+    $(function(){
+		//调用登陆方法，获取进货物品列表
+		mui.ajax("/product/listAll",{
+			data:{
+				type:0
+			},
+			dataType:'json',
+			type:'get',
+			success:function (data){
+				if(data.succeed){
+					var Carouselhtml = template('productList', data);
+					$("#purchaseList").append(Carouselhtml);
+					mui('.mui-numbox').numbox();
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+   });
+    var submit = function(){
+    	var formData = $("#purchaseList").serializeArray();
+		//调用登陆方法，验证登陆
+		mui.ajax("/warehouserecord/addSend",{
+			data:formData,
+			dataType:'json',
+			type:'post',
+			success:function (data){
+				if(data.succeed){
+					mui.toast("提交成功",{ duration:'long', type:'div' }) 
+					window.location.href = "../main.html";
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+    }
+    </script>
+</body>
+</html>
+

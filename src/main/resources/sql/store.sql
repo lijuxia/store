@@ -49,6 +49,16 @@ CREATE TABLE `sys_product`(
 PRIMARY KEY(id)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
+
+INSERT INTO `sys_product` VALUES ('2', 'roumo', '肉末', '斤', '1', '1');
+INSERT INTO `sys_product` VALUES ('3', 'shourou', '瘦肉', '斤', '1', '1');
+INSERT INTO `sys_product` VALUES ('4', 'feirou', '肥肉', '斤', '1', '1');
+INSERT INTO `sys_product` VALUES ('5', 'qingcai', '青菜', '斤', '1', '1');
+INSERT INTO `sys_product` VALUES ('6', 'jidan', '本地鸡蛋', '个', '1', '2');
+INSERT INTO `sys_product` VALUES ('7', 'kele', '可乐', '罐', '1', '2');
+INSERT INTO `sys_product` VALUES ('8', 'zicai', '紫菜', '斤', '1', '1');
+INSERT INTO `sys_product` VALUES ('9', 'huntun', '生馄饨', '个', '1', '1');
+
 DROP TABLE IF EXISTS `sys_warehouse`;
 CREATE TABLE `sys_warehouse`(
 	`id` int(11) NOT NULL AUTO_INCREMENT,
@@ -82,5 +92,6 @@ CREATE TABLE `sys_warehouse_record_detail`(
 `productId` int(11) not null DEFAULT 0,
 `num` double not null DEFAULT 0,
 `productName` varchar(20) not null DEFAULT 0,
+`unit` VARCHAR(100) not null,
 PRIMARY KEY(uuid)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
