@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface WarehouseRecordMapper {
 
-    final String INSERT_SQL = "insert into sys_warehouse_record (name,username,password,type,status)values(#{name},#{username},#{password},#{type},#{status})";
+    final String INSERT_SQL = "insert into sys_warehouse_record (oddId,storeId,storeName,type,status,inOrOut,creatTime,confirmFlag,remark)values(#{oddId},#{username},#{password},#{type},#{status})";
     final String UPDATE_SQL = "update sys_warehouse_record set name = #{name},username = #{username},password = #{password},type = #{type},status = #{status} where id = #{id}";
     final String SELECT_SQL = "select * from sys_warehouse_record where status = 1";
     final String FIND_SQL = "select * from sys_warehouse_record  where id = #{id}";

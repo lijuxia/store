@@ -16,6 +16,7 @@ public class WarehouseRecord implements Serializable {
     private byte inOrOut;  //出库、入库
     private Timestamp creatTime;
     private byte confirmFlag;//确认标志
+    private String remark;//备注
     public static final byte TYPE_SELL_OUT = 1;
     public static final byte TYPE_SEND = 2;
     public static final byte TYPE_SCRAP = 3;
@@ -89,5 +90,13 @@ public class WarehouseRecord implements Serializable {
 
     public void setConfirmFlag(byte confirmFlag) {
         this.confirmFlag = confirmFlag;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }
