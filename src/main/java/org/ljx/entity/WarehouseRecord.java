@@ -2,6 +2,7 @@ package org.ljx.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +23,11 @@ public class WarehouseRecord implements Serializable {
     private int sendStoreId=0;
     private String sendStoreName="";
     private List<WarehouseRecordDetail> listDetails = new ArrayList<>();
-    public static final byte TYPE_SELL_OUT = 1;
-    public static final byte TYPE_SEND = 2;
-    public static final byte TYPE_SCRAP = 3;
-    public static final byte TYPE_BUY = 4;
-    public static final byte TYPE_CONSUME = 5;
+    public static final byte TYPE_SALE = 1; //销售
+    public static final byte TYPE_SEND = 2; //配送
+    public static final byte TYPE_SCRAP = 3;    //报废
+    public static final byte TYPE_BUY = 4;  //采购
+    public static final byte TYPE_CONSUME = 5;  //消耗
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
     public static final byte INOROUT_IN = 1;
@@ -141,5 +142,32 @@ public class WarehouseRecord implements Serializable {
 
     public void setListDetails(List<WarehouseRecordDetail> listDetails) {
         this.listDetails = listDetails;
+    }
+
+    public String getCreatTimeStr(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return dateFormat.format(this.creatTime);
+    }
+
+    public String getTypeStr(){
+        switch (this.type){
+            case TYPE_SALE: return "销售";
+            case TYPE_SEND:return "配送";
+            case TYPE_SCRAP:return "报废";
+            case TYPE_BUY:return "采购";
+            case TYPE_CONSUME:return "消耗";
+            default:return "错误";
+        }
+    }
+
+    public String getDetailsStr(){
+        StringBuffer str = new StringBuffer("");
+        for(int i=0;i<this.listDetails.size();i++){
+            if(!"".equals(str.toString())){
+                str.append(" , ");
+            }
+            str.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum()+this.listDetails.get(i).getUnit());
+        }
+        return str.toString();
     }
 }

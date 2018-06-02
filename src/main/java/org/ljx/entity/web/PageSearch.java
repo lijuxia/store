@@ -5,12 +5,16 @@ package org.ljx.entity.web;
  * Created by ljx on 2018/5/15.
  */
 public class PageSearch {
-    private int pageSize = 10;
-    private int pageNum = 1;
+    private int pageSize;
+    private int pageNum;
 
     public PageSearch(int pageSize,int pageNum){
         this.pageSize = pageSize;
         this.pageNum = pageNum;
+    }
+    public PageSearch(){
+        this.pageSize = 10;
+        this.pageNum = 1;
     }
     public int getPageSize() {
         return pageSize;

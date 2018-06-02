@@ -23,7 +23,6 @@ public class StoreServiceImpl implements StoreService {
         return mapper.list();
     }
 
-
     public void insertMD(Store store){
         store.setType(Store.TYPE_STORE);
         store.setStatus(Store.STATUS_ON);
@@ -52,9 +51,12 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
-    public void updatePassword(int id,String password){
+    public void updatePassword(int id,String oldPassword,String password) throws Exception{
         Store store = mapper.findById(id);
         if(store!=null){
+            if(!oldPassword.equals(store.getPassword())){
+                throw new Exception("旧密码错误");
+            }
             store.setPassword(password);
             mapper.update(store);
         }

@@ -15,7 +15,7 @@ import java.util.List;
 public interface WarehouseRecordMapper {
 
     final String INSERT_SQL = "insert into sys_warehouse_record (oddId,storeId,storeName,type,status,inOrOut,creatTime,confirmFlag,remark,sendStoreId,sendStoreName)values(#{oddId},#{storeId},#{storeName},#{type},#{status},#{inOrOut},#{creatTime},#{confirmFlag},#{remark},#{sendStoreId},#{sendStoreName})";
-    final String UPDATE_SQL = "update sys_warehouse_record set storeId = #{storeId},storeName = #{storeName},type = #{type},status = #{status},inOrOut = #{inOrOut},creatTime = #{creatTime},remark = #{remark},sendStoreId = #{sendStoreId},sendStoreName = #{sendStoreName} where oddId = #{oddId}";
+    final String UPDATE_SQL = "update sys_warehouse_record set storeId = #{storeId},storeName = #{storeName},type = #{type},status = #{status},inOrOut = #{inOrOut},creatTime = #{creatTime},confirmFlag=#{confirmFlag},remark = #{remark},sendStoreId = #{sendStoreId},sendStoreName = #{sendStoreName} where oddId = #{oddId}";
     final String SELECT_SQL = "select * from sys_warehouse_record where status = 1";
     final String FIND_SQL = "select * from sys_warehouse_record  where oddId = #{oddId}";
     final String DELETE_SQL = "delete from sys_warehouse_record where oddId = #{oddId}";
@@ -35,6 +35,11 @@ public interface WarehouseRecordMapper {
 
     @SelectProvider(type = WarehouseRecordMapper.class, method = "buildList")
     @ResultType(WarehouseRecord.class)
+    @Results({
+            @Result(property="listDetails",column="oddId",javaType=List.class,
+                    many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.listType")),
+            @Result(property = "oddId",column = "oddId")
+    })
     List<WarehouseRecord> listType(@Param("storeId") int storeId,@Param("inOrOut") byte inOrOut);
 
     static String buildList(@Param("storeId") int storeId,@Param("inOrOut") byte inOrOut) {

@@ -48,6 +48,14 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
         warehouseRecordMapper.insert(warehouseRecord);
     }
 
+    public void confirmeRecord(String oddId){
+        WarehouseRecord record = findById(oddId);
+        if(record!=null){
+            record.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
+            warehouseRecordMapper.update(record);
+        }
+    }
+
     public void update(WarehouseRecord warehouseRecord){
         WarehouseRecord warehouseRecordOld = warehouseRecordMapper.findById(warehouseRecord.getOddId());
         if(warehouseRecordOld!=null){

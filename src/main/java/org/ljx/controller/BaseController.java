@@ -67,4 +67,12 @@ public class BaseController {
         result.setValue(object);
         return result;
     }
+
+    public ResponseMessage fail(String errorMsg){
+        ResponseMessage result = new ResponseMessage();
+        result.setCode(500);
+        result.setSucceed(false);
+        result.setMsg(errorMsg);
+        return result;
+    }
 }

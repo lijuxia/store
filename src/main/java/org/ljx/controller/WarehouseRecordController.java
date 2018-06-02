@@ -31,11 +31,19 @@ public class WarehouseRecordController extends BaseController {
             PageSearch pageSearch = new PageSearch(2,1);
             return success(warehouseRecordService.list(pageSearch,WarehouseRecord.TYPE_SCRAP,store.getId()));
         }
-
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public ResponseMessage add(WarehouseRecord warehouseRecord){
+    @RequestMapping(value = "/addConsume", method = RequestMethod.POST)
+    public ResponseMessage addConsume(WarehouseRecord warehouseRecord){
+        warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
+        warehouseRecord.setType(WarehouseRecord.TYPE_CONSUME);
+        warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
+        warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
+        warehouseRecord.setStoreId(getCurrentStore().getId());
+        warehouseRecord.setStoreName(getCurrentStore().getName());
+        if(warehouseRecord.getRemark()==null){
+            warehouseRecord.setRemark("");
+        }
         warehouseRecordService.insert(warehouseRecord);
         return success();
     }
@@ -55,6 +63,56 @@ public class WarehouseRecordController extends BaseController {
         return success();
     }
 
+    @RequestMapping(value = "/addSend", method = RequestMethod.POST)
+    public ResponseMessage addSend(WarehouseRecord warehouseRecord){
+        warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
+        warehouseRecord.setType(WarehouseRecord.TYPE_SEND);
+        warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_NO);
+        warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
+        warehouseRecord.setStoreId(getCurrentStore().getId());
+        warehouseRecord.setStoreName(getCurrentStore().getName());
+        if(warehouseRecord.getRemark()==null){
+            warehouseRecord.setRemark("");
+        }
+        warehouseRecordService.insert(warehouseRecord);
+        return success();
+    }
+
+    @RequestMapping(value = "/addSale", method = RequestMethod.POST)
+    public ResponseMessage addSale(WarehouseRecord warehouseRecord){
+        warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
+        warehouseRecord.setType(WarehouseRecord.TYPE_SALE);
+        warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
+        warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
+        warehouseRecord.setStoreId(getCurrentStore().getId());
+        warehouseRecord.setStoreName(getCurrentStore().getName());
+        if(warehouseRecord.getRemark()==null){
+            warehouseRecord.setRemark("");
+        }
+        warehouseRecordService.insert(warehouseRecord);
+        return success();
+    }
+
+    @RequestMapping(value = "/addScrap", method = RequestMethod.POST)
+    public ResponseMessage addScrap(WarehouseRecord warehouseRecord){
+        warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
+        warehouseRecord.setType(WarehouseRecord.TYPE_SCRAP);
+        warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
+        warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
+        warehouseRecord.setStoreId(getCurrentStore().getId());
+        warehouseRecord.setStoreName(getCurrentStore().getName());
+        if(warehouseRecord.getRemark()==null){
+            warehouseRecord.setRemark("");
+        }
+        warehouseRecordService.insert(warehouseRecord);
+        return success();
+    }
+
+    @RequestMapping(value = "/confirmeRecord",method = RequestMethod.POST)
+    public ResponseMessage confirmeRecord(String oddId){
+        warehouseRecordService.confirmeRecord(oddId);
+        return success();
+    }
 
     @RequestMapping(value = "delete",method = RequestMethod.POST)
     public ResponseMessage delete(String oddId){

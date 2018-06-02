@@ -25,8 +25,25 @@ public class LoginController extends BaseController {
         return success();
     }
 
+    @RequestMapping(value = "logout",method = RequestMethod.POST)
+    public ResponseMessage logout(){
+        getSession().removeAttribute("user");
+        return success();
+    }
+
     @RequestMapping(value = "loginUser",method = RequestMethod.GET)
     public ResponseMessage loginUser(){
         return success(getCurrentStore());
     }
+
+    @RequestMapping(value = "changePassword",method = RequestMethod.POST)
+    public ResponseMessage changePassword(String oldPassword,String newPassword,String confirmPassword) throws Exception {
+        if(!newPassword.equals(confirmPassword)){
+            return fail("新密码不一致，请检查重新输入");
+        }
+        storeService.updatePassword(getCurrentStore().getId(),oldPassword,newPassword);
+        return success();
+    }
+
+
 }

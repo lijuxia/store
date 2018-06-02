@@ -36,6 +36,10 @@ public class Store implements Serializable {
     public static final byte TYPE_STORE = 2;  //门店
     public static final byte STATUS_ON = 1;//正常
     public static final byte STATUS_OFF = 2; //关闭
+    public Store(){
+        this.type=TYPE_STORE;
+        this.status=STATUS_ON;
+    }
 
     public int getId() {
         return id;

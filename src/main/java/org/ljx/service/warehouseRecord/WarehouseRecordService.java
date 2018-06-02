@@ -19,4 +19,6 @@ public interface WarehouseRecordService {
     public void delete(String oddId);
 
     public WarehouseRecord findById(String oddId);
+
+    public void confirmeRecord(String oddId);
 }
