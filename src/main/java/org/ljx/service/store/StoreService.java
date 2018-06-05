@@ -21,7 +21,7 @@ public interface StoreService {
 
     public void update(Store store);
 
-    public void updatePassword(int id,String password);
+    public void updatePassword(int id,String oldPassword,String password) throws Exception;
 
     public Store findById(int id);
 

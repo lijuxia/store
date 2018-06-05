@@ -21,7 +21,7 @@ public class ProductController extends BaseController {
     ProductService productService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public ResponseMessage list(PageSearch pageSearch, byte type){
+    public ResponseMessage list(PageSearch pageSearch, Byte type){
         return success(productService.list(pageSearch,type));
     }
 
@@ -50,7 +50,7 @@ public class ProductController extends BaseController {
     }
 
     @RequestMapping(value = "/find/{id}",method = RequestMethod.GET)
-    public ResponseMessage find(@PathVariable int id){
+    public ResponseMessage find(@PathVariable Integer id){
         return success(productService.findById(id));
     }
 }

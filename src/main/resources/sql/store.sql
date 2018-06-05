@@ -32,11 +32,9 @@ CREATE TABLE `sys_store` (
 -- ----------------------------
 -- Records of sys_store
 -- ----------------------------
-INSERT INTO `sys_store` VALUES ('1', '总配中心', 'zongpei', '123456', '1', '2');
+INSERT INTO `sys_store` VALUES ('1', '总配中心', 'zongpei', '123456', '1', '1');
 INSERT INTO `sys_store` VALUES ('4', '南塘店', 'nantang', '654321', '2', '1');
 INSERT INTO `sys_store` VALUES ('5', '时代店', 'shidai', '654321', '2', '1');
-INSERT INTO `sys_store` VALUES ('8', '测试门店', 'ceshimendian', '123', '2', '1');
-INSERT INTO `sys_store` VALUES ('9', '修改测试1', 'xiugai', 'xiugaiceshi', '1', '2');
 
 DROP TABLE IF EXISTS `sys_product`;
 CREATE TABLE `sys_product`(

@@ -14,6 +14,8 @@ public class Warehouse implements Serializable {
     private byte status;
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
+    private Store store;
+    private Product product;
 
     public int getId() {
         return id;
@@ -53,5 +55,21 @@ public class Warehouse implements Serializable {
 
     public void setStatus(byte status) {
         this.status = status;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

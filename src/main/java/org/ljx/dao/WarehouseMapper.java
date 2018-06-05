@@ -2,6 +2,8 @@ package org.ljx.dao;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
+import org.ljx.entity.Product;
+import org.ljx.entity.Store;
 import org.ljx.entity.Warehouse;
 import org.springframework.stereotype.Repository;
 
@@ -32,6 +34,12 @@ public interface WarehouseMapper {
 
     @SelectProvider(type = WarehouseMapper.class ,method = "buildList")
     @ResultType(Warehouse.class)
+    @Results({
+            @Result(property="store",column="storeId",javaType=Store.class,
+                    one=@One(select="org.ljx.dao.StoreMapper.findById")),
+            @Result(property="product",column="productId",javaType=Product.class,
+                    one=@One(select="org.ljx.dao.ProductMapper.findById"))
+    })
     List<Warehouse> list(@Param("storeId")int storeId,@Param("status") byte status);
 
     static String buildList(@Param("storeId")int storeId,@Param("status") byte status) {

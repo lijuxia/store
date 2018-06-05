@@ -1,5 +1,6 @@
 package org.ljx.controller;
 
+import io.swagger.models.auth.In;
 import org.ljx.entity.Store;
 import org.ljx.entity.web.PageSearch;
 import org.ljx.entity.web.ResponseMessage;
@@ -21,26 +22,29 @@ public class StoreController extends BaseController{
     StoreService storeService;
 
     @RequestMapping(value = "/find/{id}",method = RequestMethod.GET)
-    public ResponseMessage find(@PathVariable int id){
+    public ResponseMessage find(@PathVariable Integer id){
         getSession().setAttribute("user","admin");
         return success(storeService.findById(id));
     }
 
-    @RequestMapping(value = "/addMD",method = RequestMethod.POST)
-    public ResponseMessage addMD(Store store){
-        storeService.insertMD(store);
-        return success();
-    }
-
-    @RequestMapping(value = "/addZP",method = RequestMethod.POST)
-    public ResponseMessage addZP(Store store){
-        storeService.insertZP(store);
+    @RequestMapping(value = "/add",method = RequestMethod.POST)
+    public ResponseMessage add(Store store){
+        if(store.getType()==Store.TYPE_DISTRIBUTION_CENTRE){
+            storeService.insertZP(store);
+        }else if(store.getType()==Store.TYPE_STORE){
+            storeService.insertMD(store);
+        }
         return success();
     }
 
     @RequestMapping(value = "/list",method = RequestMethod.GET)
-    public ResponseMessage list(PageSearch pageSearch,byte type){
+    public ResponseMessage list(PageSearch pageSearch,Byte type){
         return success(storeService.list(pageSearch,type));
+    }
+
+    @RequestMapping(value = "/listAll",method = RequestMethod.GET)
+    public ResponseMessage listAll(){
+        return success(storeService.list());
     }
 
     @RequestMapping(value = "/update",method = RequestMethod.POST)
@@ -50,15 +54,9 @@ public class StoreController extends BaseController{
     }
 
     @RequestMapping(value = "/delete",method = RequestMethod.POST)
-    public ResponseMessage dalete(int id){
+    public ResponseMessage dalete(Integer id){
         storeService.delete(id);
         return success();
     }
-
-//    @GetMapping("/login")
-//    public String login(Model model){
-//        model.addAttribute("text","测试");
-//        return "/index";
-//    }
 
 }

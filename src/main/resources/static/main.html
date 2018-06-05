@@ -155,11 +155,11 @@
 						<!--页脚，放置补充信息或支持的操作-->
 						<div class="mui-card-footer">
 							<% if(value[i].confirmFlag!=1) {%>
-							<a class="mui-card-link">有误</a>
+							<a href="#" class="mui-card-link">有误</a>
 							<button type="button" data-loading-text="确认中" style="margin-top: -4px;margin-bottom: -5px;" class="mui-btn mui-btn-primary" oddId="<%=value[i].oddId%>">确认</button>
 							<%}else{%>
-							<a class="mui-card-link"></a>
-							<a class="mui-card-link">已完成</a>
+							<a href="#" class="mui-card-link"></a>
+							<a href="#" class="mui-card-link">已完成</a>
 							<%}%>
 						</div>
 					</div>
