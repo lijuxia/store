@@ -16,17 +16,14 @@
 	<div class="mui-content">
 		<div style="height: 20px;"></div>
 	    <form class="mui-input-group" id="storeForm">
+			<input type="hidden" id="id" name="id" value="0">
 	        <div class="mui-input-row">
 	            <label>登录名</label>
-	            <input type="text" class="mui-input-clear" name="username" placeholder="字母、数字">
+	            <input type="text" class="mui-input-clear" name="username" id="username" placeholder="字母、数字">
 	        </div>
 	        <div class="mui-input-row">
 	            <label>店铺名称</label>
-	            <input type="text" class="mui-input-clear" name="name" placeholder="中文、英文">
-	        </div>
-	        <div class="mui-input-row">
-	            <label>密码</label>
-	            <input type="password" class="mui-input-clear" name="password" placeholder="8-16位，只能包含数字/字母">
+	            <input type="text" class="mui-input-clear" name="name" id="name" placeholder="中文、英文">
 	        </div>
 	        <div class="mui-input-row">
 	            <label>类型</label>
@@ -40,21 +37,26 @@
     <script type="text/javascript" src="../../plugin/picker/dist/js/mui.picker.min.js" ></script>
 	<script type="text/javascript" src="/js/ljx.error.js" ></script>
     <script type="text/javascript">
-    	function parseURL(){
-    		var url=location.search;
-    		var reqParms = new Object();
-			if(url.indexOf("?")!=-1)
-			{
-			var str = url.substr(1)　//去掉?号
-			　　strs = str.split("&");
-			for(var i=0;i<strs.length;i++)
-			{
-			 　 reqParms[strs[i ].split("=")[0]]=unescape(strs[ i].split("=")[1]);
-			}
-			}
-		    return reqParms;
-		}
     mui.init()
+
+    /**
+     * 获取URL中的参数
+     * @returns {Object}
+     */
+    function parseURL(){
+        var url=location.search;
+        var reqParms = new Object();
+        if(url.indexOf("?")!=-1)
+        {
+            var str = url.substr(1)　//去掉?号
+            strs = str.split("&");
+            for(var i=0;i<strs.length;i++)
+            {
+                reqParms[strs[i ].split("=")[0]]=unescape(strs[ i].split("=")[1]);
+            }
+        }
+        return reqParms;
+    }
     $(function(){
     	var parms = parseURL();
     	if(parms["id"]!=undefined){
@@ -64,7 +66,15 @@
 				type:'get',
 				success:function (data){
 					if(data.succeed){
-						console.log(data)
+                        $("#id").val(data.value.id);
+					    $("#name").val(data.value.name);
+                        $("#username").val(data.value.username);
+                        $("#type").val(data.value.type);
+                        if(data.value.type==1){
+                            $("#typeName").val("配送中心");
+						}else{
+                            $("#typeName").val("门店");
+						}
 					}else{
 						errorHandle(data);
 					}
@@ -84,6 +94,7 @@
     var typeName = document.getElementById('typeName');
     var type = document.getElementById('type');
 	typeName.addEventListener('tap', function(event) {
+        picker.pickers[0].setSelectedValue(type.value, 200);
 		picker.show(function(items) {
 			typeName.value = items[0].text;
 			type.value = items[0].value;
@@ -93,7 +104,11 @@
     var submit = function(){
     	var formData = $("#storeForm").serializeArray();
 		//调用登陆方法，验证登陆
-		mui.ajax("/store/add",{
+		var url = "/store/add";
+		if($("#id").val() != 0){
+		    url = "/store/update";
+		}
+		mui.ajax(url,{
 			data:formData,
 			dataType:'json',
 			type:'post',

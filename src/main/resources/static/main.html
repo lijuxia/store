@@ -55,6 +55,9 @@
 	        	        <li class="mui-table-view-cell" id="storeListBtn">
 	        	            <span class="mui-icon mui-icon-home" style="margin-right: 20px;"></span>店铺管理
 	        	        </li>
+						<li class="mui-table-view-cell" id="productListBtn">
+							<span class="mui-icon mui-icon-starhalf" style="margin-right: 20px;"></span>产品管理
+						</li>
 	        	        <li class="mui-table-view-cell" id="changePSW">
 	        	            <span class="mui-icon mui-icon-locked" style="margin-right: 20px;"></span>密码修改
 	        	        </li>
@@ -226,6 +229,10 @@
 				mui('.mui-off-canvas-wrap').offCanvas().close();
 			    window.location.href = "/work/store/store_list.html"
 			});
+            mui(document.body).on('tap', '#productListBtn', function(e) {
+                mui('.mui-off-canvas-wrap').offCanvas().close();
+                window.location.href = "/work/product/product_list.html"
+            });
 			mui(document.body).on('tap', 'a', function(e) {
 				window.location.href = $(this).attr("href");
 			});

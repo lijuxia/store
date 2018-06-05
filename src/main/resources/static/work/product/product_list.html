@@ -9,24 +9,36 @@
 <body>
     <header class="mui-bar mui-bar-nav">
         <a id="backBtn" class="mui-icon mui-icon-left-nav mui-pull-left"></a>
-        <h1 class="mui-title">店铺列表</h1>
-        <a class="mui-icon mui-icon-plusempty mui-pull-right" id="newStoreBtn" style="font-weight: bold;"></a>
+        <h1 class="mui-title">物品列表</h1>
+        <a class="mui-icon mui-icon-plusempty mui-pull-right" id="newproductBtn" style="font-weight: bold;"></a>
     </header>
     <div class="mui-content">
-    	<ul class="mui-table-view" id="storeList">
-    	</ul>
+    	<div class="mui-segmented-control  mui-segmented-control-inverted mui-segmented-control-primary" style="margin: 5px 0 0 0;font-size: 16;">
+    	    <a class="mui-control-item mui-active" href="#item1">商品</a>
+    	    <a class="mui-control-item" href="#item2">原料</a>
+    	</div>
+    	<div>
+    		<div id="item1" class="mui-control-content mui-active" >
+		    	<ul class="mui-table-view" id="GoodsList">
+		    	</ul>
+    		</div>
+    		<div id="item2" class="mui-control-content" >
+		    	<ul class="mui-table-view" id="materialList">
+		    	</ul>
+    		</div>
+    	</div>
     </div>
-    <script type="text/html" id="storeListTemp">
+    <script type="text/html" id="productListTemp">
     	
 		<% if(value.length > 0){ %>
 		<% for(var i=0;i<value.length;i++){ %>
-	    	<li class="store_li mui-table-view-cell mui-transitioning" storeId="<%=value[i].id%>">
+	    	<li class="product_li mui-table-view-cell mui-transitioning" productId="<%=value[i].id%>">
 	    		<div class="mui-slider-right mui-disabled">
-	    			<a class="mui-btn mui-btn-red del-btn" storeId="<%=value[i].id%>">删除</a>
+	    			<a class="mui-btn mui-btn-red del-btn" productId="<%=value[i].id%>">删除</a>
 	    		</div>
 	    		<div class="mui-slider-handle">
 	    			<%=value[i].name%><br>
-	    			<h5>(<%=value[i].typeName%>)</h5>
+	    			<h5>(<%=value[i].unit%>)</h5>
 	    		</div>
 	    	</li>
 		<%}%>
@@ -39,19 +51,20 @@
     <script type="text/javascript">
     mui.init()
     $(function(){
-    	getStoreList()
+    	getProductList(2,"GoodsList")
+    	getProductList(1,"materialList")
     })
     
-	mui(document.body).on('tap', '#newStoreBtn', function(e) {
-	    window.location.href = "/work/store/store_edit.html"
-	});
 	mui(document.body).on('tap', '#backBtn', function(e) {
 	    window.location.href = "/main.html"
 	});
+	mui(document.body).on('tap', '#newproductBtn', function(e) {
+	    window.location.href = "/work/product/product_edit.html"
+	});
 	mui(document.body).on('tap', '.del-btn', function(e) {
 		var btn = this;
-	    var id = this.getAttribute("storeId")
-	    mui.ajax("/store/delete",{
+	    var id = this.getAttribute("productId")
+	    mui.ajax("/product/delete",{
     		data:{
     			id:id
     		},
@@ -60,28 +73,30 @@
     		success:function(data){
     			if(data.succeed){
     				var li = btn.parentNode.parentNode;
-    				var storeList = document.getElementById("storeList");
-    				storeList.removeChild(li)
+    				var productList = li.parentNode;
+    				productList.removeChild(li)
 				}else{
 					errorHandle(data);
 				}
     		}
     	});
 	});
-    mui(document.body).on('tap', '.store_li', function(e) {
+    mui(document.body).on('tap', '.product_li', function(e) {
         var btn = this;
-        var id = this.getAttribute("storeId");
-        window.location.href = "/work/store/store_edit.html?id="+id
+        var id = this.getAttribute("productId");
+        window.location.href = "/work/product/product_edit.html?id="+id
     });
-    function getStoreList(){
-    	mui.ajax("/store/listAll",{
-    		data:{},
+    function getProductList(type,divId){
+    	mui.ajax("/product/listAll",{
+    		data:{
+    			type:type
+    		},
     		dataType:'json',
     		type:'get',
     		success:function(data){
     			if(data.succeed){
-					var Carouselhtml = template('storeListTemp', data);
-					$("#storeList").html(Carouselhtml);
+					var Carouselhtml = template('productListTemp', data);
+					$("#"+divId).html(Carouselhtml);
 				}else{
 					errorHandle(data);
 				}

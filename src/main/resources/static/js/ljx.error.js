@@ -11,3 +11,4 @@ var errorHandle = function errorHandle(data){
 		mui.toast(data.msg,{ duration:'long', type:'div' }) 
 	}
 }
+

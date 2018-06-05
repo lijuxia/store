@@ -26,12 +26,14 @@ public class StoreServiceImpl implements StoreService {
     public void insertMD(Store store){
         store.setType(Store.TYPE_STORE);
         store.setStatus(Store.STATUS_ON);
+        store.setPassword("123456");
         mapper.insert(store);
     }
 
     public void insertZP(Store store){
         store.setType(Store.TYPE_DISTRIBUTION_CENTRE);
         store.setStatus(Store.STATUS_ON);
+        store.setPassword("123456");
         mapper.insert(store);
     }
 
@@ -47,6 +49,8 @@ public class StoreServiceImpl implements StoreService {
         Store storeOld = mapper.findById(store.getId());
         if(storeOld!=null){
             storeOld.setName(store.getName());
+            storeOld.setType(store.getType());
+            storeOld.setUsername(store.getUsername());
             mapper.update(storeOld);
         }
     }

@@ -65,4 +65,12 @@ public class Product implements Serializable {
     public void setType(byte type) {
         this.type = type;
     }
+
+    public String getTypeName(){
+        switch (this.type){
+            case Product.TYPE_MATERIAL:return "原料";
+            case Product.TYPE_GOODS:return "商品";
+            default:return "错误";
+        }
+    }
 }

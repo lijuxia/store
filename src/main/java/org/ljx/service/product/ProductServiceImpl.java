@@ -34,7 +34,11 @@ public class ProductServiceImpl implements ProductService {
     public void update(Product product){
         Product productOld = mapper.findById(product.getId());
         if(productOld!=null){
-            mapper.update(product);
+            productOld.setCode(product.getCode());
+            productOld.setName(product.getName());
+            productOld.setUnit(product.getUnit());
+            productOld.setType(product.getType());
+            mapper.update(productOld);
         }
     }
 
@@ -48,6 +52,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     public void insert(Product product){
+        product.setStatus(Product.STATUS_ON);
         mapper.insert(product);
     }
 }
