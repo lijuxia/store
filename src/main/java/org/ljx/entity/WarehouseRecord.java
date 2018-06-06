@@ -28,6 +28,7 @@ public class WarehouseRecord implements Serializable {
     public static final byte TYPE_SCRAP = 3;    //报废
     public static final byte TYPE_BUY = 4;  //采购
     public static final byte TYPE_CONSUME = 5;  //消耗
+    public static final byte TYPE_CHECK = 6;  //消耗
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
     public static final byte INOROUT_IN = 1;
@@ -146,6 +147,9 @@ public class WarehouseRecord implements Serializable {
 
     public String getCreatTimeStr(){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(this.creatTime==null){
+            return "";
+        }
         return dateFormat.format(this.creatTime);
     }
 
@@ -156,6 +160,7 @@ public class WarehouseRecord implements Serializable {
             case TYPE_SCRAP:return "报废";
             case TYPE_BUY:return "采购";
             case TYPE_CONSUME:return "消耗";
+            case TYPE_CHECK:return "盘点";
             default:return "错误";
         }
     }

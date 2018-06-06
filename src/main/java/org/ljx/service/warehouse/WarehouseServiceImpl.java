@@ -19,7 +19,7 @@ public class WarehouseServiceImpl implements WarehouseService{
     @Autowired
     WarehouseMapper mapper;
 
-    public List<Warehouse> list(byte storeId,byte status){
+    public List<Warehouse> list(int storeId,byte status){
         return mapper.list(storeId,status);
     }
 

@@ -16,8 +16,8 @@ import java.util.List;
 @Repository
 public interface WarehouseMapper {
 
-    final String INSERT_SQL = "insert into sys_warehouse (balance,storeId,productId,status)values(#{balance},#{storeId},#{productId},#{status})";
-    final String UPDATE_SQL = "update sys_warehouse set balance = #{balance},storeId = #{storeId},productId = #{productId},status = #{status} where id = #{id}";
+    final String INSERT_SQL = "insert into sys_warehouse (balance,storeId,productId,status,time)values(#{balance},#{storeId},#{productId},#{status},#{time})";
+    final String UPDATE_SQL = "update sys_warehouse set balance = #{balance},storeId = #{storeId},productId = #{productId},status = #{status},time = #{time} where id = #{id}";
     final String SELECT_SQL = "select * from sys_warehouse where status = 1 ";
     final String FIND_SQL = "select * from sys_warehouse  where id = #{id}";
     final String DELETE_SQL = "delete from sys_warehouse where id = #{id}";
@@ -52,6 +52,7 @@ public interface WarehouseMapper {
             if (status != 0) {
                 WHERE("status = #{status}");
             }
+            GROUP_BY("productId");
         }}.toString();
     }
 

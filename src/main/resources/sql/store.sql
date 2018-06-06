@@ -64,6 +64,7 @@ CREATE TABLE `sys_warehouse`(
 	`storeId` int(11) DEFAULT 0,
 	`productId` int(11) DEFAULT 0,
 	`status` TINYINT(4) DEFAULT 0,
+  `time` TIMESTAMP not null,
 PRIMARY KEY(id)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 

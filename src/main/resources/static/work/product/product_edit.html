@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">产品信息</h1>
+	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
+	</header>
+	<div class="mui-content">
+		<div style="height: 20px;"></div>
+	    <form class="mui-input-group" id="productForm">
+			<input type="hidden" id="id" name="id" value="0">
+	        <div class="mui-input-row">
+	            <label>产品名称</label>
+	            <input type="text" class="mui-input-clear" name="name" id="name" placeholder="中文、英文">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>产品编号</label>
+	            <input type="text" class="mui-input-clear" name="code" id="code" placeholder="字母、数字">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>单位</label>
+	            <input type="text" class="mui-input-clear" name="unit" id="unit" placeholder="中文、英文">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>类型</label>
+	            <input type="hidden" value="2" name="type" id="type" />
+	            <input type="text" class="mui-input-clear"  id="typeName" placeholder="请选择类型">
+	        </div>
+	    </form>
+	</div>
+    <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/jquery-3.3.1.min.js" ></script>
+    <script type="text/javascript" src="../../plugin/picker/dist/js/mui.picker.min.js" ></script>
+	<script type="text/javascript" src="/js/ljx.error.js" ></script>
+    <script type="text/javascript">
+    mui.init()
+
+    /**
+     * 获取URL中的参数
+     * @returns {Object}
+     */
+    function parseURL(){
+        var url=location.search;
+        var reqParms = new Object();
+        if(url.indexOf("?")!=-1)
+        {
+            var str = url.substr(1)　//去掉?号
+            strs = str.split("&");
+            for(var i=0;i<strs.length;i++)
+            {
+                reqParms[strs[i ].split("=")[0]]=unescape(strs[ i].split("=")[1]);
+            }
+        }
+        return reqParms;
+    }
+    $(function(){
+    	var parms = parseURL();
+    	if(parms["id"]!=undefined){
+    		//调用登陆方法，验证登陆
+			mui.ajax("/product/find/"+parms["id"],{
+				dataType:'json',
+				type:'get',
+				success:function (data){
+					if(data.succeed){
+                        $("#id").val(data.value.id);
+					    $("#name").val(data.value.name);
+                        $("#code").val(data.value.code);
+                        $("#unit").val(data.value.unit);
+                        $("#type").val(data.value.type);
+                        $("#typeName").val(data.value.typeName);
+					}else{
+						errorHandle(data);
+					}
+				}
+			});
+    	}
+    })
+    
+	var picker = new mui.PopPicker();
+	picker.setData([{
+	    value: "2",
+	    text: "商品"
+	}, {
+	    value: "1",
+	    text: "原料"
+	}]);
+    var typeName = document.getElementById('typeName');
+    var type = document.getElementById('type');
+	typeName.addEventListener('tap', function(event) {
+        picker.pickers[0].setSelectedValue(type.value, 200);
+		picker.show(function(items) {
+			typeName.value = items[0].text;
+			type.value = items[0].value;
+		});
+	}, true);
+	
+    var submit = function(){
+    	var formData = $("#productForm").serializeArray();
+		//调用登陆方法，验证登陆
+		var url = "/product/add";
+		if($("#id").val() != 0){
+		    url = "/product/update";
+		}
+		mui.ajax(url,{
+			data:formData,
+			dataType:'json',
+			type:'post',
+			success:function (data){
+				if(data.succeed){
+					mui.toast("保存成功",{ duration:'long', type:'div' }) 
+					window.location.href = "/work/product/product_list.html";
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+    }
+    </script>
+</body>
+</html>
+

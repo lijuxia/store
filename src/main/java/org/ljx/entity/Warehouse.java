@@ -1,6 +1,7 @@
 package org.ljx.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 /**
  * 仓库（库存）
@@ -16,6 +17,7 @@ public class Warehouse implements Serializable {
     public static final byte STATUS_OFF = 2;
     private Store store;
     private Product product;
+    private Timestamp time;
 
     public int getId() {
         return id;
@@ -71,5 +73,13 @@ public class Warehouse implements Serializable {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public Timestamp getTime() {
+        return time;
+    }
+
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 }

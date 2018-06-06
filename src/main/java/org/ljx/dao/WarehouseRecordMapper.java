@@ -48,6 +48,8 @@ public interface WarehouseRecordMapper {
             FROM("sys_warehouse_record");
             if (storeId != 0) {
                 WHERE("storeId = #{storeId}");
+                OR();
+                WHERE("sendStoreId = #{storeId}");
             }
             if (inOrOut != 0) {
                 WHERE("inOrOut = #{inOrOut}");

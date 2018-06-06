@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface WarehouseService {
 
-    public List<Warehouse> list(byte storeId, byte status);
+    public List<Warehouse> list(int storeId, byte status);
 
     public void insert(Warehouse warehouse);
 

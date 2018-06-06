@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by ljx on 2018/5/29.
@@ -29,6 +30,12 @@ public class WarehouseController extends BaseController{
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ResponseMessage list(PageSearch pageSearch, Integer storeId,Byte status){
         return success(warehouseService.list(pageSearch,storeId,status));
+    }
+
+    @RequestMapping(value = "/listAll", method = RequestMethod.GET)
+    public ResponseMessage listAll(){
+        List<Warehouse> list =  warehouseService.list(getCurrentStore().getId(),Warehouse.STATUS_ON);
+        return success(list);
     }
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
