@@ -73,7 +73,7 @@
 		    <!-- 主页面标题 -->
 		    <header class="mui-bar mui-bar-nav">
 		      <a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left" href="#offCanvasSide"></a>
-		      <h1 class="mui-title">总配中心</h1>
+		      <h1 class="mui-title" id="head-title">老南塘馄饨</h1>
 		    </header>
 		    <div class="mui-content mui-scroll-wrapper">
 		      <div class="mui-scroll">
@@ -139,28 +139,32 @@
 		</div>
 		<script type="text/html" id="whrList">
 			  <div class="mui-slider-group" >
-		<% if(value.length > 0){ %>
-			<% for(var i=0;i<value.length;i++){ %>
+		<% if(data.value.length > 0){ %>
+			<% for(var i=0;i<data.value.length;i++){ %>
 			    <div class="mui-slider-item" style="height: 184px;">
 			      <!-- 具体内容 -->
 					<div class="mui-card">
 						<!--内容区-->
 						<div class="mui-card-content">
 							<div class="mui-card-content-inner" style="height: 120px;">
-								<span class="mui-badge mui-badge-danger" style="float: left;"><%=value[i].typeStr%></span>
-								<% if(value[i].type==2){%>
-								<span class="mui-badge mui-badge-success" style="float: left;margin-left: 5px;"><%=value[i].sendStoreName%></span>
+								<span class="mui-badge mui-badge-danger" style="float: left;"><%=data.value[i].typeStr%></span>
+								<% if(data.value[i].type==2){%>
+								<span class="mui-badge mui-badge-success" style="float: left;margin-left: 5px;"><%=data.value[i].sendStoreName%></span>
 								<%}%>
-								<span style="float: right;"><%=value[i].creatTimeStr%></span><br />
-								<div class="pro-content"><%=value[i].detailsStr%></div>
+								<span style="float: right;"><%=data.value[i].creatTimeStr%></span><br />
+								<div class="pro-content"><%=data.value[i].detailsStr%></div>
 							</div>
 						</div>
 						<!--页脚，放置补充信息或支持的操作-->
 						<div class="mui-card-footer">
-							<% if(value[i].confirmFlag!=1) {%>
+							<% if(data.value[i].confirmFlag!=1) {%>
+								<% if(data.value[i].sendStoreId!=store.id) {%>
+							<a href="#" class="mui-card-link">待确认</a>
+							<a href="#" class="mui-card-link"></a>
+									<%}else{%>
 							<a href="#" class="mui-card-link">有误</a>
-							<button type="button" data-loading-text="确认中" style="margin-top: -4px;margin-bottom: -5px;" class="mui-btn mui-btn-primary" oddId="<%=value[i].oddId%>">确认</button>
-							<%}else{%>
+							<button type="button" data-loading-text="确认中" style="margin-top: -4px;margin-bottom: -5px;" class="mui-btn mui-btn-primary" oddId="<%=data.value[i].oddId%>">确认</button>
+							<%}}else{%>
 							<a href="#" class="mui-card-link"></a>
 							<a href="#" class="mui-card-link">已完成</a>
 							<%}%>
@@ -187,8 +191,8 @@
 		  <!--轮播圆点-->
 		  <div class="mui-slider-indicator">
 		  	
-		<% if(value.length > 0){ %>
-			<% for(var i=0;i<value.length;i++){ if(i==0){%>
+		<% if(data.value.length > 0){ %>
+			<% for(var i=0;i<data.value.length;i++){ if(i==0){%>
 			<div class="mui-indicator mui-active"></div>
 			<%}else{%>
 			<div class="mui-indicator"></div>
@@ -259,7 +263,9 @@
 					type:'get',
 					success:function (data){
 						if(data.succeed){
-							var Carouselhtml = template('whrList', data);
+							var store = getLoginUser();
+							var dd = {store:store,data:data}
+							var Carouselhtml = template('whrList', dd);
 							$("#sider-group").html(Carouselhtml);
 							mui(".mui-slider").slider({});
 						}else{
@@ -267,6 +273,23 @@
 						}
 					}
 				});
+			}
+			function getLoginUser(){
+				var store ;
+				mui.ajax("/loginUser",{
+					type:'get',
+				    cache:false, 
+				    async:false, 
+					success:function (data){
+						if(data.succeed){
+							store =  data.value;
+							$("#head-title").html(store.name);
+						}else{
+							errorHandle(data);
+						}
+					}
+				})
+				return store;
 			}
 			$(function(){
 				getMainList();
