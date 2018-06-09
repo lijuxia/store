@@ -1,6 +1,8 @@
 package org.ljx.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 产品
@@ -17,7 +19,7 @@ public class Product implements Serializable {
     public static final byte STATUS_OFF = 2;
     public static final byte TYPE_MATERIAL = 1;
     public static final byte TYPE_GOODS = 2;
-
+    public List<ProductDetail> details = new ArrayList<ProductDetail>();
     public int getId() {
         return id;
     }
@@ -64,6 +66,14 @@ public class Product implements Serializable {
 
     public void setType(byte type) {
         this.type = type;
+    }
+
+    public List<ProductDetail> getDetails() {
+        return details;
+    }
+
+    public void setDetails(List<ProductDetail> details) {
+        this.details = details;
     }
 
     public String getTypeName(){

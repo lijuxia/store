@@ -10,12 +10,13 @@
 <body>
 	<header class="mui-bar mui-bar-nav">
 	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-	    <h1 class="mui-title">产品信息</h1>
+	    <h1 class="mui-title">商品信息</h1>
 	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
 	</header>
 	<div class="mui-content">
 		<div style="height: 20px;"></div>
-	    <form class="mui-input-group" id="productForm">
+	    <form id="productForm">
+	    	<div class="mui-input-group" >
 			<input type="hidden" id="id" name="id" value="0">
 	            <input type="hidden" value="2" name="type" id="type" />
 	        <div class="mui-input-row">
@@ -30,11 +31,45 @@
 	            <label>单位</label>
 	            <input type="text" class="mui-input-clear" name="unit" id="unit" placeholder="中文、英文">
 	        </div>
+	    	</div>
+			<h5 style="margin: 5px;">原料：</h5>
+	<div class="mui-input-row" style="margin: 10px 0">
+	        <ul class="mui-table-view" id="materialList">
+           </ul>
+          </div>
 	    </form>
 	</div>
+	<script type="text/html" id="materialListTemp">
+		<% if(materialList.length > 0){ %>
+			<div class="mui-input-group">
+		<% for(var i=0;i<materialList.length;i++){ %>
+        <div class="mui-input-row">
+            <label><%=materialList[i].name%>(<%=materialList[i].unit%>)</label>
+		<% var id=0,num = 0;
+			for(var x=0;x<product.details.length;x++){ 
+				if(materialList[i].id==product.details[x].detailId){
+					id = product.details[x].id;
+					num = product.details[x].num;
+				}
+			%>
+			
+		<%}%>
+            <input type="hidden" name="details[<%=i%>].id" value="<%=id%>"/>
+            <input type="hidden" name="details[<%=i%>].detailId" value="<%=materialList[i].id%>"/>
+			<div class="mui-numbox" style="width: 200px;" data-numbox-step='1' data-numbox-min='0' >
+			  <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+			  <input class="mui-numbox-input details" type="number" name="details[<%=i%>].num" value="<%=num%>"/>
+			  <button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+			</div>
+        </div>
+	<%}%>
+        </div>
+	<%}%>
+	</script>
     <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="../../js/jquery-3.3.1.min.js" ></script>
     <script type="text/javascript" src="../../plugin/picker/dist/js/mui.picker.min.js" ></script>
+    <script type="text/javascript" src="../../js/template-web.js" ></script>
 	<script type="text/javascript" src="/js/ljx.error.js" ></script>
     <script type="text/javascript">
     mui.init()
@@ -58,32 +93,65 @@
         return reqParms;
     }
     $(function(){
+        var list = getMaterialList();
+        var product = undefined;
     	var parms = parseURL();
     	if(parms["id"]!=undefined){
-    		//调用登陆方法，验证登陆
-			mui.ajax("/product/find/"+parms["id"],{
-				dataType:'json',
-				type:'get',
-				success:function (data){
-					if(data.succeed){
-                        $("#id").val(data.value.id);
-					    $("#name").val(data.value.name);
-                        $("#code").val(data.value.code);
-                        $("#unit").val(data.value.unit);
-                        $("#type").val(data.value.type);
-                        $("#typeName").val(data.value.typeName);
-					}else{
-						errorHandle(data);
-					}
-				}
-			});
+    		product = getProduct(parms["id"]);
+		    $("#id").val(product.id);
+		    $("#name").val(product.name);
+		    $("#code").val(product.code);
+		    $("#unit").val(product.unit);
+		    $("#type").val(product.type);
     	}
+        var dd = {product:product,materialList:list};
+		var Carouselhtml = template('materialListTemp', dd);
+		$("#materialList").html(Carouselhtml);
+					mui('.mui-numbox').numbox();
     })
-	
+    var getProduct = function (id){
+    	var product;
+		mui.ajax("/product/find/"+id,{
+			dataType:'json',
+			type:'get',
+		    cache:true, 
+		    async:false, 
+			success:function (data){
+				if(data.succeed){
+					product = data.value;
+					console.log(product)
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+		return product;
+    }
+	var getMaterialList = function(){
+		var list;
+		//调用登陆方法，获取进货物品列表
+		mui.ajax("/product/listAll",{
+			data:{
+				type:1
+			},
+			dataType:'json',
+			type:'get',
+		    cache:true, 
+		    async:false, 
+			success:function (data){
+				if(data.succeed){
+					list = data.value;
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+		return list;
+	}
     var submit = function(){
     	var formData = $("#productForm").serializeArray();
 		//调用登陆方法，验证登陆
-		var url = "/product/add";
+		var url = "/product/addGoods";
 		if($("#id").val() != 0){
 		    url = "/product/update";
 		}
@@ -94,7 +162,7 @@
 			success:function (data){
 				if(data.succeed){
 					mui.toast("保存成功",{ duration:'long', type:'div' }) 
-					window.location.href = "/work/product/product_list.html";
+					window.location.href = "/work/product/goods_list.html";
 				}else{
 					errorHandle(data);
 				}

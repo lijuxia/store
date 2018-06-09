@@ -33,7 +33,13 @@ public class ProductController extends BaseController {
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
     public ResponseMessage add(Product product){
-        productService.insert(product);
+        productService.insertMaterial(product);
+        return success();
+    }
+
+    @RequestMapping(value = "/addGoods",method = RequestMethod.POST)
+    public ResponseMessage addGoods(Product product){
+        productService.insertGoods(product);
         return success();
     }
 

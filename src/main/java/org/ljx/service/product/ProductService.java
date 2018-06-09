@@ -3,6 +3,7 @@ package org.ljx.service.product;
 import com.github.pagehelper.PageInfo;
 import org.ljx.entity.Product;
 import org.ljx.entity.web.PageSearch;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,10 @@ public interface ProductService {
     public Product findById(int id);
 
     public PageInfo list(PageSearch pageSearch, byte type);
+
+    public void insertMaterial(Product product);
+
+    public void insertGoods(Product product);
 
     public void insert(Product product);
 }

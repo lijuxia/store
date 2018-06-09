@@ -57,6 +57,16 @@ INSERT INTO `sys_product` VALUES ('7', 'kele', '可乐', '罐', '1', '2');
 INSERT INTO `sys_product` VALUES ('8', 'zicai', '紫菜', '斤', '1', '1');
 INSERT INTO `sys_product` VALUES ('9', 'huntun', '生馄饨', '个', '1', '1');
 
+DROP TABLE IF EXISTS `sys_product_detail`;
+CREATE TABLE `sys_product_detail`(
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productId` int(11) NOT NULL DEFAULT 0,
+  `detailId` int(11) NOT NULL DEFAULT 0,
+  `num` DOUBLE NOT NULL DEFAULT 0,
+  `status` TINYINT(4) DEFAULT 0,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `sys_warehouse`;
 CREATE TABLE `sys_warehouse`(
 	`id` int(11) NOT NULL AUTO_INCREMENT,

@@ -3,9 +3,11 @@ package org.ljx.dao;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 import org.ljx.entity.Product;
+import org.ljx.entity.WarehouseRecord;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 产品数据层接口
@@ -33,6 +35,11 @@ public interface ProductMapper {
 
     @SelectProvider(type = ProductMapper.class ,method = "buildList")
     @ResultType(Product.class)
+    @Results({
+            @Result(property="details",column="id",javaType=List.class,
+                    many=@Many(select="org.ljx.dao.ProductDetailMapper.list")),
+            @Result(property = "id",column = "id")
+    })
     List<Product> list(@Param("type") byte type);
 
     static String buildList(@Param("type") byte type) {
@@ -49,5 +56,10 @@ public interface ProductMapper {
 
     @Select(FIND_SQL)
     @ResultType(Product.class)
+    @Results({
+            @Result(property="details",column="id",javaType=List.class,
+                    many=@Many(select="org.ljx.dao.ProductDetailMapper.list")),
+            @Result(property = "id",column = "id")
+    })
     Product findById(int id);
 }
