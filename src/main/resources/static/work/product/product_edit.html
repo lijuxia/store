@@ -81,6 +81,10 @@
     })
 	
     var submit = function(){
+    	var flag =checkForm();
+    	if(!flag){
+    		return; 
+    	}
     	var formData = $("#productForm").serializeArray();
 		//调用登陆方法，验证登陆
 		var url = "/product/add";
@@ -100,6 +104,21 @@
 				}
 			}
 		});
+    }
+    var checkForm = function(){
+    	if($("#name").val() == ''){
+			mui.toast("产品名称：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#code").val() == ''){
+			mui.toast("产品编码：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#unit").val() == ''){
+			mui.toast("单位：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	return true;
     }
     </script>
 </body>

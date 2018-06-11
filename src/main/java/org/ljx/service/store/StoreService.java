@@ -13,13 +13,13 @@ public interface StoreService {
 
     public List<Store> list();
 
-    public void insertMD(Store store);
+    public void insertMD(Store store) throws Exception;
 
-    public void insertZP(Store store);
+    public void insertZP(Store store) throws Exception;
 
     public void delete(int id);
 
-    public void update(Store store);
+    public void update(Store store) throws Exception;
 
     public void updatePassword(int id,String oldPassword,String password) throws Exception;
 

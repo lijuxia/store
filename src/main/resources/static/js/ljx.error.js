@@ -12,3 +12,21 @@ var errorHandle = function errorHandle(data){
 	}
 }
 
+var getLoginUser = function (){
+	var store ;
+	mui.ajax("/loginUser",{
+	type:'get',
+    cache:true, 
+    async:false, 
+	success:function (data){
+		if(data.succeed){
+			store =  data.value;
+			$("#head-title").html(store.name);
+			}else{
+				errorHandle(data);
+			}
+		}
+	})
+	return store;
+}
+

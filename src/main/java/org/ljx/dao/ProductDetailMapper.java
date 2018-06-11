@@ -15,7 +15,7 @@ import java.util.List;
 public interface ProductDetailMapper {
 
     final String INSERT_SQL = "insert into sys_product_detail (productId,detailId,num,status)values(#{productId},#{detailId},#{num},#{status})";
-    final String UPDATE_SQL = "update sys_product_detail set productId = #{productId},detailId = #{detailId},status = #{status} where id = #{id}";
+    final String UPDATE_SQL = "update sys_product_detail set productId = #{productId},detailId = #{detailId},num = #{num},status = #{status} where id = #{id}";
     final String SELECT_SQL = "select * from sys_product_detail where status = 1 ";
     final String DELETE_SQL = "delete from sys_product_detail where id = #{id}";
 

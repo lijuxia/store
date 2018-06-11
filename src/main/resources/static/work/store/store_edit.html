@@ -28,7 +28,7 @@
 	        <div class="mui-input-row">
 	            <label>类型</label>
 	            <input type="hidden" value="2" name="type" id="type" />
-	            <input type="text" class="mui-input-clear"  id="typeName" placeholder="请选择类型">
+	            <input type="text" class="mui-input-clear"  id="typeName" placeholder="请选择类型" value="门店">
 	        </div>
 	    </form>
 	</div>
@@ -102,6 +102,10 @@
 	}, true);
 	
     var submit = function(){
+    	var flag =checkForm();
+    	if(!flag){
+    		return; 
+    	}
     	var formData = $("#storeForm").serializeArray();
 		//调用登陆方法，验证登陆
 		var url = "/store/add";
@@ -121,6 +125,22 @@
 				}
 			}
 		});
+    }
+    
+    var checkForm = function(){
+    	if($("#username").val() == ''){
+			mui.toast("登录名：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#name").val() == ''){
+			mui.toast("店铺名称：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#typeName").val() == ''){
+			mui.toast("类型：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	return true;
     }
     </script>
 </body>

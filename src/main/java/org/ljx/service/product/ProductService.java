@@ -16,15 +16,17 @@ public interface ProductService {
 
     public void delete(int id);
 
-    public void update(Product product);
+    public void update(Product product) throws Exception;
+
+    public void updateGoods(Product product) throws Exception;
 
     public Product findById(int id);
 
     public PageInfo list(PageSearch pageSearch, byte type);
 
-    public void insertMaterial(Product product);
+    public void insertMaterial(Product product) throws Exception;
 
-    public void insertGoods(Product product);
+    public void insertGoods(Product product) throws Exception;
 
-    public void insert(Product product);
+    public void insert(Product product) throws Exception;
 }

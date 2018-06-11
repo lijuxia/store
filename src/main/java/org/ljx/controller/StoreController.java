@@ -23,12 +23,13 @@ public class StoreController extends BaseController{
 
     @RequestMapping(value = "/find/{id}",method = RequestMethod.GET)
     public ResponseMessage find(@PathVariable Integer id){
-        getSession().setAttribute("user","admin");
-        return success(storeService.findById(id));
+        Store store = storeService.findById(id);
+        store.setPassword("");
+        return success(store);
     }
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public ResponseMessage add(Store store){
+    public ResponseMessage add(Store store) throws Exception{
         if(store.getType()==Store.TYPE_DISTRIBUTION_CENTRE){
             storeService.insertZP(store);
         }else if(store.getType()==Store.TYPE_STORE){
@@ -48,7 +49,7 @@ public class StoreController extends BaseController{
     }
 
     @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public ResponseMessage update(Store store){
+    public ResponseMessage update(Store store) throws Exception{
         storeService.update(store);
         return success();
     }

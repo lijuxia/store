@@ -21,6 +21,7 @@ public interface WarehouseMapper {
     final String SELECT_SQL = "select * from sys_warehouse where status = 1 ";
     final String FIND_SQL = "select * from sys_warehouse  where id = #{id}";
     final String DELETE_SQL = "delete from sys_warehouse where id = #{id}";
+    final String FIND_STORE_PRODUCT_SQL = "select * from sys_warehouse  where storeId = #{storeId} and productId = #{productId} and status = 1";
 
     @Insert(INSERT_SQL)
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -59,5 +60,9 @@ public interface WarehouseMapper {
     @Select(FIND_SQL)
     @ResultType(Warehouse.class)
     Warehouse findById(int id);
+
+    @Select(FIND_STORE_PRODUCT_SQL)
+    @ResultType(Warehouse.class)
+    Warehouse findByStoreIdAndProductId(@Param("storeId")int storeId,@Param("productId")int productId);
 
 }

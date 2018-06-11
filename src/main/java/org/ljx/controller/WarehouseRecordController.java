@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Timestamp;
+
 /**
  * Created by ljx on 2018/5/29.
  */
@@ -24,13 +26,38 @@ public class WarehouseRecordController extends BaseController {
     @RequestMapping(value = "/listMain", method = RequestMethod.GET)
     public ResponseMessage listMain(){
         Store store = getCurrentStore();
-        if(store.getType()==Store.TYPE_DISTRIBUTION_CENTRE){
-            PageSearch pageSearch = new PageSearch(5,1);
-            return success(warehouseRecordService.list(pageSearch,(byte)0,store.getId()));
-        }else{
-            PageSearch pageSearch = new PageSearch(2,1);
-            return success(warehouseRecordService.list(pageSearch,WarehouseRecord.TYPE_SCRAP,store.getId()));
+        PageSearch pageSearch = new PageSearch(5,1);
+        return success(warehouseRecordService.list(pageSearch,(byte)0,store.getId()));
+    }
+
+    @RequestMapping(value = "/listPull", method = RequestMethod.GET)
+    public ResponseMessage listPull(String oddId){
+        Timestamp time = null;
+        int storeId = 0;
+        WarehouseRecord record = warehouseRecordService.findById(oddId);
+        if(record!=null){
+            time = record.getCreatTime();
         }
+        PageSearch pageSearch = new PageSearch(10,1);
+        if(getCurrentStore().getType()==Store.TYPE_STORE){
+            storeId = getCurrentStore().getId();
+        }
+        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,time,null));
+    }
+
+    @RequestMapping(value = "/listPullUp", method = RequestMethod.GET)
+    public ResponseMessage listPullUp(String oddId){
+        Timestamp time = null;
+        int storeId = 0;
+        WarehouseRecord record = warehouseRecordService.findById(oddId);
+        if(record!=null){
+            time = record.getCreatTime();
+        }
+        PageSearch pageSearch = new PageSearch(10,1);
+        if(getCurrentStore().getType()==Store.TYPE_STORE){
+            storeId = getCurrentStore().getId();
+        }
+        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,null,time));
     }
 
     @RequestMapping(value = "/addConsume", method = RequestMethod.POST)

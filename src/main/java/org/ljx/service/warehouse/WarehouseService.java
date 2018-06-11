@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import org.ljx.entity.Warehouse;
 import org.ljx.entity.web.PageSearch;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -13,9 +14,9 @@ public interface WarehouseService {
 
     public List<Warehouse> list(int storeId, byte status);
 
-    public void insert(Warehouse warehouse);
+    public void into(int storeId,int productId,double num,Timestamp time);
 
-    public void update(Warehouse warehouse);
+    public void out(int storeId,int productId,double num,Timestamp time);
 
     public void delete(int id);
 

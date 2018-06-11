@@ -37,7 +37,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public void update(Product product){
+    public void update(Product product) throws Exception{
+        Product product1 = mapper.findByCode(product.getCode());
+        if(product1!=null && product1.getId()!=product.getId()){
+            throw new Exception("产品编号：已存在！");
+        }
         Product productOld = mapper.findById(product.getId());
         if(productOld!=null){
             productOld.setCode(product.getCode());
@@ -45,6 +49,40 @@ public class ProductServiceImpl implements ProductService {
             productOld.setUnit(product.getUnit());
             productOld.setType(product.getType());
             mapper.update(productOld);
+        }
+    }
+
+    @Transactional
+    public void updateGoods(Product product) throws Exception{
+        Product product1 = mapper.findByCode(product.getCode());
+        if(product1!=null && product1.getId()!=product.getId()){
+            throw new Exception("产品编号：已存在！");
+        }
+        Product productOld = mapper.findById(product.getId());
+        if(productOld!=null){
+            productOld.setCode(product.getCode());
+            productOld.setName(product.getName());
+            productOld.setUnit(product.getUnit());
+            productOld.setType(product.getType());
+            mapper.update(productOld);
+        }
+        for(int i=0;i<product.getDetails().size();i++){
+            ProductDetail detail = product.getDetails().get(i);
+            if(detail.getId()>0){//修改
+                if(detail.getNum()>0){
+                    detail.setProductId(productOld.getId());
+                    detail.setStatus(ProductDetail.STATUS_ON);
+                    detailMapper.update(detail);
+                }else{
+                    detailMapper.delete(detail.getId());
+                }
+            }else{//新增
+                if(detail.getNum()>0){
+                    detail.setProductId(productOld.getId());
+                    detail.setStatus(ProductDetail.STATUS_ON);
+                    detailMapper.insert(detail);
+                }
+            }
         }
     }
 
@@ -57,14 +95,22 @@ public class ProductServiceImpl implements ProductService {
         return new PageInfo(mapper.list(type));
     }
 
-    public void insertMaterial(Product product){
+    public void insertMaterial(Product product) throws Exception{
+        Product product1 = mapper.findByCode(product.getCode());
+        if(product1!=null){
+            throw new Exception("产品编号：已存在！");
+        }
         product.setStatus(Product.STATUS_ON);
         product.setType(Product.TYPE_MATERIAL);
         mapper.insert(product);
     }
 
     @Transactional
-    public void insertGoods(Product product){
+    public void insertGoods(Product product) throws Exception{
+        Product product1 = mapper.findByCode(product.getCode());
+        if(product1!=null){
+            throw new Exception("产品编号：已存在！");
+        }
         product.setType(Product.TYPE_GOODS);
         product.setStatus(Product.STATUS_ON);
         mapper.insert(product);
@@ -77,7 +123,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    public void insert(Product product){
+    public void insert(Product product) throws Exception{
+        Product product1 = mapper.findByCode(product.getCode());
+        if(product1!=null){
+            throw new Exception("产品编号：已存在！");
+        }
         product.setStatus(Product.STATUS_ON);
         mapper.insert(product);
     }

@@ -51,22 +51,7 @@
 		      <div class="mui-scroll">
 		        <!-- 菜单具体展示内容 -->
 		        	<div style="text-align: center;color: white;line-height: 80px;">老南塘馄饨</div>
-		        	<ul class="mui-table-view">
-	        	        <li class="mui-table-view-cell" id="storeListBtn">
-	        	            <span class="mui-icon mui-icon-home" style="margin-right: 20px;"></span>店铺管理
-	        	        </li>
-						<li class="mui-table-view-cell" id="productListBtn">
-							<span class="mui-icon mui-icon-starhalf" style="margin-right: 20px;"></span>原料管理
-						</li>
-						<li class="mui-table-view-cell" id="goodsListBtn">
-							<span class="mui-icon mui-icon-starhalf" style="margin-right: 20px;"></span>商品管理
-						</li>
-	        	        <li class="mui-table-view-cell" id="changePSW">
-	        	            <span class="mui-icon mui-icon-locked" style="margin-right: 20px;"></span>密码修改
-	        	        </li>
-	        	        <li class="mui-table-view-cell" id="logout">
-	        	            <span class="mui-icon mui-icon-close" style="margin-right: 20px;"></span>退出
-	        	        </li>
+		        	<ul class="mui-table-view" id="menuList">
 	        	    </ul>
 		      </div>
 		    </div>
@@ -85,55 +70,7 @@
 			<div class="mui-slider" id="sider-group">
 			</div>
 			<!--九宫格功能块-->
-			<ul style="background-color: white;" class="mui-table-view mui-grid-view mui-grid-9">
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/purchase.html">
-				        <span class="mui-icon mui-icon-download"></span>
-				        <div class="mui-media-body">进货</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/consume.html">
-				        <span class="mui-icon mui-icon-loop"></span>
-				        <div class="mui-media-body">消耗</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/sendout.html">
-				        <span class="mui-icon mui-icon-paperplane"></span>
-				        <div class="mui-media-body">配送</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/warehouse_list.html">
-				        <span class="mui-icon mui-icon-home"></span>
-				        <div class="mui-media-body">库存</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/saleout.html">
-				        <span class="mui-icon mui-icon-redo"></span>
-				        <div class="mui-media-body">销售</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/check.html">
-				        <span class="mui-icon mui-icon-compose"></span>
-				        <div class="mui-media-body">盘点</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/scrap.html">
-				        <span class="mui-icon mui-icon-trash"></span>
-				        <div class="mui-media-body">报废</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="#">
-				        <span class="mui-icon mui-icon-more"></span>
-				        <div class="mui-media-body">其他</div>
-				    </a>
-				</li>
+			<ul style="background-color: white;" class="mui-table-view mui-grid-view mui-grid-9" id="grid-9-ul">
 			</ul>
 		      </div>
 		    </div>  
@@ -204,6 +141,87 @@
 			<div class="mui-indicator mui-active"></div>
 		<% } %>
 		  </div>
+		</script>
+		<script type="text/html" id="grid-9-temp">
+			<% if(type==1) {%>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/purchase.html">
+				        <span class="mui-icon mui-icon-download"></span>
+				        <div class="mui-media-body">进货</div>
+				    </a>
+				</li>
+				<% } %>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/consume.html">
+				        <span class="mui-icon mui-icon-loop"></span>
+				        <div class="mui-media-body">消耗</div>
+				    </a>
+				</li>
+			<% if(type==1) {%>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/sendout.html">
+				        <span class="mui-icon mui-icon-paperplane"></span>
+				        <div class="mui-media-body">配送</div>
+				    </a>
+				</li>
+				<% } %>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/warehouse_list.html">
+				        <span class="mui-icon mui-icon-home"></span>
+				        <div class="mui-media-body">库存</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/saleout.html">
+				        <span class="mui-icon mui-icon-redo"></span>
+				        <div class="mui-media-body">销售</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/check.html">
+				        <span class="mui-icon mui-icon-compose"></span>
+				        <div class="mui-media-body">盘点</div>
+				    </a>
+				</li>
+			<% if(type==1) {%>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/scrap.html">
+				        <span class="mui-icon mui-icon-trash"></span>
+				        <div class="mui-media-body">报废</div>
+				    </a>
+				</li>
+				<% } %>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="work/record/record_list.html">
+				        <span class="mui-icon mui-icon-list"></span>
+				        <div class="mui-media-body">单据记录</div>
+				    </a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				    <a href="#">
+				        <span class="mui-icon mui-icon-more"></span>
+				        <div class="mui-media-body">其他</div>
+				    </a>
+				</li>
+		</script>
+		<script type="text/html" id="menuListTemp">
+			<% if(type==1) {%>
+	        <li class="mui-table-view-cell" id="storeListBtn">
+	            <span class="mui-icon mui-icon-home" style="margin-right: 20px;"></span>店铺管理
+	        </li>
+			<li class="mui-table-view-cell" id="productListBtn">
+				<span class="mui-icon mui-icon-starhalf" style="margin-right: 20px;"></span>原料管理
+			</li>
+			<li class="mui-table-view-cell" id="goodsListBtn">
+				<span class="mui-icon mui-icon-star" style="margin-right: 20px;"></span>商品管理
+			</li>
+				<% } %>
+	        <li class="mui-table-view-cell" id="changePSW">
+	            <span class="mui-icon mui-icon-locked" style="margin-right: 20px;"></span>密码修改
+	        </li>
+	        <li class="mui-table-view-cell" id="logout">
+	            <span class="mui-icon mui-icon-close" style="margin-right: 20px;"></span>退出
+	        </li>
 		</script>
 		<script src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
@@ -281,25 +299,17 @@
 					}
 				});
 			}
-			function getLoginUser(){
-				var store ;
-				mui.ajax("/loginUser",{
-					type:'get',
-				    cache:true, 
-				    async:false, 
-					success:function (data){
-						if(data.succeed){
-							store =  data.value;
-							$("#head-title").html(store.name);
-						}else{
-							errorHandle(data);
-						}
-					}
-				})
-				return store;
+			function initMenu(){
+				var store = getLoginUser();
+				var Carouselhtml = template('grid-9-temp', store);
+				$("#grid-9-ul").html(Carouselhtml);
+				var Carouselhtml = template('menuListTemp', store);
+				$("#menuList").html(Carouselhtml);
+				
 			}
 			$(function(){
 				getMainList();
+				initMenu();
 			})
 		</script>
 	</body>

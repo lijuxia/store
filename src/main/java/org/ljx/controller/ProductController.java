@@ -32,20 +32,26 @@ public class ProductController extends BaseController {
     }
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public ResponseMessage add(Product product){
+    public ResponseMessage add(Product product) throws Exception{
         productService.insertMaterial(product);
         return success();
     }
 
     @RequestMapping(value = "/addGoods",method = RequestMethod.POST)
-    public ResponseMessage addGoods(Product product){
+    public ResponseMessage addGoods(Product product) throws Exception{
         productService.insertGoods(product);
         return success();
     }
 
     @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public ResponseMessage update(Product product){
+    public ResponseMessage update(Product product) throws Exception{
         productService.update(product);
+        return success();
+    }
+
+    @RequestMapping(value = "/updateGoods",method = RequestMethod.POST)
+    public ResponseMessage updateGoods(Product product) throws Exception{
+        productService.updateGoods(product);
         return success();
     }
 

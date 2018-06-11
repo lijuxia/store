@@ -46,14 +46,15 @@
         <div class="mui-input-row">
             <label><%=materialList[i].name%>(<%=materialList[i].unit%>)</label>
 		<% var id=0,num = 0;
-			for(var x=0;x<product.details.length;x++){ 
-				if(materialList[i].id==product.details[x].detailId){
-					id = product.details[x].id;
-					num = product.details[x].num;
+			if(product!=null){
+				for(var x=0;x<product.details.length;x++){ 
+					if(materialList[i].id==product.details[x].detailId){
+						id = product.details[x].id;
+						num = product.details[x].num;
+					}
 				}
+			}
 			%>
-			
-		<%}%>
             <input type="hidden" name="details[<%=i%>].id" value="<%=id%>"/>
             <input type="hidden" name="details[<%=i%>].detailId" value="<%=materialList[i].id%>"/>
 			<div class="mui-numbox" style="width: 200px;" data-numbox-step='1' data-numbox-min='0' >
@@ -149,11 +150,15 @@
 		return list;
 	}
     var submit = function(){
+    	var flag =checkForm();
+    	if(!flag){
+    		return; 
+    	}
     	var formData = $("#productForm").serializeArray();
 		//调用登陆方法，验证登陆
 		var url = "/product/addGoods";
 		if($("#id").val() != 0){
-		    url = "/product/update";
+		    url = "/product/updateGoods";
 		}
 		mui.ajax(url,{
 			data:formData,
@@ -168,6 +173,21 @@
 				}
 			}
 		});
+    }
+    var checkForm = function(){
+    	if($("#name").val() == ''){
+			mui.toast("产品名称：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#code").val() == ''){
+			mui.toast("产品编码：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#unit").val() == ''){
+			mui.toast("单位：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	return true;
     }
     </script>
 </body>

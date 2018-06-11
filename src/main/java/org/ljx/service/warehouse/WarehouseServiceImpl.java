@@ -7,7 +7,9 @@ import org.ljx.entity.Warehouse;
 import org.ljx.entity.web.PageSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -23,15 +25,38 @@ public class WarehouseServiceImpl implements WarehouseService{
         return mapper.list(storeId,status);
     }
 
-    public void insert(Warehouse warehouse){
+    @Transactional
+    public void into(int storeId,int productId,double num,Timestamp time){
+        Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
+        if(warehouse!=null){
+            num +=warehouse.getBalance();
+            warehouse.setStatus(Warehouse.STATUS_OFF);
+            mapper.update(warehouse);
+        }
+        warehouse = new Warehouse();
+        warehouse.setProductId(productId);
+        warehouse.setStoreId(storeId);
+        warehouse.setBalance(num);
+        warehouse.setTime(time);
+        warehouse.setStatus(Warehouse.STATUS_ON);
         mapper.insert(warehouse);
     }
 
-    public void update(Warehouse warehouse){
-        Warehouse warehouseOld = mapper.findById(warehouse.getId());
-        if(warehouseOld!=null){
+    @Transactional
+    public void out(int storeId,int productId,double num,Timestamp time){
+        Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
+        if(warehouse!=null){
+            num =warehouse.getBalance()-num;
+            warehouse.setStatus(Warehouse.STATUS_OFF);
             mapper.update(warehouse);
         }
+        warehouse = new Warehouse();
+        warehouse.setProductId(productId);
+        warehouse.setStoreId(storeId);
+        warehouse.setBalance(num);
+        warehouse.setTime(time);
+        warehouse.setStatus(Warehouse.STATUS_ON);
+        mapper.insert(warehouse);
     }
 
     public void delete(int id){

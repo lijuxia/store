@@ -5,6 +5,7 @@ import org.apache.ibatis.jdbc.SQL;
 import org.ljx.entity.WarehouseRecord;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -40,20 +41,26 @@ public interface WarehouseRecordMapper {
                     many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.listType")),
             @Result(property = "oddId",column = "oddId")
     })
-    List<WarehouseRecord> listType(@Param("storeId") int storeId,@Param("inOrOut") byte inOrOut);
+    List<WarehouseRecord> listType(@Param("storeId") int storeId, @Param("type") byte type, @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime);
 
-    static String buildList(@Param("storeId") int storeId,@Param("inOrOut") byte inOrOut) {
+    static String buildList(@Param("storeId") int storeId,@Param("type") byte type, @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse_record");
             if (storeId != 0) {
-                WHERE("storeId = #{storeId}");
-                OR();
-                WHERE("sendStoreId = #{storeId}");
+
+                WHERE("(storeId = #{storeId} or sendStoreId = #{storeId})");
             }
-            if (inOrOut != 0) {
-                WHERE("inOrOut = #{inOrOut}");
+            if (type != 0) {
+                WHERE("type = #{type}");
             }
+            if(beginTime!=null && !"".equals(beginTime)){
+                WHERE("creatTime > #{beginTime}");
+            }
+            if(endTime!=null && !"".equals(endTime)){
+                WHERE("creatTime < #{endTime}");
+            }
+
             WHERE("status = 1");
             ORDER_BY(" creatTime desc");
         }}.toString();
@@ -61,5 +68,10 @@ public interface WarehouseRecordMapper {
 
     @Select(FIND_SQL)
     @ResultType(WarehouseRecord.class)
+    @Results({
+            @Result(property="listDetails",column="oddId",javaType=List.class,
+                    many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.listType")),
+            @Result(property = "oddId",column = "oddId")
+    })
     WarehouseRecord findById(String oddId);
 }

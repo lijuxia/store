@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">单据记录</h1>
+	</header>
+	<div class="mui-content">
+		<!--下拉刷新容器-->
+		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+		  <div class="mui-scroll">
+		  	<input type="hidden" id="pullOddId" />
+		  	<input type="hidden" id="pullOddId_up" />
+		    <ul class="mui-table-view" style="margin-top: 50px;" id="list">
+		    </ul>
+		  </div>
+		</div>
+	</div>
+    <script type="text/html" id="listTemp">
+		<% if(value.length > 0){ %>
+		<% for(var i=0;i<value.length;i++){ %>
+	    	<li class="mui-table-view-cell">
+	    		<div class="mui-slider-handle">
+					<span class="mui-badge mui-badge-danger" style="float: left;"><%=value[i].typeStr%></span>
+					<% if(value[i].type==2){%>
+					<span class="mui-badge mui-badge-success" style="float: left;margin-left: 5px;"><%=value[i].sendStoreName%></span>
+					<%}%>
+					<span style="float: right;color: #8f8f94;font-size: 14px;"><%=value[i].creatTimeStr%></span>
+	    			<br>
+	    			<h5><%=value[i].detailsStr%></h5>
+	    		</div>
+	    	</li>
+		<%}%>
+		<%}%>
+    </script>
+    <script src="../../js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/jquery-3.3.1.min.js" ></script>
+    <script type="text/javascript" src="../../js/template-web.js" ></script>
+    <script type="text/javascript" src="../../js/ljx.error.js" ></script>
+    <script type="text/javascript">
+    mui.init({
+	  pullRefresh : {
+	    container:"#refreshContainer",//下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+	    down : {
+	      height:50,//可选,默认50.触发下拉刷新拖动距离,
+	      auto: true,//可选,默认false.首次加载自动下拉刷新一次
+	      contentdown : "下拉可以刷新",//可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+	      contentover : "释放立即刷新",//可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+	      contentrefresh : "正在刷新...",//可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+	      callback :pullfresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	    },
+	    up : {
+	      contentrefresh : "正在加载...",//可选，正在加载状态时，上拉加载控件上显示的标题内容
+	      contentnomore:'没有更多数据了',//可选，请求完毕若没有更多数据时显示的提醒内容；
+	      callback :pullfresh_up //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+	    }
+	  }
+	});
+	function pullfresh_up() {
+	     //业务逻辑代码，比如通过ajax从服务器获取新数据；
+	     var pullOddId_up = $("#pullOddId_up").val();
+		mui.ajax("/warehouserecord/listPullUp",{
+			data:{
+				oddId:pullOddId_up
+			},
+			dataType:'json',
+			type:'get',
+			success:function (data){
+				if(data.succeed){
+					if(data.value.length>0){
+						$("#pullOddId_up").val(data.value[data.value.length-1].oddId);
+					}
+					var Carouselhtml = template('listTemp', data);
+					if(data.value.length>0){
+	     				mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					}else{
+		     			mui('#refreshContainer').pullRefresh().endPullupToRefresh(true);
+					}
+					
+					$("#list").append(Carouselhtml);
+				}else{
+	     			mui('#refreshContainer').pullRefresh().endPullupToRefresh(false);
+					errorHandle(data);
+				}
+	     //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+	     //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
+			}
+		});
+	}
+	function pullfresh() {
+	     //业务逻辑代码，比如通过ajax从服务器获取新数据；
+	    var pullOddId = $("#pullOddId").val();
+		mui.ajax("/warehouserecord/listPull",{
+			data:{
+				oddId:pullOddId
+			},
+			dataType:'json',
+			type:'get',
+			success:function (data){
+				if(data.succeed){
+					if(data.value.length>0){
+						$("#pullOddId").val(data.value[0].oddId);
+					}
+					if(data.value.length>0){
+						$("#pullOddId_up").val(data.value[data.value.length-1].oddId);
+					}
+					var Carouselhtml = template('listTemp', data);
+	     			mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					$("#list").prepend(Carouselhtml);
+				}else{
+	     			mui('#refreshContainer').pullRefresh().endPulldownToRefresh()
+					errorHandle(data);
+				}
+	     //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+	     //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
+			}
+		});
+	}
+    </script>
+</body>
+</html>
+

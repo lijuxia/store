@@ -17,7 +17,7 @@ public interface StoreMapper {
 
     final String INSERT_SQL = "insert into sys_store (name,username,password,type,status)values(#{name},#{username},#{password},#{type},#{status})";
     final String UPDATE_SQL = "update sys_store set name = #{name},username = #{username},password = #{password},type = #{type},status = #{status} where id = #{id}";
-    final String SELECT_SQL = "select * from sys_store where status = 1";
+    final String SELECT_SQL = "select id,name,username,type,status from sys_store where status = 1";
     final String FIND_SQL = "select * from sys_store  where id = #{id}";
     final String DELETE_SQL = "delete from sys_store where id = #{id}";
     final String FIND_BY_USERNAME_SQL = "select * from sys_store where username = #{username}";
@@ -41,7 +41,7 @@ public interface StoreMapper {
 
     static String buildList(@Param("type") byte type) {
         return new SQL(){{
-            SELECT("*");
+            SELECT("id,name,username,type,status");
             FROM("sys_store");
             if (type != 0) {
                 WHERE("type = #{type}");

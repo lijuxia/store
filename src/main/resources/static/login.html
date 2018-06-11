@@ -119,15 +119,24 @@
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
+		<script type="text/javascript" src="js/ljx.error.js" ></script>
 		<script>
 //			初始化方法
 			$(function() {
+				var store = getLoginUser();
+				if(store != undefined){
+					window.location.href = "./main.html";
+				}
 				var loginButton = document.getElementById('login');
 				var accountBox = document.getElementById('account');
 				var passwordBox = document.getElementById('password');
 				
 				//登陆方法
 				loginButton.addEventListener('click', function(event) {
+			    	var flag =checkForm();
+			    	if(!flag){
+			    		return; 
+			    	}
 					var loginInfo = {
 						account: accountBox.value,
 						password: passwordBox.value
@@ -145,11 +154,22 @@
 								mui.toast("登陆成功",{ duration:'long', type:'div' }) 
 								window.location.href = "./main.html";
 							}else{
-								mui.toast(data.msg,{ duration:'long', type:'div' }) 
+								errorHandle(data);
 							}
 						}
 					});
 				});
+    var checkForm = function(){
+    	if($("#account").val() == ''){
+			mui.toast("账号：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#password").val() == ''){
+			mui.toast("密码：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	return true;
+    }
 				$("body").keydown(function(event) {
 					if (event.keyCode == "13") {//keyCode=13是回车键
 						$("#login").click();

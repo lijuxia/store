@@ -22,6 +22,7 @@ public interface ProductMapper {
     final String SELECT_SQL = "select * from sys_product where status = 1 ";
     final String FIND_SQL = "select * from sys_product  where id = #{id}";
     final String DELETE_SQL = "delete from sys_product where id = #{id}";
+    final String FIND_CODE_SQL = "select * from sys_product  where code = #{code}";
 
     @Insert(INSERT_SQL)
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -62,4 +63,8 @@ public interface ProductMapper {
             @Result(property = "id",column = "id")
     })
     Product findById(int id);
+
+    @Select(FIND_CODE_SQL)
+    @ResultType(Product.class)
+    Product findByCode(String code);
 }

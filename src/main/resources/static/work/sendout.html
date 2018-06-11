@@ -106,7 +106,7 @@
 		//调用登陆方法，获取进货物品列表
 		mui.ajax("/product/listAll",{
 			data:{
-				type:0
+				type:1
 			},
 			dataType:'json',
 			type:'get',
@@ -122,6 +122,10 @@
 		});
    });
     var submit = function(){
+    	var flag =checkForm();
+    	if(!flag){
+    		return; 
+    	}
     	var formData = $("#purchaseList").serializeArray();
 		//调用登陆方法，验证登陆
 		mui.ajax("/warehouserecord/addSend",{
@@ -137,6 +141,13 @@
 				}
 			}
 		});
+    }
+    var checkForm = function(){
+    	if($("#sendStoreName").val() == ''){
+			mui.toast("门店：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	return true;
     }
     </script>
 </body>

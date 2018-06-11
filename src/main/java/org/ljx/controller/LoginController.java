@@ -21,6 +21,7 @@ public class LoginController extends BaseController {
     @RequestMapping(value = "/login",method = RequestMethod.GET)
     public ResponseMessage login(String username,String password) throws Exception{
         Store store = storeService.login(username,password);
+        store.setPassword("");
         getSession().setAttribute("user",store);
         return success();
     }

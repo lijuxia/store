@@ -23,14 +23,22 @@ public class StoreServiceImpl implements StoreService {
         return mapper.list();
     }
 
-    public void insertMD(Store store){
+    public void insertMD(Store store) throws Exception{
+        Store store1 = mapper.findByUsername(store.getUsername());
+        if(store1!=null){
+            throw new Exception("登录名：已存在！");
+        }
         store.setType(Store.TYPE_STORE);
         store.setStatus(Store.STATUS_ON);
         store.setPassword("123456");
         mapper.insert(store);
     }
 
-    public void insertZP(Store store){
+    public void insertZP(Store store) throws Exception{
+        Store store1 = mapper.findByUsername(store.getUsername());
+        if(store1!=null){
+            throw new Exception("登录名：已存在！");
+        }
         store.setType(Store.TYPE_DISTRIBUTION_CENTRE);
         store.setStatus(Store.STATUS_ON);
         store.setPassword("123456");
@@ -45,7 +53,11 @@ public class StoreServiceImpl implements StoreService {
         }
     }
 
-    public void update(Store store){
+    public void update(Store store) throws Exception{
+        Store store1 = mapper.findByUsername(store.getUsername());
+        if(store1!=null && store1.getId() != store.getId()){
+            throw new Exception("登录名：已存在！");
+        }
         Store storeOld = mapper.findById(store.getId());
         if(storeOld!=null){
             storeOld.setName(store.getName());
@@ -59,7 +71,7 @@ public class StoreServiceImpl implements StoreService {
         Store store = mapper.findById(id);
         if(store!=null){
             if(!oldPassword.equals(store.getPassword())){
-                throw new Exception("旧密码错误");
+                throw new Exception("旧密码：错误");
             }
             store.setPassword(password);
             mapper.update(store);
@@ -83,9 +95,9 @@ public class StoreServiceImpl implements StoreService {
     public Store login(String username,String password) throws Exception{
         Store store = mapper.findByUsername(username);
         if(store==null){
-            throw new Exception("账号不存在");
+            throw new Exception("账号：不存在");
         }else if(!password.equals(store.getPassword())){
-            throw new Exception("密码错误");
+            throw new Exception("密码：错误");
         }else{
             return store;
         }

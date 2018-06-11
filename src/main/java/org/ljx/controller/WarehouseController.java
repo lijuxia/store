@@ -38,18 +38,6 @@ public class WarehouseController extends BaseController{
         return success(list);
     }
 
-    @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public ResponseMessage add(Warehouse warehouse){
-        warehouseService.insert(warehouse);
-        return success();
-    }
-
-    @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public ResponseMessage update(Warehouse warehouse){
-        warehouseService.update(warehouse);
-        return success();
-    }
-
     @RequestMapping(value = "/delete",method = RequestMethod.POST)
     public ResponseMessage dalete(Integer id){
         warehouseService.delete(id);
