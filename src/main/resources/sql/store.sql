@@ -91,6 +91,7 @@ CREATE TABLE `sys_warehouse_record`(
 `remark` VARCHAR(255) not null DEFAULT '',
 `sendStoreId` int(11) not null DEFAULT 0,
 `sendStoreName` varchar(50) not null DEFAULT '',
+`date` DATE ,
 PRIMARY KEY(oddId)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 

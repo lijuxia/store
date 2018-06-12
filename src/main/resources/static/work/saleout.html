@@ -5,6 +5,7 @@
     <title>Document</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link rel="stylesheet" href="../plugin/picker/dist/css/mui.picker.min.css" />
     <script type="text/javascript" src="../js/template-web.js" ></script>
 </head>
 <body>
@@ -17,6 +18,12 @@
 	<div class="mui-content">
 		<div style="height: 20px;"></div>
     <form id="purchaseList" >
+			<div class="mui-input-group">
+        <div class="mui-input-row">
+            <label id="userResult" style="width: 40%;">日期</label>
+            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
+    	</div>
+    </div>
     </form>
 	</div>
 	
@@ -46,9 +53,19 @@
 	<script src="../js/mui.min.js"></script>
 	<script type="text/javascript" src="../js/mui.numbox.float.js" ></script>
 	<script type="text/javascript" src="../js/jquery-3.3.1.min.js" ></script>
+	<script type="text/javascript" src="../plugin/picker/dist/js/mui.picker.min.js" ></script>
 	<script type="text/javascript" src="/js/ljx.error.js" ></script>
     <script type="text/javascript">
     mui.init()
+    $("#date").val(getNowFormatDate());
+    var dtPicker = new mui.DtPicker({type:'date'}); 
+    var sendStoreName = document.getElementById('date');
+	sendStoreName.addEventListener('tap', function(event) {
+    dtPicker.show(function (selectItems) { 
+    	var dd = selectItems.y.value+"-"+selectItems.m.value+"-"+selectItems.d.value
+    	$("#date").val(dd);
+    })
+	}, false);
     $(function(){
 		//调用登陆方法，获取进货物品列表
 		mui.ajax("/product/listAll",{
@@ -60,7 +77,7 @@
 			success:function (data){
 				if(data.succeed){
 					var Carouselhtml = template('productList', data);
-					$("#purchaseList").html(Carouselhtml);
+					$("#purchaseList").append(Carouselhtml);
 					mui('.mui-numbox').numbox();
 				}else{
 					errorHandle(data);

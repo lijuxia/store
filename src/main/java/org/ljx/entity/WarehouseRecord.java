@@ -1,6 +1,7 @@
 package org.ljx.entity;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class WarehouseRecord implements Serializable {
     private String remark="";//备注
     private int sendStoreId=0;
     private String sendStoreName="";
+    private Date date;
     private List<WarehouseRecordDetail> listDetails = new ArrayList<>();
     public static final byte TYPE_SALE = 1; //销售
     public static final byte TYPE_SEND = 2; //配送
@@ -135,6 +137,14 @@ public class WarehouseRecord implements Serializable {
 
     public void setSendStoreName(String sendStoreName) {
         this.sendStoreName = sendStoreName;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public List<WarehouseRecordDetail> getListDetails() {

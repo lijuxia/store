@@ -20,6 +20,10 @@
     <form id="purchaseList" >
 			<div class="mui-input-group">
         <div class="mui-input-row">
+            <label id="userResult" style="width: 40%;">日期</label>
+            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
+    	</div>
+        <div class="mui-input-row">
             <label id="userResult" style="width: 40%;">门店</label>
             <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择门店" name="sendStoreName" id="sendStoreName">
             <input type="hidden" id="sendStoreId" name="sendStoreId">
@@ -60,6 +64,15 @@
     mui.init({
     })
     
+    $("#date").val(getNowFormatDate());
+    var dtPicker = new mui.DtPicker({type:'date'}); 
+    var sendStoreName = document.getElementById('date');
+	sendStoreName.addEventListener('tap', function(event) {
+    dtPicker.show(function (selectItems) { 
+    	var dd = selectItems.y.value+"-"+selectItems.m.value+"-"+selectItems.d.value
+    	$("#date").val(dd);
+    })
+	}, false);
 	var picker = new mui.PopPicker();
 	//调用登陆方法，获配送门店列表
 	mui.ajax("/store/listAll",{
@@ -77,22 +90,6 @@
 			}
 		}
 	});
-//	picker.setData([{
-//	    value: "first",
-//	    text: "第一项"
-//	}, {
-//	    value: "second",
-//	    text: "第一项"
-//	}, {
-//	    value: "third",
-//	    text: "第三项"
-//	}, {
-//	    value: "fourth",
-//	    text: "第四项"
-//	}, {
-//	    value: "fifth",
-//	    text: "第五项"
-//	}]);
     var sendStoreName = document.getElementById('sendStoreName');
     var sendStoreId = document.getElementById('sendStoreId');
 	sendStoreName.addEventListener('tap', function(event) {
