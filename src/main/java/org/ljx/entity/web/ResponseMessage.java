@@ -1,10 +1,12 @@
 package org.ljx.entity.web;
 
+import java.io.Serializable;
+
 /**
  * 返回封装
  * Created by WangHao on 2015/1/23.
  */
-public class ResponseMessage {
+public class ResponseMessage implements Serializable {
     private boolean succeed;
     private Integer code;
     private String msg;

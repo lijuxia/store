@@ -5,6 +5,7 @@ import org.apache.ibatis.jdbc.SQL;
 import org.ljx.entity.WarehouseRecord;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -30,25 +31,24 @@ public interface WarehouseRecordMapper {
     @Update(UPDATE_SQL)
     void update(WarehouseRecord warehouseRecord);
 
-    @Select(SELECT_SQL)
-    @ResultType(WarehouseRecord.class)
-    List<WarehouseRecord> list();
-
     @SelectProvider(type = WarehouseRecordMapper.class, method = "buildList")
     @ResultType(WarehouseRecord.class)
     @Results({
             @Result(property="listDetails",column="oddId",javaType=List.class,
-                    many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.listType")),
+                    many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.list")),
             @Result(property = "oddId",column = "oddId")
     })
-    List<WarehouseRecord> listType(@Param("storeId") int storeId, @Param("type") byte type, @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime);
+    List<WarehouseRecord> list(@Param("storeId") int storeId, @Param("type") byte type
+            , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
+            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate);
 
-    static String buildList(@Param("storeId") int storeId,@Param("type") byte type, @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime) {
+    static String buildList(@Param("storeId") int storeId,@Param("type") byte type
+            , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
+            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse_record");
             if (storeId != 0) {
-
                 WHERE("(storeId = #{storeId} or sendStoreId = #{storeId})");
             }
             if (type != 0) {
@@ -60,7 +60,12 @@ public interface WarehouseRecordMapper {
             if(endTime!=null && !"".equals(endTime)){
                 WHERE("creatTime < #{endTime}");
             }
-
+            if(beginDate!=null && !"".equals(beginDate)){
+                WHERE("date >= #{beginDate}");
+            }
+            if(endDate!=null && !"".equals(endDate)){
+                WHERE("date <= #{endDate}");
+            }
             WHERE("status = 1");
             ORDER_BY(" creatTime desc");
         }}.toString();
@@ -70,7 +75,7 @@ public interface WarehouseRecordMapper {
     @ResultType(WarehouseRecord.class)
     @Results({
             @Result(property="listDetails",column="oddId",javaType=List.class,
-                    many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.listType")),
+                    many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.list")),
             @Result(property = "oddId",column = "oddId")
     })
     WarehouseRecord findById(String oddId);

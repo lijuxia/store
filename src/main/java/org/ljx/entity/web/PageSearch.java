@@ -1,10 +1,12 @@
 package org.ljx.entity.web;
 
+import java.io.Serializable;
+
 /**
  * 分页条件
  * Created by ljx on 2018/5/15.
  */
-public class PageSearch {
+public class PageSearch implements Serializable {
     private int pageSize;
     private int pageNum;
 

@@ -13,6 +13,7 @@ public class WarehouseRecordDetail implements Serializable {
     private double num;
     private String productName;
     private String unit;
+    private Product product;
 
     public String getUuid() {
         return uuid;
@@ -60,5 +61,13 @@ public class WarehouseRecordDetail implements Serializable {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

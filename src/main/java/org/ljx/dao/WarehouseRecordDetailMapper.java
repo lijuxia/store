@@ -2,6 +2,7 @@ package org.ljx.dao;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
+import org.ljx.entity.Product;
 import org.ljx.entity.WarehouseRecordDetail;
 import org.springframework.stereotype.Repository;
 
@@ -29,13 +30,13 @@ public interface WarehouseRecordDetailMapper {
     @Update(UPDATE_SQL)
     void update(WarehouseRecordDetail warehouseRecordDetail);
 
-    @Select(SELECT_SQL)
-    @ResultType(WarehouseRecordDetail.class)
-    List<WarehouseRecordDetail> list();
-
     @SelectProvider(type = WarehouseRecordDetailMapper.class, method = "buildList")
     @ResultType(WarehouseRecordDetail.class)
-    List<WarehouseRecordDetail> listType(@Param("oddId") String oddId);
+    @Results({
+            @Result(property="product",column="productId",javaType=Product.class,
+                    one=@One(select="org.ljx.dao.ProductMapper.findById"))
+    })
+    List<WarehouseRecordDetail> list(@Param("oddId") String oddId);
 
     static String buildList(@Param("oddId") String oddId) {
         return new SQL(){{

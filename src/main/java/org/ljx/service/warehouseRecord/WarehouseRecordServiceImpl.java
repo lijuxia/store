@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -33,13 +34,21 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
     ProductService productService;
 
     public List<WarehouseRecord> list(PageSearch pageSearch,byte type,int storeId){
+        if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.listType(storeId,type,null,null);
+        return warehouseRecordMapper.list(storeId,type,null,null,null,null);
     }
 
     public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Timestamp beginTime, Timestamp endTime){
+        if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.listType(storeId,type,beginTime,endTime);
+        return warehouseRecordMapper.list(storeId,type,beginTime,endTime,null,null);
+    }
+
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate){
+        if(pageSearch!=null)
+        PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
+        return warehouseRecordMapper.list(storeId,type,null,null,beginDate,endDate);
     }
 
     @Transactional

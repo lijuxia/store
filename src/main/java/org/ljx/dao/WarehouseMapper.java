@@ -39,7 +39,8 @@ public interface WarehouseMapper {
             @Result(property="store",column="storeId",javaType=Store.class,
                     one=@One(select="org.ljx.dao.StoreMapper.findById")),
             @Result(property="product",column="productId",javaType=Product.class,
-                    one=@One(select="org.ljx.dao.ProductMapper.findById"))
+                    one=@One(select="org.ljx.dao.ProductMapper.findById")),
+            @Result(property = "productId",column = "productId")
     })
     List<Warehouse> list(@Param("storeId")int storeId,@Param("status") byte status);
 
@@ -53,7 +54,7 @@ public interface WarehouseMapper {
             if (status != 0) {
                 WHERE("status = #{status}");
             }
-            GROUP_BY("productId");
+            ORDER_BY("storeId,productId,time");
         }}.toString();
     }
 
