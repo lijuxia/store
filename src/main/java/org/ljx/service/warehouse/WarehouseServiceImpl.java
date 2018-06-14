@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import org.ljx.dao.WarehouseMapper;
 import org.ljx.entity.Warehouse;
 import org.ljx.entity.web.PageSearch;
-import org.ljx.util.DoubleUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
