@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface ProductService {
 
-    public List<Product> list(byte type);
+    public List<Product> list(byte[] types);
 
     public void delete(int id);
 
@@ -20,13 +20,17 @@ public interface ProductService {
 
     public void updateGoods(Product product) throws Exception;
 
+    public void updateHalf(Product product) throws Exception;
+
     public Product findById(int id);
 
-    public PageInfo list(PageSearch pageSearch, byte type);
+    public PageInfo list(PageSearch pageSearch, byte[] types);
 
     public void insertMaterial(Product product) throws Exception;
 
     public void insertGoods(Product product) throws Exception;
+
+    public void insertHalf(Product product) throws Exception;
 
     public void insert(Product product) throws Exception;
 }

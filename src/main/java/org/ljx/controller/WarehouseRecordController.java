@@ -150,6 +150,21 @@ public class WarehouseRecordController extends BaseController {
         return success();
     }
 
+    @RequestMapping(value = "/addMake", method = RequestMethod.POST)
+    public ResponseMessage addMake(WarehouseRecord warehouseRecord){
+        warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
+        warehouseRecord.setType(WarehouseRecord.TYPE_MAKE);
+        warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
+        warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
+        warehouseRecord.setStoreId(getCurrentStore().getId());
+        warehouseRecord.setStoreName(getCurrentStore().getName());
+        if(warehouseRecord.getRemark()==null){
+            warehouseRecord.setRemark("");
+        }
+        warehouseRecordService.insert(warehouseRecord);
+        return success();
+    }
+
     @RequestMapping(value = "/confirmeRecord",method = RequestMethod.POST)
     public ResponseMessage confirmeRecord(String oddId){
         warehouseRecordService.confirmeRecord(oddId);

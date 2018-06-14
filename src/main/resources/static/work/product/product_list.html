@@ -77,7 +77,7 @@
     function getProductList(type,divId){
     	mui.ajax("/product/listAll",{
     		data:{
-    			type:type
+    			types:[type]
     		},
     		dataType:'json',
     		type:'get',

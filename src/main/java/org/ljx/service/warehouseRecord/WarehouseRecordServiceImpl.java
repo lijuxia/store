@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
@@ -57,9 +58,12 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
         warehouseRecord.setOddId(UUID.randomUUID().toString().replaceAll("-",""));
         //保存详细列表
         List<WarehouseRecordDetail> details = warehouseRecord.getListDetails();
+        if(warehouseRecord.getType()==WarehouseRecord.TYPE_MAKE){//生产，半成品入库
+            warehouseService.into(warehouseRecord.getStoreId(),warehouseRecord.getMakeProductId(),warehouseRecord.getMakeNum(),warehouseRecord.getCreatTime());//半成品入库
+        }
         for(int i = 0;i<details.size();i++){
             WarehouseRecordDetail detail = details.get(i);
-            if(detail.getNum()!=0){
+            if(detail.getNum().compareTo(BigDecimal.ZERO)!=0){
                 detail.setOddId(warehouseRecord.getOddId());
                 detail.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
                 warehouseRecordDetailMapper.insert(detail);
@@ -72,8 +76,10 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
                 }else if(warehouseRecord.getType()==WarehouseRecord.TYPE_SALE){//销售、实际库存改变转换为原料改变
                     Product product = productService.findById(detail.getProductId());
                     for(int p=0;p<product.getDetails().size();p++){
-                        warehouseService.out(warehouseRecord.getStoreId(),product.getDetails().get(p).getDetailId(),detail.getNum()*product.getDetails().get(p).getNum(),warehouseRecord.getCreatTime());
+                        warehouseService.out(warehouseRecord.getStoreId(),product.getDetails().get(p).getDetailId(),detail.getNum().multiply(product.getDetails().get(p).getNum()),warehouseRecord.getCreatTime());
                     }
+                }else if(warehouseRecord.getType()==WarehouseRecord.TYPE_MAKE){//生产
+                    warehouseService.out(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());//原料出库
                 }
             }
         }

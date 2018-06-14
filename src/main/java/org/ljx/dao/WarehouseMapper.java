@@ -7,6 +7,7 @@ import org.ljx.entity.Store;
 import org.ljx.entity.Warehouse;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.util.List;
 
 /**
@@ -42,9 +43,11 @@ public interface WarehouseMapper {
                     one=@One(select="org.ljx.dao.ProductMapper.findById")),
             @Result(property = "productId",column = "productId")
     })
-    List<Warehouse> list(@Param("storeId")int storeId,@Param("status") byte status);
+    List<Warehouse> list(@Param("storeId")int storeId, @Param("status") byte status
+            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate);
 
-    static String buildList(@Param("storeId")int storeId,@Param("status") byte status) {
+    static String buildList(@Param("storeId")int storeId,@Param("status") byte status
+            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse");
@@ -53,6 +56,12 @@ public interface WarehouseMapper {
             }
             if (status != 0) {
                 WHERE("status = #{status}");
+            }
+            if(beginDate!=null && !"".equals(beginDate)){
+                WHERE("time >= #{beginDate}");
+            }
+            if(endDate!=null && !"".equals(endDate)){
+                WHERE("time <= #{endDate}");
             }
             ORDER_BY("storeId,productId,time");
         }}.toString();

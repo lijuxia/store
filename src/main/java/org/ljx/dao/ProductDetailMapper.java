@@ -2,6 +2,7 @@ package org.ljx.dao;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
+import org.ljx.entity.Product;
 import org.ljx.entity.ProductDetail;
 import org.springframework.stereotype.Repository;
 
@@ -31,6 +32,11 @@ public interface ProductDetailMapper {
 
     @SelectProvider(type = ProductDetailMapper.class ,method = "buildList")
     @ResultType(ProductDetail.class)
+    @Results({
+            @Result(property="detail",column="detailId",javaType=Product.class,
+                    one=@One(select="org.ljx.dao.ProductMapper.findById")),
+            @Result(property = "detailId",column = "detailId")
+    })
     List<ProductDetail> list(@Param("id") Integer id);
 
     static String buildList(@Param("id") Integer id) {

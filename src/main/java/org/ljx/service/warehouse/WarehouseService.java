@@ -4,6 +4,8 @@ import com.github.pagehelper.PageInfo;
 import org.ljx.entity.Warehouse;
 import org.ljx.entity.web.PageSearch;
 
+import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -14,9 +16,11 @@ public interface WarehouseService {
 
     public List<Warehouse> list(int storeId, byte status);
 
-    public void into(int storeId,int productId,double num,Timestamp time);
+    public List<Warehouse> list(int storeId, byte status, Date beginDate, Date endDate);
 
-    public void out(int storeId,int productId,double num,Timestamp time);
+    public void into(int storeId,int productId,BigDecimal num,Timestamp time);
+
+    public void out(int storeId, int productId, BigDecimal num, Timestamp time);
 
     public void delete(int id);
 

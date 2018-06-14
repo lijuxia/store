@@ -14,11 +14,12 @@ public class Product implements Serializable {
     private String name;
     private String unit;//单位
     private byte status;
-    private byte type;//原料、商品
+    private byte type;//原料、商品、半成品
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
     public static final byte TYPE_MATERIAL = 1;
     public static final byte TYPE_GOODS = 2;
+    public static final byte TYPE_HALF = 3;
     public List<ProductDetail> details = new ArrayList<ProductDetail>();
     public int getId() {
         return id;
@@ -80,6 +81,7 @@ public class Product implements Serializable {
         switch (this.type){
             case Product.TYPE_MATERIAL:return "原料";
             case Product.TYPE_GOODS:return "商品";
+            case Product.TYPE_HALF:return "半成品";
             default:return "错误";
         }
     }

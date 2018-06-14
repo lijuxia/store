@@ -92,6 +92,8 @@ CREATE TABLE `sys_warehouse_record`(
 `sendStoreId` int(11) not null DEFAULT 0,
 `sendStoreName` varchar(50) not null DEFAULT '',
 `date` DATE ,
+`makeProductId` int(11) not null DEFAULT 0,
+`makeNum` DECIMAL(10,2) not null DEFAULT 0,
 PRIMARY KEY(oddId)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
@@ -100,7 +102,7 @@ CREATE TABLE `sys_warehouse_record_detail`(
 `uuid` varchar(32) not null,
 `oddId` VARCHAR(32) not null,
 `productId` int(11) not null DEFAULT 0,
-`num` double not null DEFAULT 0,
+`num` DECIMAL(10,2) not null DEFAULT 0,
 `productName` varchar(20) not null DEFAULT 0,
 `unit` VARCHAR(100) not null,
 PRIMARY KEY(uuid)

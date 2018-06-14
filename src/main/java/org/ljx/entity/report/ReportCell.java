@@ -1,53 +1,51 @@
 package org.ljx.entity.report;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Created by ljx on 2018/6/13.
  */
 public class ReportCell implements Serializable {
 
-    private double in;
-    private double out;
-    private double save;
+    private BigDecimal in;
+    private BigDecimal out;
+    private BigDecimal save;
     public ReportCell(){
-        this.in = 0;
-        this.out = 0;
-        this.save = 0;
+        this.in = new BigDecimal(0);
+        this.out = new BigDecimal(0);
+        this.save = new BigDecimal(0);
     }
 
-    public double getIn() {
+    public BigDecimal getIn() {
         return in;
     }
 
-    public void setIn(double in) {
+    public void setIn(BigDecimal in) {
         this.in = in;
     }
 
-    public double getOut() {
+    public BigDecimal getOut() {
         return out;
     }
 
-    public void setOut(double out) {
+    public void setOut(BigDecimal out) {
         this.out = out;
     }
 
-    public double getSave() {
+    public BigDecimal getSave() {
         return save;
     }
 
-    public void setSave(double save) {
+    public void setSave(BigDecimal save) {
         this.save = save;
     }
 
-    public void addIn(double num){
-        this.in += num;
+    public void addIn(BigDecimal num){
+        this.in.add(num);
     }
 
-    public void addOut(double num){
-        this.out += num;
-    }
-    public void addSave(double num){
-        this.save += num;
+    public void addOut(BigDecimal num){
+        this.out.add(num);
     }
 }

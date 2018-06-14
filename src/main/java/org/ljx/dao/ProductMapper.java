@@ -41,14 +41,22 @@ public interface ProductMapper {
                     many=@Many(select="org.ljx.dao.ProductDetailMapper.list")),
             @Result(property = "id",column = "id")
     })
-    List<Product> list(@Param("type") byte type);
+    List<Product> list(@Param("types") byte[] types);
 
-    static String buildList(@Param("type") byte type) {
+    static String buildList(@Param("types") byte[] types) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_product");
-            if (type != 0) {
-                WHERE("type = #{type}");
+            if (types != null && types.length > 0) {
+                StringBuffer temp = new StringBuffer("(");
+                for(int i=0;i<types.length;i++){
+                    if(!"(".equals(temp.toString())){
+                        temp.append(" or ");
+                    }
+                    temp.append(" type = "+types[i]);
+                }
+                temp.append(")");
+                WHERE(temp.toString());
             }
             WHERE("status = 1");
         }}.toString();

@@ -1,6 +1,7 @@
 package org.ljx.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
@@ -9,7 +10,7 @@ import java.sql.Timestamp;
  */
 public class Warehouse implements Serializable {
     private int id;
-    private double balance;
+    private BigDecimal balance;
     private int storeId;
     private int productId;
     private byte status;
@@ -27,11 +28,11 @@ public class Warehouse implements Serializable {
         this.id = id;
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
 

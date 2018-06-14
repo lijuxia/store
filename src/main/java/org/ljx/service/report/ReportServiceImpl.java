@@ -1,15 +1,13 @@
 package org.ljx.service.report;
 
-import com.github.pagehelper.PageHelper;
 import org.ljx.entity.*;
 import org.ljx.entity.report.ReportCell;
-import org.ljx.entity.web.PageSearch;
-import org.ljx.service.product.ProductService;
 import org.ljx.service.warehouse.WarehouseService;
 import org.ljx.service.warehouseRecord.WarehouseRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.*;
@@ -29,7 +27,7 @@ public class ReportServiceImpl implements ReportService {
     private final byte OP_SAVE = 3;
 
     public List<Map<String,ReportCell>> list(byte type, int storeId, Date beginDate, Date endDate){
-        List<Warehouse> warehouseList = warehouseService.list(storeId,(byte)0);
+        List<Warehouse> warehouseList = warehouseService.list(storeId,(byte)0,beginDate,endDate);
         List<WarehouseRecord> list = warehouseRecordService.list(null,type,storeId,beginDate,endDate);
         //初始化数据
         List<Map<String,ReportCell>> dataList = initList(getDayFromDate(endDate));
@@ -75,11 +73,11 @@ public class ReportServiceImpl implements ReportService {
         return dataList;
     }
 
-    private List<Map<String,ReportCell>> addProduct(List<Map<String,ReportCell>> dataList,int index,Product product,byte op,double num){
+    private List<Map<String,ReportCell>> addProduct(List<Map<String,ReportCell>> dataList,int index,Product product,byte op,BigDecimal num){
         if(product.getType() == Product.TYPE_GOODS){
             for(int i=0;i<product.getDetails().size();i++){
                 ProductDetail de = product.getDetails().get(i);
-                addCell(dataList,index,de.getDetailId(),op,num*de.getNum());
+                addCell(dataList,index,de.getDetailId(),op,num.multiply(de.getNum()));
             }
         }else if(product.getType() == Product.TYPE_MATERIAL){
             addCell(dataList,index,product.getId(),op,num);
@@ -87,7 +85,7 @@ public class ReportServiceImpl implements ReportService {
         return dataList;
     }
 
-    private List<Map<String,ReportCell>> addCell(List<Map<String,ReportCell>> dataList,int index,int productId,byte op,double num){
+    private List<Map<String,ReportCell>> addCell(List<Map<String,ReportCell>> dataList,int index,int productId,byte op,BigDecimal num){
         String key = productId+"";//产品ID
         ReportCell cell = dataList.get(index).get(key);//产品对应统计内容
         if(cell==null){

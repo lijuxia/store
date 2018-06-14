@@ -1,6 +1,7 @@
 package org.ljx.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * 库单详细
@@ -10,7 +11,7 @@ public class WarehouseRecordDetail implements Serializable {
     private String uuid;
     private String oddId;
     private int productId;
-    private double num;
+    private BigDecimal num;
     private String productName;
     private String unit;
     private Product product;
@@ -39,11 +40,11 @@ public class WarehouseRecordDetail implements Serializable {
         this.productId = productId;
     }
 
-    public double getNum() {
+    public BigDecimal getNum() {
         return num;
     }
 
-    public void setNum(double num) {
+    public void setNum(BigDecimal num) {
         this.num = num;
     }
 

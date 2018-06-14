@@ -1,6 +1,7 @@
 package org.ljx.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -15,7 +16,7 @@ public class WarehouseRecord implements Serializable {
     private String oddId;
     private int storeId=0;
     private String storeName="";
-    private byte type;//销售、报废、配送、采购、消耗
+    private byte type;//销售、报废、配送、采购、消耗、生产
     private byte status;//状态：有效、无效
     private byte inOrOut;  //出库、入库
     private Timestamp creatTime;
@@ -24,6 +25,8 @@ public class WarehouseRecord implements Serializable {
     private int sendStoreId=0;
     private String sendStoreName="";
     private Date date;
+    private int makeProductId=0;
+    private BigDecimal makeNum;
     private List<WarehouseRecordDetail> listDetails = new ArrayList<>();
     public static final byte TYPE_SALE = 1; //销售
     public static final byte TYPE_SEND = 2; //配送
@@ -31,6 +34,7 @@ public class WarehouseRecord implements Serializable {
     public static final byte TYPE_BUY = 4;  //采购
     public static final byte TYPE_CONSUME = 5;  //消耗
     public static final byte TYPE_CHECK = 6;  //消耗
+    public static final byte TYPE_MAKE = 7;  //生产
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
     public static final byte INOROUT_IN = 1;
@@ -42,13 +46,15 @@ public class WarehouseRecord implements Serializable {
         this.oddId = "";
         this.storeId=0;
         this.storeName="";
-        this.type = 0;//销售、报废、配送、采购、消耗
+        this.type = 0;//销售、报废、配送、采购、消耗、生产
         this.status = WarehouseRecord.STATUS_ON;//状态：有效、无效
         this.inOrOut = WarehouseRecord.INOROUT_IN;  //出库、入库
         this.confirmFlag = WarehouseRecord.CONFIRMFLAG_NO;//确认标志
         this.remark="";//备注
         this.sendStoreId=0;
         this.sendStoreName="";
+        this.makeProductId=0;
+        this.makeNum=new BigDecimal(0);
     }
 
     public String getOddId() {
@@ -147,6 +153,22 @@ public class WarehouseRecord implements Serializable {
         this.date = date;
     }
 
+    public int getMakeProductId() {
+        return makeProductId;
+    }
+
+    public void setMakeProductId(int makeProductId) {
+        this.makeProductId = makeProductId;
+    }
+
+    public BigDecimal getMakeNum() {
+        return makeNum;
+    }
+
+    public void setMakeNum(BigDecimal makeNum) {
+        this.makeNum = makeNum;
+    }
+
     public List<WarehouseRecordDetail> getListDetails() {
         return listDetails;
     }
@@ -171,6 +193,7 @@ public class WarehouseRecord implements Serializable {
             case TYPE_BUY:return "采购";
             case TYPE_CONSUME:return "消耗";
             case TYPE_CHECK:return "盘点";
+            case TYPE_MAKE:return "生产";
             default:return "错误";
         }
     }

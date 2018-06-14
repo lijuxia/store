@@ -1,7 +1,7 @@
 package org.ljx.entity;
 
 import java.io.Serializable;
-import java.util.Comparator;
+import java.math.BigDecimal;
 
 /**
  * Created by ljx on 2018/6/9.
@@ -10,8 +10,9 @@ public class ProductDetail implements Serializable {
     private int id;
     private int productId;
     private int detailId;
-    private double num;
+    private BigDecimal num;
     private byte status;
+    private Product detail;
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
 
@@ -39,11 +40,11 @@ public class ProductDetail implements Serializable {
         this.detailId = detailId;
     }
 
-    public double getNum() {
+    public BigDecimal getNum() {
         return num;
     }
 
-    public void setNum(double num) {
+    public void setNum(BigDecimal num) {
         this.num = num;
     }
 
@@ -53,5 +54,13 @@ public class ProductDetail implements Serializable {
 
     public void setStatus(byte status) {
         this.status = status;
+    }
+
+    public Product getDetail() {
+        return detail;
+    }
+
+    public void setDetail(Product detail) {
+        this.detail = detail;
     }
 }

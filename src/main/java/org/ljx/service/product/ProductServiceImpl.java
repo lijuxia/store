@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,8 +26,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductDetailMapper detailMapper;
 
-    public List<Product> list(byte type){
-        return mapper.list(type);
+    public List<Product> list(byte[] types){
+        return mapper.list(types);
     }
 
     public void delete(int id){
@@ -69,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
         for(int i=0;i<product.getDetails().size();i++){
             ProductDetail detail = product.getDetails().get(i);
             if(detail.getId()>0){//修改
-                if(detail.getNum()>0){
+                if(detail.getNum().compareTo(BigDecimal.ZERO)==1){
                     detail.setProductId(productOld.getId());
                     detail.setStatus(ProductDetail.STATUS_ON);
                     detailMapper.update(detail);
@@ -77,7 +78,41 @@ public class ProductServiceImpl implements ProductService {
                     detailMapper.delete(detail.getId());
                 }
             }else{//新增
-                if(detail.getNum()>0){
+                if(detail.getNum().compareTo(BigDecimal.ZERO)==1){
+                    detail.setProductId(productOld.getId());
+                    detail.setStatus(ProductDetail.STATUS_ON);
+                    detailMapper.insert(detail);
+                }
+            }
+        }
+    }
+
+    @Transactional
+    public void updateHalf(Product product) throws Exception{
+        Product product1 = mapper.findByCode(product.getCode());
+        if(product1!=null && product1.getId()!=product.getId()){
+            throw new Exception("产品编号：已存在！");
+        }
+        Product productOld = mapper.findById(product.getId());
+        if(productOld!=null){
+            productOld.setCode(product.getCode());
+            productOld.setName(product.getName());
+            productOld.setUnit(product.getUnit());
+            productOld.setType(product.getType());
+            mapper.update(productOld);
+        }
+        for(int i=0;i<product.getDetails().size();i++){
+            ProductDetail detail = product.getDetails().get(i);
+            if(detail.getId()>0){//修改
+                if(detail.getNum().compareTo(BigDecimal.ZERO)==1){
+                    detail.setProductId(productOld.getId());
+                    detail.setStatus(ProductDetail.STATUS_ON);
+                    detailMapper.update(detail);
+                }else{
+                    detailMapper.delete(detail.getId());
+                }
+            }else{//新增
+                if(detail.getNum().compareTo(BigDecimal.ZERO)==1){
                     detail.setProductId(productOld.getId());
                     detail.setStatus(ProductDetail.STATUS_ON);
                     detailMapper.insert(detail);
@@ -90,9 +125,9 @@ public class ProductServiceImpl implements ProductService {
         return mapper.findById(id);
     }
 
-    public PageInfo list(PageSearch pageSearch,byte type){
+    public PageInfo list(PageSearch pageSearch,byte[] types){
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return new PageInfo(mapper.list(type));
+        return new PageInfo(mapper.list(types));
     }
 
     public void insertMaterial(Product product) throws Exception{
@@ -115,7 +150,25 @@ public class ProductServiceImpl implements ProductService {
         product.setStatus(Product.STATUS_ON);
         mapper.insert(product);
         for(ProductDetail detail : product.getDetails()){
-            if(detail.getNum()>0){
+            if(detail.getNum().compareTo(BigDecimal.ZERO)==1){
+                detail.setProductId(product.getId());
+                detail.setStatus(ProductDetail.STATUS_ON);
+                detailMapper.insert(detail);
+            }
+        }
+    }
+
+    @Transactional
+    public void insertHalf(Product product) throws Exception{
+        Product product1 = mapper.findByCode(product.getCode());
+        if(product1!=null){
+            throw new Exception("产品编号：已存在！");
+        }
+        product.setType(Product.TYPE_HALF);
+        product.setStatus(Product.STATUS_ON);
+        mapper.insert(product);
+        for(ProductDetail detail : product.getDetails()){
+            if(detail.getNum().compareTo(BigDecimal.ZERO)==1){
                 detail.setProductId(product.getId());
                 detail.setStatus(ProductDetail.STATUS_ON);
                 detailMapper.insert(detail);

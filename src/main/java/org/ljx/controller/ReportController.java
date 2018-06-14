@@ -37,7 +37,7 @@ public class ReportController extends BaseController {
     public ResponseMessage list(String date){
         Date dateSql = StringToDate(date);
         List<Map<String,ReportCell>> list = reportService.list((byte)0,getCurrentStore().getId(),getMonthBegin(dateSql),getMonthEnd(dateSql));
-        List<Product> productList = productService.list(Product.TYPE_MATERIAL);
+        List<Product> productList = productService.list(new byte[]{Product.TYPE_MATERIAL});
         Map<String,Object> map = new HashMap();
         map.put("productList",productList);
         map.put("valueList",list);
