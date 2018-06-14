@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+	    <h1 class="mui-title">半成品信息</h1>
+	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
+	</header>
+	<div class="mui-content">
+		<div style="height: 20px;"></div>
+	    <form id="productForm">
+	    	<div class="mui-input-group" >
+			<input type="hidden" id="id" name="id" value="0">
+	            <input type="hidden" value="3" name="type" id="type" />
+	        <div class="mui-input-row">
+	            <label>产品名称</label>
+	            <input type="text" class="mui-input-clear" name="name" id="name" placeholder="中文、英文">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>产品编号</label>
+	            <input type="text" class="mui-input-clear" name="code" id="code" placeholder="字母、数字">
+	        </div>
+	        <div class="mui-input-row">
+	            <label>单位</label>
+	            <input type="text" class="mui-input-clear" name="unit" id="unit" placeholder="中文、英文">
+	        </div>
+	    	</div>
+			<h5 style="margin: 5px;">原料：</h5>
+	<div class="mui-input-row" style="margin: 10px 0">
+	        <ul class="mui-table-view" id="halfList">
+           </ul>
+          </div>
+	    </form>
+	</div>
+	<script type="text/html" id="halfListTemp">
+		<% if(halfList.length > 0){ %>
+			<div class="mui-input-group">
+		<% for(var i=0;i<halfList.length;i++){ %>
+		<% var id=0,num = 0;
+			if(product!=null){
+				for(var x=0;x<product.details.length;x++){ 
+					if(halfList[i].id==product.details[x].detailId){
+						id = product.details[x].id;
+						num = product.details[x].num;
+					}
+				}
+			}
+			%>
+            <div class="mui-input-row mui-checkbox">
+            <input type="hidden" name="details[<%=i%>].id" value="<%=id%>"/>
+            <input type="hidden" name="details[<%=i%>].detailId" value="<%=halfList[i].id%>"/>
+			  <label><%=halfList[i].name%>(<%=halfList[i].unit%>)</label>
+			  <input name="details[<%=i%>].num" value="1" type="checkbox" <%if(num>0){%> checked="checked"<%}%> >
+			</div>
+	<%}%>
+        </div>
+	<%}%>
+	</script>
+    <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../js/jquery-3.3.1.min.js" ></script>
+    <script type="text/javascript" src="../../plugin/picker/dist/js/mui.picker.min.js" ></script>
+    <script type="text/javascript" src="../../js/template-web.js" ></script>
+	<script type="text/javascript" src="/js/ljx.error.js" ></script>
+    <script type="text/javascript">
+    mui.init()
+
+    /**
+     * 获取URL中的参数
+     * @returns {Object}
+     */
+    function parseURL(){
+        var url=location.search;
+        var reqParms = new Object();
+        if(url.indexOf("?")!=-1)
+        {
+            var str = url.substr(1)　//去掉?号
+            strs = str.split("&");
+            for(var i=0;i<strs.length;i++)
+            {
+                reqParms[strs[i ].split("=")[0]]=unescape(strs[ i].split("=")[1]);
+            }
+        }
+        return reqParms;
+    }
+    $(function(){
+        var list = getHalfList();
+        var product = undefined;
+    	var parms = parseURL();
+    	if(parms["id"]!=undefined){
+    		product = getProduct(parms["id"]);
+		    $("#id").val(product.id);
+		    $("#name").val(product.name);
+		    $("#code").val(product.code);
+		    $("#unit").val(product.unit);
+		    $("#type").val(product.type);
+    	}
+        var dd = {product:product,halfList:list};
+		var Carouselhtml = template('halfListTemp', dd);
+		$("#halfList").html(Carouselhtml);
+					mui('.mui-numbox').numbox();
+    })
+    var getProduct = function (id){
+    	var product;
+		mui.ajax("/product/find/"+id,{
+			dataType:'json',
+			type:'get',
+		    cache:true, 
+		    async:false, 
+			success:function (data){
+				if(data.succeed){
+					product = data.value;
+					console.log(product)
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+		return product;
+    }
+	var getHalfList = function(){
+		var list;
+		//调用登陆方法，获取进货物品列表
+		mui.ajax("/product/listAll",{
+			data:{
+				types:[1]
+			},
+			dataType:'json',
+			type:'get',
+		    cache:true, 
+		    async:false, 
+			success:function (data){
+				if(data.succeed){
+					list = data.value;
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+		return list;
+	}
+    var submit = function(){
+    	var flag =checkForm();
+    	if(!flag){
+    		return; 
+    	}
+    	var formData = $("#productForm").serializeArray();
+		//调用登陆方法，验证登陆
+		var url = "/product/addHalf";
+		if($("#id").val() != 0){
+		    url = "/product/updateHalf";
+		}
+		mui.ajax(url,{
+			data:formData,
+			dataType:'json',
+			type:'post',
+			success:function (data){
+				if(data.succeed){
+					mui.toast("保存成功",{ duration:'long', type:'div' }) 
+					window.location.href = "/work/product/half_list.html";
+				}else{
+					errorHandle(data);
+				}
+			}
+		});
+    }
+    var checkForm = function(){
+    	if($("#name").val() == ''){
+			mui.toast("产品名称：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#code").val() == ''){
+			mui.toast("产品编码：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	if($("#unit").val() == ''){
+			mui.toast("单位：不能为空",{ duration:'long', type:'div' }) 
+    		return false;
+    	}
+    	return true;
+    }
+    </script>
+</body>
+</html>
+
