@@ -41,7 +41,8 @@ public interface WarehouseMapper {
                     one=@One(select="org.ljx.dao.StoreMapper.findById")),
             @Result(property="product",column="productId",javaType=Product.class,
                     one=@One(select="org.ljx.dao.ProductMapper.findById")),
-            @Result(property = "productId",column = "productId")
+            @Result(property = "productId",column = "productId"),
+            @Result(property = "storeId",column = "storeId")
     })
     List<Warehouse> list(@Param("storeId")int storeId, @Param("status") byte status
             , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate);

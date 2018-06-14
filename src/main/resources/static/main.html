@@ -7,37 +7,42 @@
 		<title></title>
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<style>
-			.fun-9-view{
+			.fun-9-view {
 				background-color: white;
 			}
-			.mui-table-view-cell{
+			
+			.mui-table-view-cell {
 				background-color: #333;
 				color: white;
 			}
 			/*点击变蓝色高亮*/
-			.mui-table-view-cell.mui-active{
+			
+			.mui-table-view-cell.mui-active {
 				background-color: #535353;
 			}
-			.mui-table-view-cell:after{
+			
+			.mui-table-view-cell:after {
 				background-color: #333;
 			}
-			.mui-card-content-inner1{
-		        overflow: hidden;
-			    text-overflow: ellipsis;
-			    display: -webkit-box;
-			    -webkit-line-clamp: 2;（行数）
-			    -webkit-box-orient: vertical;
-		    }
-		    .pro-content{
-		    	width: 100%;
-	            height: 82px;
-	            overflow:hidden;
-	            text-overflow:ellipsis; 
-	            display: -webkit-box;
-	            -webkit-box-orient: vertical;
-	            -webkit-line-clamp: 4;
-	            overflow: hidden;
-		    }
+			
+			.mui-card-content-inner1 {
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 2;
+				（行数） -webkit-box-orient: vertical;
+			}
+			
+			.pro-content {
+				width: 100%;
+				height: 82px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 4;
+				overflow: hidden;
+			}
 		</style>
 	</head>
 
@@ -45,44 +50,49 @@
 		<!-- 主界面不动、菜单移动 -->
 		<!-- 侧滑导航根容器 -->
 		<div class="mui-off-canvas-wrap mui-draggable mui-slide-in">
-		  <!-- 菜单容器 -->
-		  <aside class="mui-off-canvas-left" id="offCanvasSide">
-		    <div class="mui-scroll-wrapper">
-		      <div class="mui-scroll">
-		        <!-- 菜单具体展示内容 -->
-		        	<div style="text-align: center;color: white;line-height: 80px;">老南塘馄饨</div>
-		        	<ul class="mui-table-view" id="menuList">
-	        	    </ul>
-		      </div>
-		    </div>
-		  </aside>
-		  <!-- 主页面容器 -->
-		  <div class="mui-inner-wrap">
-		    <!-- 主页面标题 -->
-		    <header class="mui-bar mui-bar-nav">
-		      <a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left" href="#offCanvasSide"></a>
-		      <h1 class="mui-title" id="head-title">老南塘馄饨</h1>
-		    </header>
-		    <div class="mui-content mui-scroll-wrapper">
-		      <div class="mui-scroll">
-		        <!-- 主界面具体展示内容 -->
-		        
-			<div class="mui-slider" id="sider-group">
+			<!-- 菜单容器 -->
+			<aside class="mui-off-canvas-left" id="offCanvasSide">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<!-- 菜单具体展示内容 -->
+						<div style="text-align: center;color: white;line-height: 80px;">老南塘馄饨</div>
+						<ul class="mui-table-view" id="menuList">
+						</ul>
+					</div>
+				</div>
+			</aside>
+			<!-- 主页面容器 -->
+			<div class="mui-inner-wrap">
+				<!-- 主页面标题 -->
+				<header class="mui-bar mui-bar-nav">
+					<a class="mui-icon mui-action-menu mui-icon-bars mui-pull-left" href="#offCanvasSide"></a>
+					<h1 class="mui-title" id="head-title">老南塘馄饨</h1>
+				</header>
+				<div class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<!-- 主界面具体展示内容 -->
+
+						<div class="mui-slider" id="sider-group">
+						</div>
+						<!--九宫格功能块-->
+						<div class="mui-scroll-wrapper" id="grid-9-scroll">
+							<div class="mui-scroll">
+								<!--这里放置真实显示的DOM内容-->
+								<ul style="background-color: white;" class="mui-table-view mui-grid-view mui-grid-9" id="grid-9-ul">
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="mui-off-canvas-backdrop"></div>
 			</div>
-			<!--九宫格功能块-->
-			<ul style="background-color: white;" class="mui-table-view mui-grid-view mui-grid-9" id="grid-9-ul">
-			</ul>
-		      </div>
-		    </div>  
-		    <div class="mui-off-canvas-backdrop"></div>
-		  </div>
 		</div>
 		<script type="text/html" id="whrList">
-			  <div class="mui-slider-group" >
-		<% if(data.value.length > 0){ %>
-			<% for(var i=0;i<data.value.length;i++){ %>
-			    <div class="mui-slider-item" style="height: 184px;">
-			      <!-- 具体内容 -->
+			<div class="mui-slider-group">
+				<% if(data.value.length > 0){ %>
+				<% for(var i=0;i<data.value.length;i++){ %>
+				<div class="mui-slider-item" style="height: 184px;">
+					<!-- 具体内容 -->
 					<div class="mui-card">
 						<!--内容区-->
 						<div class="mui-card-content">
@@ -92,16 +102,18 @@
 								<span class="mui-badge mui-badge-success" style="float: left;margin-left: 5px;"><%=data.value[i].sendStoreName%></span>
 								<%}%>
 								<span style="float: right;"><%=data.value[i].creatTimeStr%></span><br />
-								<div class="pro-content"><%=data.value[i].detailsStr%></div>
+								<div class="pro-content">
+									<%=data.value[i].detailsStr%>
+								</div>
 							</div>
 						</div>
 						<!--页脚，放置补充信息或支持的操作-->
 						<div class="mui-card-footer">
 							<% if(data.value[i].confirmFlag!=1) {%>
-								<% if(data.value[i].sendStoreId!=store.id) {%>
+							<% if(data.value[i].sendStoreId!=store.id) {%>
 							<a href="#" class="mui-card-link">待确认</a>
 							<a href="#" class="mui-card-link"></a>
-									<%}else{%>
+							<%}else{%>
 							<a href="#" class="mui-card-link">有误</a>
 							<button type="button" data-loading-text="确认中" style="margin-top: -4px;margin-bottom: -5px;" class="mui-btn mui-btn-primary" oddId="<%=data.value[i].oddId%>">确认</button>
 							<%}}else{%>
@@ -110,148 +122,148 @@
 							<%}%>
 						</div>
 					</div>
-			    </div>
-			<% } %>
-		<% }else{ %>
-			    <div class="mui-slider-item">
-			      <!-- 具体内容 -->
+				</div>
+				<% } %>
+				<% }else{ %>
+				<div class="mui-slider-item">
+					<!-- 具体内容 -->
 					<div class="mui-card">
 						<!--内容区-->
 						<div class="mui-card-content">
-							<div class="mui-card-content-inner" style="min-height: 70px;">
+							<div class="mui-card-content-inner" style="min-height: 184px;">
 								无记录
 							</div>
 						</div>
 					</div>
-			    </div>
-		<% } %>
-		
-			  </div>
-		
-		  <!--轮播圆点-->
-		  <div class="mui-slider-indicator">
-		  	
-		<% if(data.value.length > 0){ %>
-			<% for(var i=0;i<data.value.length;i++){ if(i==0){%>
-			<div class="mui-indicator mui-active"></div>
-			<%}else{%>
-			<div class="mui-indicator"></div>
-			<% }} %>
-		<% }else{ %>
-			<div class="mui-indicator mui-active"></div>
-		<% } %>
-		  </div>
+				</div>
+				<% } %>
+
+			</div>
+
+			<!--轮播圆点-->
+			<div class="mui-slider-indicator">
+
+				<% if(data.value.length > 0){ %>
+				<% for(var i=0;i<data.value.length;i++){ if(i==0){%>
+				<div class="mui-indicator mui-active"></div>
+				<%}else{%>
+				<div class="mui-indicator"></div>
+				<% }} %>
+				<% }else{ %>
+				<div class="mui-indicator mui-active"></div>
+				<% } %>
+			</div>
 		</script>
 		<script type="text/html" id="grid-9-temp">
 			<% if(type==1) {%>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/purchase.html">
-				        <span class="mui-icon mui-icon-download"></span>
-				        <div class="mui-media-body">进货</div>
-				    </a>
-				</li>
-				<% } %>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/consume.html">
-				        <span class="mui-icon mui-icon-loop"></span>
-				        <div class="mui-media-body">消耗</div>
-				    </a>
-				</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/purchase.html">
+					<span class="mui-icon mui-icon-download"></span>
+					<div class="mui-media-body">进货</div>
+				</a>
+			</li>
+			<% } %>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/consume.html">
+					<span class="mui-icon mui-icon-loop"></span>
+					<div class="mui-media-body">消耗</div>
+				</a>
+			</li>
 			<% if(type==1) {%>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/make.html">
-				        <span class="mui-icon mui-icon-spinner-cycle mui-spin"></span>
-				        <div class="mui-media-body">生产</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/sendout.html">
-				        <span class="mui-icon mui-icon-paperplane"></span>
-				        <div class="mui-media-body">配送</div>
-				    </a>
-				</li>
-				<% } %>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/warehouse_list.html">
-				        <span class="mui-icon mui-icon-home"></span>
-				        <div class="mui-media-body">库存</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/saleout.html">
-				        <span class="mui-icon mui-icon-redo"></span>
-				        <div class="mui-media-body">销售</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/check.html">
-				        <span class="mui-icon mui-icon-compose"></span>
-				        <div class="mui-media-body">盘点</div>
-				    </a>
-				</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/make.html">
+					<span class="mui-icon mui-icon-spinner-cycle mui-spin"></span>
+					<div class="mui-media-body">生产</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/sendout.html">
+					<span class="mui-icon mui-icon-paperplane"></span>
+					<div class="mui-media-body">配送</div>
+				</a>
+			</li>
+			<% } %>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/warehouse_list.html">
+					<span class="mui-icon mui-icon-home"></span>
+					<div class="mui-media-body">库存</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/saleout.html">
+					<span class="mui-icon mui-icon-redo"></span>
+					<div class="mui-media-body">销售</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/check.html">
+					<span class="mui-icon mui-icon-compose"></span>
+					<div class="mui-media-body">盘点</div>
+				</a>
+			</li>
 			<% if(type==1) {%>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/scrap.html">
-				        <span class="mui-icon mui-icon-trash"></span>
-				        <div class="mui-media-body">报废</div>
-				    </a>
-				</li>
-				<% } %>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/record/record_list.html">
-				        <span class="mui-icon mui-icon-list"></span>
-				        <div class="mui-media-body">单据记录</div>
-				    </a>
-				</li>
-				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
-				    <a href="work/report/report_list.html">
-				        <span class="mui-icon mui-icon-more"></span>
-				        <div class="mui-media-body">报表</div>
-				    </a>
-				</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/scrap.html">
+					<span class="mui-icon mui-icon-trash"></span>
+					<div class="mui-media-body">报废</div>
+				</a>
+			</li>
+			<% } %>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/record/record_list.html">
+					<span class="mui-icon mui-icon-list"></span>
+					<div class="mui-media-body">单据记录</div>
+				</a>
+			</li>
+			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
+				<a href="work/report/report_list.html">
+					<span class="mui-icon mui-icon-more"></span>
+					<div class="mui-media-body">报表</div>
+				</a>
+			</li>
 		</script>
-<script type="text/html" id="menuListTemp">
-	<% if(type==1) {%>
-    <li class="mui-table-view-cell" id="storeListBtn">
-        <span class="mui-icon mui-icon-home" style="margin-right: 20px;"></span>店铺管理
-    </li>
-	<li class="mui-table-view-cell" id="productListBtn">
-		<span class="mui-icon mui-icon-star" style="margin-right: 20px;"></span>原料管理
-	</li>
-	<li class="mui-table-view-cell" id="halfListBtn">
-		<span class="mui-icon mui-icon-starhalf" style="margin-right: 20px;"></span>半成品管理
-	</li>
-	<li class="mui-table-view-cell" id="goodsListBtn">
-		<span class="mui-icon mui-icon-navigate" style="margin-right: 20px;"></span>商品管理
-	</li>
-		<% } %>
-    <li class="mui-table-view-cell" id="changePSW">
-        <span class="mui-icon mui-icon-locked" style="margin-right: 20px;"></span>密码修改
-    </li>
-    <li class="mui-table-view-cell" id="logout">
-        <span class="mui-icon mui-icon-close" style="margin-right: 20px;"></span>退出
-    </li>
-</script>
+		<script type="text/html" id="menuListTemp">
+			<% if(type==1) {%>
+			<li class="mui-table-view-cell" id="storeListBtn">
+				<span class="mui-icon mui-icon-home" style="margin-right: 20px;"></span>店铺管理
+			</li>
+			<li class="mui-table-view-cell" id="productListBtn">
+				<span class="mui-icon mui-icon-star" style="margin-right: 20px;"></span>原料管理
+			</li>
+			<li class="mui-table-view-cell" id="halfListBtn">
+				<span class="mui-icon mui-icon-starhalf" style="margin-right: 20px;"></span>半成品管理
+			</li>
+			<li class="mui-table-view-cell" id="goodsListBtn">
+				<span class="mui-icon mui-icon-navigate" style="margin-right: 20px;"></span>商品管理
+			</li>
+			<% } %>
+			<li class="mui-table-view-cell" id="changePSW">
+				<span class="mui-icon mui-icon-locked" style="margin-right: 20px;"></span>密码修改
+			</li>
+			<li class="mui-table-view-cell" id="logout">
+				<span class="mui-icon mui-icon-close" style="margin-right: 20px;"></span>退出
+			</li>
+		</script>
 		<script src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/jquery-3.3.1.min.js" ></script>
-		<script type="text/javascript" src="js/template-web.js" ></script>
-		<script type="text/javascript" src="js/ljx.error.js" ></script>
+		<script type="text/javascript" src="js/jquery-3.3.1.min.js"></script>
+		<script type="text/javascript" src="js/template-web.js"></script>
+		<script type="text/javascript" src="js/ljx.error.js"></script>
 		<script>
 			mui(document.body).on('tap', '.mui-btn', function(e) {
 				var btn = this;
-				mui.confirm("是否确认无误","确认配送单",['确认','取消'],function(e){
-					if(e.index==0){
-					    mui(btn).button('loading');
-					    mui.ajax("/warehouserecord/confirmeRecord",{
-					    	data:{
-					    		oddId:btn.getAttribute("oddId")
-					    	},
-							dataType:'json',
-							type:'post',
-							success:function (data){
-								if(data.succeed){
-			    					getMainList();
-								}else{
+				mui.confirm("是否确认无误", "确认配送单", ['确认', '取消'], function(e) {
+					if(e.index == 0) {
+						mui(btn).button('loading');
+						mui.ajax("/warehouserecord/confirmeRecord", {
+							data: {
+								oddId: btn.getAttribute("oddId")
+							},
+							dataType: 'json',
+							type: 'post',
+							success: function(data) {
+								if(data.succeed) {
+									getMainList();
+								} else {
 									errorHandle(data);
 								}
 							}
@@ -261,66 +273,77 @@
 			});
 			mui(document.body).on('tap', '#storeListBtn', function(e) {
 				mui('.mui-off-canvas-wrap').offCanvas().close();
-			    window.location.href = "/work/store/store_list.html"
+				window.location.href = "/work/store/store_list.html"
 			});
-            mui(document.body).on('tap', '#productListBtn', function(e) {
-                mui('.mui-off-canvas-wrap').offCanvas().close();
-                window.location.href = "/work/product/product_list.html"
-            });
-            mui(document.body).on('tap', '#halfListBtn', function(e) {
-                mui('.mui-off-canvas-wrap').offCanvas().close();
-                window.location.href = "/work/product/half_list.html"
-            });
-            mui(document.body).on('tap', '#goodsListBtn', function(e) {
-                mui('.mui-off-canvas-wrap').offCanvas().close();
-                window.location.href = "/work/product/goods_list.html"
-            });
+			mui(document.body).on('tap', '#productListBtn', function(e) {
+				mui('.mui-off-canvas-wrap').offCanvas().close();
+				window.location.href = "/work/product/product_list.html"
+			});
+			mui(document.body).on('tap', '#halfListBtn', function(e) {
+				mui('.mui-off-canvas-wrap').offCanvas().close();
+				window.location.href = "/work/product/half_list.html"
+			});
+			mui(document.body).on('tap', '#goodsListBtn', function(e) {
+				mui('.mui-off-canvas-wrap').offCanvas().close();
+				window.location.href = "/work/product/goods_list.html"
+			});
 			mui(document.body).on('tap', 'a', function(e) {
 				window.location.href = $(this).attr("href");
 			});
 			mui(document.body).on('tap', '#changePSW', function(e) {
 				mui('.mui-off-canvas-wrap').offCanvas().close();
-			    window.location.href = "/changePassword.html"
+				window.location.href = "/changePassword.html"
 			});
 			mui(document.body).on('tap', '#logout', function(e) {
-				mui.ajax("/logout",{
-					dataType:'json',
-					type:'post',
-					success:function (data){
-						if(data.succeed){
-	    					location.reload();
-						}else{
+				mui.ajax("/logout", {
+					dataType: 'json',
+					type: 'post',
+					success: function(data) {
+						if(data.succeed) {
+							location.reload();
+						} else {
 							errorHandle(data);
 						}
 					}
 				});
 			});
-			function getMainList(){
-				mui.ajax("/warehouserecord/listMain",{
-					dataType:'json',
-					type:'get',
-					success:function (data){
-						if(data.succeed){
+
+			function getMainList() {
+				mui.ajax("/warehouserecord/listMain", {
+					dataType: 'json',
+					type: 'get',
+					success: function(data) {
+						if(data.succeed) {
 							var store = getLoginUser();
-							var dd = {store:store,data:data}
+							var dd = {
+								store: store,
+								data: data
+							}
 							var Carouselhtml = template('whrList', dd);
 							$("#sider-group").html(Carouselhtml);
 							mui(".mui-slider").slider({});
-						}else{
+						} else {
 							errorHandle(data);
 						}
 					}
 				});
 			}
-			function initMenu(){
+
+			function initMenu() {
 				var store = getLoginUser();
 				var Carouselhtml = template('grid-9-temp', store);
 				$("#grid-9-ul").html(Carouselhtml);
 				var Carouselhtml = template('menuListTemp', store);
 				$("#menuList").html(Carouselhtml);
-				
+
 			}
-			$(function(){
+			$("#grid-9-scroll").css("top", "184px");
+			var hei = $(window).height()-184-44;
+			$("#grid-9-scroll").css("height", hei+"px");
+			mui('.mui-scroll-wrapper').scroll({
+				deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+			});
+			$(function() {
 				getMainList();
 				initMenu();
 			})

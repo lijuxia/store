@@ -42,10 +42,10 @@ public class ReportCell implements Serializable {
     }
 
     public void addIn(BigDecimal num){
-        this.in.add(num);
+        this.in = this.in.add(num);
     }
 
     public void addOut(BigDecimal num){
-        this.out.add(num);
+        this.out = this.out.add(num);
     }
 }

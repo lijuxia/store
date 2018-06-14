@@ -34,7 +34,8 @@ public interface WarehouseRecordDetailMapper {
     @ResultType(WarehouseRecordDetail.class)
     @Results({
             @Result(property="product",column="productId",javaType=Product.class,
-                    one=@One(select="org.ljx.dao.ProductMapper.findById"))
+                    one=@One(select="org.ljx.dao.ProductMapper.findById")),
+            @Result(property = "productId",column = "productId")
     })
     List<WarehouseRecordDetail> list(@Param("oddId") String oddId);
 
