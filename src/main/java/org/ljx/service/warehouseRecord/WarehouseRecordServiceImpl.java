@@ -112,11 +112,43 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
         }
     }
 
+    @Transactional
     public void delete(String oddId){
         WarehouseRecord warehouseRecordOld = warehouseRecordMapper.findById(oddId);
         if(warehouseRecordOld!=null){
             warehouseRecordOld.setStatus(WarehouseRecord.STATUS_OFF);
             warehouseRecordMapper.update(warehouseRecordOld);
+        }
+        //单据删除无效后,库存回滚
+        Timestamp updateTime = new Timestamp(System.currentTimeMillis());
+        //保存详细列表
+        List<WarehouseRecordDetail> details = warehouseRecordOld.getListDetails();
+        if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_MAKE){//生产，半成品入库回退
+            warehouseService.out(warehouseRecordOld.getStoreId(),warehouseRecordOld.getMakeProductId(),warehouseRecordOld.getMakeNum(),updateTime);//半成品入库
+        }
+        for(int i = 0;i<details.size();i++){
+            WarehouseRecordDetail detail = details.get(i);
+            if(detail.getNum().compareTo(BigDecimal.ZERO)!=0){
+                //库存修改
+                if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_BUY){//进货回退
+                    warehouseService.out(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);
+                }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_CONSUME
+                        || warehouseRecordOld.getType()==WarehouseRecord.TYPE_SCRAP){//报废、消耗回退
+                    warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);
+                }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_SALE){//销售、实际库存改变转换为原料改变,回退
+                    Product product = productService.findById(detail.getProductId());
+                    for(int p=0;p<product.getDetails().size();p++){
+                        warehouseService.into(warehouseRecordOld.getStoreId(),product.getDetails().get(p).getDetailId(),detail.getNum().multiply(product.getDetails().get(p).getNum()),updateTime);
+                    }
+                }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_MAKE){//生产 回退
+                    warehouseService.out(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);//原料出库
+                }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_SEND){//配送回退
+                    //配送单位库存回退增加
+                    warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);
+                    //接收单位库存回退减少
+                    warehouseService.out(warehouseRecordOld.getSendStoreId(),detail.getProductId(),detail.getNum(),updateTime);
+                }
+            }
         }
     }
 

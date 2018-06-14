@@ -172,7 +172,11 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "delete",method = RequestMethod.POST)
-    public ResponseMessage delete(String oddId){
+    public ResponseMessage delete(String oddId) throws Exception{
+        WarehouseRecord warehouseRecord = warehouseRecordService.findById(oddId);
+        if(warehouseRecord.getStoreId()!=getCurrentStore().getId()){
+            throw new Exception("您无权限删除该记录");
+        }
         warehouseRecordService.delete(oddId);
         return success();
     }

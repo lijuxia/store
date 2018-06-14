@@ -25,7 +25,10 @@
     <script type="text/html" id="listTemp">
 		<% if(value.length > 0){ %>
 		<% for(var i=0;i<value.length;i++){ %>
-	    	<li class="mui-table-view-cell">
+	    	<li class="mui-table-view-cell mui-transitioning">
+	    		<div class="mui-slider-right mui-disabled">
+	    			<a class="mui-btn mui-btn-red del-btn" recordId="<%=value[i].oddId%>">删除</a>
+	    		</div>
 	    		<div class="mui-slider-handle">
 					<span class="mui-badge mui-badge-danger" style="float: left;"><%=value[i].typeStr%></span>
 					<% if(value[i].type==2){%>
@@ -61,6 +64,27 @@
 	      callback :pullfresh_up //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
 	    }
 	  }
+	});
+	
+	mui(document.body).on('tap', '.del-btn', function(e) {
+		var btn = this;
+	    var id = this.getAttribute("recordId")
+	    mui.ajax("/warehouserecord/delete",{
+    		data:{
+    			oddId:id
+    		},
+    		dataType:'json',
+    		type:'post',
+    		success:function(data){
+    			if(data.succeed){
+    				var li = btn.parentNode.parentNode;
+    				var list = document.getElementById("list");
+    				list.removeChild(li)
+				}else{
+					errorHandle(data);
+				}
+    		}
+    	});
 	});
 	function pullfresh_up() {
 	     //业务逻辑代码，比如通过ajax从服务器获取新数据；

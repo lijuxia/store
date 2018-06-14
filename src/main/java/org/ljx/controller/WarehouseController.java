@@ -34,6 +34,7 @@ public class WarehouseController extends BaseController{
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     public ResponseMessage listAll(){
+
         List<Warehouse> list =  warehouseService.list(getCurrentStore().getId(),Warehouse.STATUS_ON);
         return success(list);
     }
