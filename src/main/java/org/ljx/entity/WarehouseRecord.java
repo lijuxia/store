@@ -26,6 +26,7 @@ public class WarehouseRecord implements Serializable {
     private String sendStoreName="";
     private Date date;
     private int makeProductId=0;
+    private Product makeProduct;
     private BigDecimal makeNum;
     private List<WarehouseRecordDetail> listDetails = new ArrayList<>();
     public static final byte TYPE_SALE = 1; //销售
@@ -161,6 +162,14 @@ public class WarehouseRecord implements Serializable {
         this.makeProductId = makeProductId;
     }
 
+    public Product getMakeProduct() {
+        return makeProduct;
+    }
+
+    public void setMakeProduct(Product makeProduct) {
+        this.makeProduct = makeProduct;
+    }
+
     public BigDecimal getMakeNum() {
         return makeNum;
     }
@@ -205,6 +214,12 @@ public class WarehouseRecord implements Serializable {
                 str.append(" , ");
             }
             str.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum()+this.listDetails.get(i).getUnit());
+        }
+        StringBuffer make = new StringBuffer("");
+        if(type==TYPE_MAKE){
+            make.append("[生产] "+makeProduct.getName()+":"+makeNum+makeProduct.getUnit());
+            make.append("  [原料] "+str);
+            str = make;
         }
         return str.toString();
     }

@@ -4,6 +4,7 @@ import org.ljx.entity.Store;
 import org.ljx.entity.WarehouseRecord;
 import org.ljx.entity.web.PageSearch;
 import org.ljx.entity.web.ResponseMessage;
+import org.ljx.service.store.StoreService;
 import org.ljx.service.warehouseRecord.WarehouseRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,8 @@ public class WarehouseRecordController extends BaseController {
 
     @Autowired
     WarehouseRecordService warehouseRecordService;
+    @Autowired
+    StoreService storeService;
 
     @RequestMapping(value = "/listMain", method = RequestMethod.GET)
     public ResponseMessage listMain(){
@@ -91,7 +94,14 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/addSend", method = RequestMethod.POST)
-    public ResponseMessage addSend(WarehouseRecord warehouseRecord){
+    public ResponseMessage addSend(WarehouseRecord warehouseRecord) throws Exception{
+        if(warehouseRecord.getSendStoreId()==0){
+            throw new Exception("请选择：门店");
+        }
+        Store sendStore = storeService.findById(warehouseRecord.getSendStoreId());
+        if(sendStore==null){
+            throw new Exception("门店不存在，请重新选择");
+        }
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
         warehouseRecord.setType(WarehouseRecord.TYPE_SEND);
         warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_NO);

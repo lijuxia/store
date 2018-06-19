@@ -27,7 +27,8 @@
 		<h5 style="margin: 5px;">生产半成品：</h5>
 			<div class="mui-input-group">
         <div class="mui-input-row">
-            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择半成品" name="makeProductName" id="makeProductName">
+            <label id="makeProductLabel" style="color:#777777" >选择半成品</label>
+            <input type="hidden" class="mui-input-clear" placeholder="选择半成品" name="makeProductName" id="makeProductName">
             <input type="hidden" id="makeProductId" name="makeProductId">
 			<div class="mui-numbox" style="width: 200px;" data-numbox-step='1' data-numbox-min='0' >
 			  <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
@@ -108,13 +109,16 @@
 			}
 		}
 	});
+    var makeProductLabel = document.getElementById('makeProductLabel');
     var makeProductName = document.getElementById('makeProductName');
     var makeProductId = document.getElementById('makeProductId');
-	makeProductName.addEventListener('tap', function(event) {
+	makeProductLabel.addEventListener('tap', function(event) {
 		picker.show(function(items) {
 			if(items[0].value!=undefined){
 				makeProductName.value = items[0].text;
 				makeProductId.value = items[0].value;
+				$("#makeProductLabel").css("color","#000000");
+				makeProductLabel.innerHTML = items[0].text;
 				getMList(items[0].value);
 			}
 		});

@@ -2,6 +2,7 @@ package org.ljx.dao;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
+import org.ljx.entity.Product;
 import org.ljx.entity.WarehouseRecord;
 import org.springframework.stereotype.Repository;
 
@@ -36,7 +37,10 @@ public interface WarehouseRecordMapper {
     @Results({
             @Result(property="listDetails",column="oddId",javaType=List.class,
                     many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.list")),
-            @Result(property = "oddId",column = "oddId")
+            @Result(property = "oddId",column = "oddId"),
+            @Result(property = "makeProduct",column = "makeProductId",javaType = Product.class,
+                    one=@One(select = "org.ljx.dao.ProductMapper.findById")),
+            @Result(property = "makeProductId",column = "makeProductId")
     })
     List<WarehouseRecord> list(@Param("storeId") int storeId, @Param("type") byte type
             , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
@@ -76,7 +80,10 @@ public interface WarehouseRecordMapper {
     @Results({
             @Result(property="listDetails",column="oddId",javaType=List.class,
                     many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.list")),
-            @Result(property = "oddId",column = "oddId")
+            @Result(property = "oddId",column = "oddId"),
+            @Result(property = "makeProduct",column = "makeProductId",javaType = Product.class,
+                    one=@One(select = "org.ljx.dao.ProductMapper.findById")),
+            @Result(property = "makeProductId",column = "makeProductId")
     })
     WarehouseRecord findById(String oddId);
 }
