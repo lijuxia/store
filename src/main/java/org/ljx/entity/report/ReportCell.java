@@ -2,6 +2,8 @@ package org.ljx.entity.report;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ljx on 2018/6/13.
@@ -11,10 +13,12 @@ public class ReportCell implements Serializable {
     private BigDecimal in;
     private BigDecimal out;
     private BigDecimal save;
+    private Map<String,BigDecimal> makeMap = new HashMap<>();
     public ReportCell(){
         this.in = new BigDecimal(0);
         this.out = new BigDecimal(0);
         this.save = new BigDecimal(0);
+        this.makeMap = new HashMap<>();
     }
 
     public BigDecimal getIn() {
@@ -39,6 +43,14 @@ public class ReportCell implements Serializable {
 
     public void setSave(BigDecimal save) {
         this.save = save;
+    }
+
+    public Map<String, BigDecimal> getMakeMap() {
+        return makeMap;
+    }
+
+    public void setMakeMap(Map<String, BigDecimal> makeMap) {
+        this.makeMap = makeMap;
     }
 
     public void addIn(BigDecimal num){

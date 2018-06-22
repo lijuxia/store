@@ -1,6 +1,7 @@
 package org.ljx.controller;
 
 import org.ljx.entity.Product;
+import org.ljx.entity.Store;
 import org.ljx.entity.WarehouseRecord;
 import org.ljx.entity.report.ReportCell;
 import org.ljx.entity.web.PageSearch;
@@ -35,10 +36,14 @@ public class ReportController extends BaseController {
 
     @RequestMapping(value = "/list" ,method = RequestMethod.GET)
     public ResponseMessage list(String date){
+        Map<String,Object> map = new HashMap();
         Date dateSql = StringToDate(date);
         List<Map<String,ReportCell>> list = reportService.list((byte)0,getCurrentStore().getId(),getMonthBegin(dateSql),getMonthEnd(dateSql));
-        List<Product> productList = productService.list(new byte[]{Product.TYPE_MATERIAL});
-        Map<String,Object> map = new HashMap();
+        byte[] types = new byte[]{Product.TYPE_MATERIAL,Product.TYPE_HALF};
+        if(getCurrentStore().getType()== Store.TYPE_DISTRIBUTION_CENTRE){
+            map.put("makeList",reportService.list());
+        }
+        List<Product> productList = productService.list(types);
         map.put("productList",productList);
         map.put("valueList",list);
         return success(map);

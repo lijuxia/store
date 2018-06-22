@@ -2,6 +2,7 @@ package org.ljx.service.report;
 
 import org.ljx.entity.*;
 import org.ljx.entity.report.ReportCell;
+import org.ljx.service.product.ProductService;
 import org.ljx.service.warehouse.WarehouseService;
 import org.ljx.service.warehouseRecord.WarehouseRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class ReportServiceImpl implements ReportService {
     WarehouseRecordService warehouseRecordService;
     @Autowired
     WarehouseService warehouseService;
+    @Autowired
+    ProductService productService;
 
     private final byte OP_IN = 1;
     private final byte OP_OUT = 2;
@@ -44,8 +47,31 @@ public class ReportServiceImpl implements ReportService {
         return dataList;
     }
 
+    public Map<String,Set<Product>> list(){
+        //获取所有半成品
+        List<Product> list = productService.list(new byte[]{Product.TYPE_HALF});
+        Map<String,Set<Product>> map = new HashMap<>();
+        for(int i=0;i<list.size();i++){
+            Product product = list.get(i);
+            for(int x=0;x<product.getDetails().size();x++){
+                ProductDetail detail = product.getDetails().get(x);
+                Set<Product> set = new TreeSet<Product>();
+                if(map.get(detail.getDetailId()+"")!=null){
+                    set = map.get(detail.getDetailId()+"");
+                }
+                set.add(product);
+                map.put(detail.getDetailId()+"",set);
+            }
+        }
+        return map;
+    }
+
     private List<Map<String,ReportCell>> addRecord(List<Map<String,ReportCell>> dataList,WarehouseRecord record,int storeId){
         int index = getDayFromDate(record.getDate())-1;//记录在数据的位置
+        if(record.getType() == WarehouseRecord.TYPE_MAKE){//生产
+            //生产半成品，表示进货
+            addProduct(dataList,index,record,record.getMakeProduct(),OP_IN,record.getMakeNum());
+        }
         //遍历记录中包含的产品
         for(int p=0;p<record.getListDetails().size();p++){
             WarehouseRecordDetail detail = record.getListDetails().get(p);//产品详细记录
@@ -58,29 +84,34 @@ public class ReportServiceImpl implements ReportService {
     private List<Map<String,ReportCell>> addDetail(int storeId,List<Map<String,ReportCell>> dataList,int index,WarehouseRecord record, WarehouseRecordDetail detail){
         if(record.getType() == WarehouseRecord.TYPE_SEND){//配送
             if(record.getStoreId()==storeId){//为送货方
-                addProduct(dataList,index,detail.getProduct(),OP_OUT,detail.getNum());
+                addProduct(dataList,index,record,detail.getProduct(),OP_OUT,detail.getNum());
             }else if(record.getSendStoreId()==storeId){//进货方
-                addProduct(dataList,index,detail.getProduct(),OP_IN,detail.getNum());
+                addProduct(dataList,index,record,detail.getProduct(),OP_IN,detail.getNum());
             }
         }else{
             if(record.getInOrOut()==WarehouseRecord.INOROUT_IN){
-                addProduct(dataList,index,detail.getProduct(),OP_IN,detail.getNum());
-
+                addProduct(dataList,index,record,detail.getProduct(),OP_IN,detail.getNum());
             }else if(record.getInOrOut()==WarehouseRecord.INOROUT_OUT){
-                addProduct(dataList,index,detail.getProduct(),OP_OUT,detail.getNum());
+                addProduct(dataList,index,record,detail.getProduct(),OP_OUT,detail.getNum());
             }
         }
         return dataList;
     }
 
-    private List<Map<String,ReportCell>> addProduct(List<Map<String,ReportCell>> dataList,int index,Product product,byte op,BigDecimal num){
+    private List<Map<String,ReportCell>> addProduct(List<Map<String,ReportCell>> dataList,int index,WarehouseRecord record,Product product,byte op,BigDecimal num){
         if(product.getType() == Product.TYPE_GOODS){
+            addCell(dataList,index,product.getId(),op,num);
             for(int i=0;i<product.getDetails().size();i++){
                 ProductDetail de = product.getDetails().get(i);
                 addCell(dataList,index,de.getDetailId(),op,num.multiply(de.getNum()));
             }
         }else if(product.getType() == Product.TYPE_MATERIAL){
             addCell(dataList,index,product.getId(),op,num);
+        }else if(product.getType() == Product.TYPE_HALF){
+            addCell(dataList,index,product.getId(),op,num);
+        }
+        if(record.getType()==WarehouseRecord.TYPE_MAKE){//生产单，需要额外添加半成品消耗原料详细
+            addCellMap(dataList,index,product.getId(),record.getMakeProductId(),num);
         }
         return dataList;
     }
@@ -102,6 +133,22 @@ public class ReportServiceImpl implements ReportService {
                 cell.setSave(num);
             default:
                 break;
+        }
+        dataList.get(index).put(key,cell);
+        return dataList;
+    }
+
+    private List<Map<String,ReportCell>> addCellMap(List<Map<String,ReportCell>> dataList,int index,int productId,int makeProductId,BigDecimal makeNum){
+        String key = productId+"";//产品ID
+        ReportCell cell = dataList.get(index).get(key);//产品对应统计内容
+        if(cell==null){
+            cell = new ReportCell();
+        }
+        if(cell.getMakeMap().get(makeProductId+"")!=null){
+            makeNum = cell.getMakeMap().get(makeProductId+"").add(makeNum);
+            cell.getMakeMap().put(makeProductId+"",makeNum);
+        }else{
+            cell.getMakeMap().put(makeProductId+"",makeNum);
         }
         dataList.get(index).put(key,cell);
         return dataList;

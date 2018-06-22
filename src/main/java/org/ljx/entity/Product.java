@@ -8,7 +8,7 @@ import java.util.List;
  * 产品
  * Created by ljx on 2018/5/14.
  */
-public class Product implements Serializable {
+public class Product implements Serializable,Comparable {
     private int id;
     private String code;
     private String name;
@@ -84,5 +84,17 @@ public class Product implements Serializable {
             case Product.TYPE_HALF:return "半成品";
             default:return "错误";
         }
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Product p = (Product) o;
+        if (this.id > p.getId()) {
+            return 1;
+        }
+        if (this.id < p.getId()) {
+            return -1;
+        }
+        return 0;
     }
 }

@@ -90,6 +90,7 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
     public void confirmeRecord(String oddId){
         WarehouseRecord record = findById(oddId);
         if(record!=null){
+            Timestamp time = new Timestamp(System.currentTimeMillis());
             record.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
             warehouseRecordMapper.update(record);
             //配送单确认后，库存改变
@@ -97,9 +98,9 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
             for(int i = 0;i<details.size();i++){
                 WarehouseRecordDetail detail = details.get(i);
                 //配送单位库存减少
-                warehouseService.out(record.getStoreId(),detail.getProductId(),detail.getNum(),record.getCreatTime());
+                warehouseService.out(record.getStoreId(),detail.getProductId(),detail.getNum(),time);
                 //接收单位库存增加
-                warehouseService.into(record.getSendStoreId(),detail.getProductId(),detail.getNum(),record.getCreatTime());
+                warehouseService.into(record.getSendStoreId(),detail.getProductId(),detail.getNum(),time);
             }
 
         }
