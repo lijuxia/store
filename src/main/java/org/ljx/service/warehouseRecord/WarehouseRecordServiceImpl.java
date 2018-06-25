@@ -66,20 +66,36 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
             if(detail.getNum().compareTo(BigDecimal.ZERO)!=0){
                 detail.setOddId(warehouseRecord.getOddId());
                 detail.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
-                warehouseRecordDetailMapper.insert(detail);
                 //库存修改
                 if(warehouseRecord.getType()==WarehouseRecord.TYPE_BUY){//进货
-                    warehouseService.into(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());
+                    BigDecimal beforeSaveNum = warehouseService.into(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());
+                    detail.setBeforeSaveNum(beforeSaveNum);
                 }else if(warehouseRecord.getType()==WarehouseRecord.TYPE_CONSUME
                         || warehouseRecord.getType()==WarehouseRecord.TYPE_SCRAP){//报废、消耗
-                    warehouseService.out(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());
+                    BigDecimal beforeSaveNum = warehouseService.out(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());
+                    detail.setBeforeSaveNum(beforeSaveNum);
                 }else if(warehouseRecord.getType()==WarehouseRecord.TYPE_SALE){//销售、实际库存改变转换为原料改变
                     Product product = productService.findById(detail.getProductId());
                     for(int p=0;p<product.getDetails().size();p++){
                         warehouseService.out(warehouseRecord.getStoreId(),product.getDetails().get(p).getDetailId(),detail.getNum().multiply(product.getDetails().get(p).getNum()),warehouseRecord.getCreatTime());
                     }
                 }else if(warehouseRecord.getType()==WarehouseRecord.TYPE_MAKE){//生产
-                    warehouseService.out(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());//原料出库
+                    BigDecimal beforeSaveNum = warehouseService.out(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());//原料出库
+                    detail.setBeforeSaveNum(beforeSaveNum);
+                }else if(warehouseRecord.getType()==WarehouseRecord.TYPE_CHECK){//盘点,库存直接修改为盘点量,并生成之前的库存量,用作后面统计数据,分析盘点的缺失问题
+                    if(detail.getNum().compareTo(BigDecimal.ZERO)!=-1){//大于等于0,可以修改库存,小于0不能修改库存,认为是无效数据
+                        BigDecimal beforeSaveNum = warehouseService.change(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());//原料出库
+                        detail.setBeforeSaveNum(beforeSaveNum);
+                    }
+                }
+                warehouseRecordDetailMapper.insert(detail);
+            }else{
+                if(warehouseRecord.getType()==WarehouseRecord.TYPE_CHECK){//盘点,库存直接修改为盘点量,并生成之前的库存量,用作后面统计数据,分析盘点的缺失问题
+                    detail.setOddId(warehouseRecord.getOddId());
+                    detail.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
+                    BigDecimal beforeSaveNum = warehouseService.change(warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getCreatTime());//原料出库
+                    detail.setBeforeSaveNum(beforeSaveNum);
+                    warehouseRecordDetailMapper.insert(detail);
                 }
             }
         }
@@ -148,6 +164,14 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
                     warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);
                     //接收单位库存回退减少
                     warehouseService.out(warehouseRecordOld.getSendStoreId(),detail.getProductId(),detail.getNum(),updateTime);
+                }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_CHECK){//盘点,根据盘点后的库存和盘点之前的库存,差值进行回退
+                    BigDecimal num = detail.getBeforeSaveNum().subtract(detail.getNum());
+                    warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),num,updateTime);
+                }
+            }else{
+                if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_CHECK){//盘点,根据盘点后的库存和盘点之前的库存,差值进行回退
+                    BigDecimal num = detail.getBeforeSaveNum().subtract(detail.getNum());
+                    warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),num,updateTime);
                 }
             }
         }

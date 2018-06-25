@@ -18,9 +18,11 @@ public interface WarehouseService {
 
     public List<Warehouse> list(int storeId, byte status, Date beginDate, Date endDate);
 
-    public void into(int storeId,int productId,BigDecimal num,Timestamp time);
+    public BigDecimal into(int storeId,int productId,BigDecimal num,Timestamp time);
 
-    public void out(int storeId, int productId, BigDecimal num, Timestamp time);
+    public BigDecimal out(int storeId, int productId, BigDecimal num, Timestamp time);
+
+    public BigDecimal change(int storeId,int productId,BigDecimal num,Timestamp time);
 
     public void delete(int id);
 

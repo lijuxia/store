@@ -105,5 +105,6 @@ CREATE TABLE `sys_warehouse_record_detail`(
 `num` DECIMAL(10,2) not null DEFAULT 0,
 `productName` varchar(20) not null DEFAULT 0,
 `unit` VARCHAR(100) not null,
+`beforeSaveNum` DECIMAL(10,2) not null DEFAULT 0,
 PRIMARY KEY(uuid)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;

@@ -15,8 +15,8 @@ import java.util.List;
 @Repository
 public interface WarehouseRecordDetailMapper {
 
-    final String INSERT_SQL = "insert into sys_warehouse_record_detail (uuid,oddId,productId,num,productName,unit)values(#{uuid},#{oddId},#{productId},#{num},#{productName},#{unit})";
-    final String UPDATE_SQL = "update sys_warehouse_record_detail set oddId = #{oddId},productId = #{productId},num = #{num},productName = #{productName},unit = #{unit} where uuid = #{uuid}";
+    final String INSERT_SQL = "insert into sys_warehouse_record_detail (uuid,oddId,productId,num,productName,unit,beforeSaveNum)values(#{uuid},#{oddId},#{productId},#{num},#{productName},#{unit},#{beforeSaveNum})";
+    final String UPDATE_SQL = "update sys_warehouse_record_detail set oddId = #{oddId},productId = #{productId},num = #{num},productName = #{productName},unit = #{unit},beforeSaveNum = #{beforeSaveNum} where uuid = #{uuid}";
     final String SELECT_SQL = "select * from sys_warehouse_record_detail";
     final String FIND_SQL = "select * from sys_warehouse_record_detail  where uuid = #{uuid}";
     final String DELETE_SQL = "delete from sys_warehouse_record_detail where uuid = #{uuid}";

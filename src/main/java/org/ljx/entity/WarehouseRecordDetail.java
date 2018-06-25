@@ -14,6 +14,7 @@ public class WarehouseRecordDetail implements Serializable {
     private BigDecimal num;
     private String productName;
     private String unit;
+    private BigDecimal beforeSaveNum;
     private Product product;
 
     public String getUuid() {
@@ -62,6 +63,14 @@ public class WarehouseRecordDetail implements Serializable {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public BigDecimal getBeforeSaveNum() {
+        return beforeSaveNum;
+    }
+
+    public void setBeforeSaveNum(BigDecimal beforeSaveNum) {
+        this.beforeSaveNum = beforeSaveNum;
     }
 
     public Product getProduct() {

@@ -32,9 +32,11 @@ public class WarehouseServiceImpl implements WarehouseService{
     }
 
     @Transactional
-    public void into(int storeId,int productId,BigDecimal num,Timestamp time){
+    public BigDecimal into(int storeId,int productId,BigDecimal num,Timestamp time){
+        BigDecimal beforeSaveNum = new BigDecimal(0);
         Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
         if(warehouse!=null){
+            beforeSaveNum = warehouse.getBalance();
             num = warehouse.getBalance().add(num);
             warehouse.setStatus(Warehouse.STATUS_OFF);
             mapper.update(warehouse);
@@ -46,12 +48,15 @@ public class WarehouseServiceImpl implements WarehouseService{
         warehouse.setTime(time);
         warehouse.setStatus(Warehouse.STATUS_ON);
         mapper.insert(warehouse);
+        return beforeSaveNum;
     }
 
     @Transactional
-    public void out(int storeId,int productId,BigDecimal num,Timestamp time){
+    public BigDecimal out(int storeId,int productId,BigDecimal num,Timestamp time){
+        BigDecimal beforeSaveNum = new BigDecimal(0);
         Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
         if(warehouse!=null){
+            beforeSaveNum = warehouse.getBalance();
             num = warehouse.getBalance().subtract(num);
             warehouse.setStatus(Warehouse.STATUS_OFF);
             mapper.update(warehouse);
@@ -63,6 +68,26 @@ public class WarehouseServiceImpl implements WarehouseService{
         warehouse.setTime(time);
         warehouse.setStatus(Warehouse.STATUS_ON);
         mapper.insert(warehouse);
+        return beforeSaveNum;
+    }
+
+    @Transactional
+    public BigDecimal change(int storeId,int productId,BigDecimal num,Timestamp time){
+        BigDecimal beforeSaveNum = new BigDecimal(0);
+        Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
+        if(warehouse!=null){
+            beforeSaveNum = warehouse.getBalance();
+            warehouse.setStatus(Warehouse.STATUS_OFF);
+            mapper.update(warehouse);
+        }
+        warehouse = new Warehouse();
+        warehouse.setProductId(productId);
+        warehouse.setStoreId(storeId);
+        warehouse.setBalance(num);
+        warehouse.setTime(time);
+        warehouse.setStatus(Warehouse.STATUS_ON);
+        mapper.insert(warehouse);
+        return beforeSaveNum;
     }
 
     public void delete(int id){
