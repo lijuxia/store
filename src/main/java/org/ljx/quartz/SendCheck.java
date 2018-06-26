@@ -38,7 +38,7 @@ public class SendCheck implements Job {
     private Date getLastDay(){
         //获取当前月第一天：
         Calendar c = Calendar.getInstance();
-//        c.add(Calendar.DAY_OF_MONTH,-2);
+        c.add(Calendar.DAY_OF_MONTH,-1);
         Date date = new Date(c.getTime().getTime());
         return date;
     }

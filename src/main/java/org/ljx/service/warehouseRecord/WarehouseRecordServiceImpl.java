@@ -88,7 +88,11 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
                         detail.setBeforeSaveNum(beforeSaveNum);
                     }
                 }
-                warehouseRecordDetailMapper.insert(detail);
+                if(warehouseRecord.getType()==WarehouseRecord.TYPE_CHECK
+                        &&detail.getNum().compareTo(BigDecimal.ZERO)==-1){
+                }else{
+                    warehouseRecordDetailMapper.insert(detail);
+                }
             }else{
                 if(warehouseRecord.getType()==WarehouseRecord.TYPE_CHECK){//盘点,库存直接修改为盘点量,并生成之前的库存量,用作后面统计数据,分析盘点的缺失问题
                     detail.setOddId(warehouseRecord.getOddId());

@@ -209,16 +209,31 @@ public class WarehouseRecord implements Serializable {
 
     public String getDetailsStr(){
         StringBuffer str = new StringBuffer("");
+        StringBuffer check = new StringBuffer("");
         for(int i=0;i<this.listDetails.size();i++){
             if(!"".equals(str.toString())){
                 str.append(" , ");
             }
             str.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum()+this.listDetails.get(i).getUnit());
+            if(type==TYPE_CHECK){
+                if(this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum()).compareTo(BigDecimal.ZERO)!=0){//没有误差的不显示
+                    if(!"".equals(check.toString())){
+                        check.append(" , ");
+                    }
+                    check.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum())+this.listDetails.get(i).getUnit());
+                }
+            }
         }
         StringBuffer make = new StringBuffer("");
         if(type==TYPE_MAKE){
             make.append("[生产] "+makeProduct.getName()+":"+makeNum+makeProduct.getUnit());
             make.append("  [原料] "+str);
+            str = make;
+        }else if(type==TYPE_CHECK){
+            if(!"".equals(check.toString())){
+                make.append("[问题] "+check);
+            }
+            make.append("  [盘点] "+str);
             str = make;
         }
         return str.toString();
