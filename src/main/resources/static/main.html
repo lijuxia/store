@@ -114,7 +114,7 @@
 							<a href="#" class="mui-card-link">待确认</a>
 							<a href="#" class="mui-card-link"></a>
 							<%}else{%>
-							<a href="#" class="mui-card-link">有误</a>
+							<a href="#" class="mui-card-link"></a>
 							<button type="button" data-loading-text="确认中" style="margin-top: -4px;margin-bottom: -5px;" class="mui-btn mui-btn-primary" oddId="<%=data.value[i].oddId%>">确认</button>
 							<%}}else{%>
 							<a href="#" class="mui-card-link"></a>
@@ -187,12 +187,14 @@
 					<div class="mui-media-body">库存</div>
 				</a>
 			</li>
+			<% if(type==2) {%>
 			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
 				<a href="work/saleout.html">
 					<span class="mui-icon mui-icon-redo"></span>
 					<div class="mui-media-body">销售</div>
 				</a>
 			</li>
+			<% } %>
 			<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-3">
 				<a href="work/check.html">
 					<span class="mui-icon mui-icon-compose"></span>

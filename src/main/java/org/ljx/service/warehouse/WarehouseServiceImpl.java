@@ -60,6 +60,8 @@ public class WarehouseServiceImpl implements WarehouseService{
             num = warehouse.getBalance().subtract(num);
             warehouse.setStatus(Warehouse.STATUS_OFF);
             mapper.update(warehouse);
+        }else{
+            num = new BigDecimal(0).subtract(num);
         }
         warehouse = new Warehouse();
         warehouse.setProductId(productId);

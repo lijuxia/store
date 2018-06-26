@@ -10,7 +10,7 @@ public class ProductDetail implements Serializable {
     private int id;
     private int productId;
     private int detailId;
-    private BigDecimal num;
+    private BigDecimal num = new BigDecimal(0);
     private byte status;
     private Product detail;
     public static final byte STATUS_ON = 1;

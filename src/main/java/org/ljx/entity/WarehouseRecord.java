@@ -27,7 +27,7 @@ public class WarehouseRecord implements Serializable {
     private Date date;
     private int makeProductId=0;
     private Product makeProduct;
-    private BigDecimal makeNum;
+    private BigDecimal makeNum = new BigDecimal(0);
     private List<WarehouseRecordDetail> listDetails = new ArrayList<>();
     public static final byte TYPE_SALE = 1; //销售
     public static final byte TYPE_SEND = 2; //配送

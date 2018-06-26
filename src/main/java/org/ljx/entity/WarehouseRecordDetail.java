@@ -11,10 +11,10 @@ public class WarehouseRecordDetail implements Serializable {
     private String uuid;
     private String oddId;
     private int productId;
-    private BigDecimal num;
+    private BigDecimal num = new BigDecimal(0);
     private String productName;
     private String unit;
-    private BigDecimal beforeSaveNum;
+    private BigDecimal beforeSaveNum = new BigDecimal(0);
     private Product product;
 
     public String getUuid() {

@@ -10,7 +10,7 @@ import java.sql.Timestamp;
  */
 public class Warehouse implements Serializable {
     private int id;
-    private BigDecimal balance;
+    private BigDecimal balance = new BigDecimal(0);
     private int storeId;
     private int productId;
     private byte status;
