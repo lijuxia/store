@@ -210,7 +210,7 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
                             warehouseService.into(warehouseRecordOld.getStoreId(),product.getDetails().get(p).getDetailId(),detail.getNum().multiply(product.getDetails().get(p).getNum()),updateTime);
                         }
                     }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_MAKE){//生产 回退
-                        warehouseService.out(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);//原料出库
+                        warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);//原料出库
                     }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_SEND){//配送回退
                         //配送单位库存回退增加
                         warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);
