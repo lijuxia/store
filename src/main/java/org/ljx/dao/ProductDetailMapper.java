@@ -35,7 +35,8 @@ public interface ProductDetailMapper {
     @Results({
             @Result(property="detail",column="detailId",javaType=Product.class,
                     one=@One(select="org.ljx.dao.ProductMapper.findById")),
-            @Result(property = "detailId",column = "detailId")
+            @Result(property = "detailId",column = "detailId"),
+            @Result(property = "id",column = "id")
     })
     List<ProductDetail> list(@Param("id") Integer id);
 

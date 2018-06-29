@@ -32,7 +32,7 @@ public class WarehouseServiceImpl implements WarehouseService{
     }
 
     @Transactional
-    public BigDecimal into(int storeId,int productId,BigDecimal num,Timestamp time){
+    public synchronized BigDecimal into(int storeId,int productId,BigDecimal num,Timestamp time){
         BigDecimal beforeSaveNum = new BigDecimal(0);
         Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
         if(warehouse!=null){
@@ -52,7 +52,7 @@ public class WarehouseServiceImpl implements WarehouseService{
     }
 
     @Transactional
-    public BigDecimal out(int storeId,int productId,BigDecimal num,Timestamp time){
+    public synchronized BigDecimal out(int storeId,int productId,BigDecimal num,Timestamp time){
         BigDecimal beforeSaveNum = new BigDecimal(0);
         Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
         if(warehouse!=null){
@@ -74,7 +74,7 @@ public class WarehouseServiceImpl implements WarehouseService{
     }
 
     @Transactional
-    public BigDecimal change(int storeId,int productId,BigDecimal num,Timestamp time){
+    public synchronized BigDecimal change(int storeId,int productId,BigDecimal num,Timestamp time){
         BigDecimal beforeSaveNum = new BigDecimal(0);
         Warehouse warehouse = mapper.findByStoreIdAndProductId(storeId,productId);
         if(warehouse!=null){
@@ -92,7 +92,7 @@ public class WarehouseServiceImpl implements WarehouseService{
         return beforeSaveNum;
     }
 
-    public void delete(int id){
+    public synchronized void delete(int id){
         Warehouse warehouseOld = mapper.findById(id);
         if(warehouseOld!=null){
             warehouseOld.setStatus(Warehouse.STATUS_OFF);

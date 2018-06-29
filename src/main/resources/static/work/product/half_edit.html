@@ -6,12 +6,18 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
     <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
+    <style>
+    	.mui-checkbox:hover{ background-color: #007aff;color: white;}
+    	.mui-checkbox:hover input[type=checkbox]:checked:before{
+    		color: white;
+    	}
+    </style>
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav">
 	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">半成品信息</h1>
-	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
+	    <button type="button" data-loading-text="确认中" id="submit-btn" class="mui-btn mui-btn-primary mui-pull-right" >确认</button>
 	</header>
 	<div class="mui-content">
 		<div style="height: 20px;"></div>
@@ -70,6 +76,11 @@
 	<script type="text/javascript" src="/js/ljx.error.js" ></script>
     <script type="text/javascript">
     mui.init()
+	mui(document.body).on('tap', '#submit-btn', function(e) {
+		var btn = this;
+		mui(btn).button('loading');
+		submit();
+	});
 
     /**
      * 获取URL中的参数
@@ -148,6 +159,7 @@
     var submit = function(){
     	var flag =checkForm();
     	if(!flag){
+			mui($("#submit-btn")).button('reset');
     		return; 
     	}
     	var formData = $("#productForm").serializeArray();
@@ -166,6 +178,7 @@
 					window.location.href = "/work/product/half_list.html";
 				}else{
 					errorHandle(data);
+					mui($("#submit-btn")).button('reset');
 				}
 			}
 		});

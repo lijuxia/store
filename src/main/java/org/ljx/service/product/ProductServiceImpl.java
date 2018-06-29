@@ -67,6 +67,20 @@ public class ProductServiceImpl implements ProductService {
             productOld.setType(product.getType());
             mapper.update(productOld);
         }
+        //删除原来的
+        for(int i=0;i<productOld.getDetails().size();i++){
+            ProductDetail detail = productOld.getDetails().get(i);
+            boolean isHave = false;
+            for(int x=0;x<product.getDetails().size();x++){
+                if(detail.getId()==product.getDetails().get(x).getId()){
+                    isHave = true;
+                    break;
+                }
+            }
+            if(!isHave){
+                detailMapper.delete(detail.getId());
+            }
+        }
         for(int i=0;i<product.getDetails().size();i++){
             ProductDetail detail = product.getDetails().get(i);
             if(detail.getId()>0){//修改
@@ -100,6 +114,20 @@ public class ProductServiceImpl implements ProductService {
             productOld.setUnit(product.getUnit());
             productOld.setType(product.getType());
             mapper.update(productOld);
+        }
+        //删除原来的
+        for(int i=0;i<productOld.getDetails().size();i++){
+            ProductDetail detail = productOld.getDetails().get(i);
+            boolean isHave = false;
+            for(int x=0;x<product.getDetails().size();x++){
+                if(detail.getId()==product.getDetails().get(x).getId()){
+                    isHave = true;
+                    break;
+                }
+            }
+            if(!isHave){
+                detailMapper.delete(detail.getId());
+            }
         }
         for(int i=0;i<product.getDetails().size();i++){
             ProductDetail detail = product.getDetails().get(i);

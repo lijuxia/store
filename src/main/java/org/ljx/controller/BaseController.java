@@ -1,5 +1,6 @@
 package org.ljx.controller;
 
+import com.sun.deploy.net.URLEncoder;
 import org.ljx.entity.Store;
 import org.ljx.entity.web.ResponseMessage;
 import org.slf4j.Logger;
@@ -10,6 +11,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
 
 /**
  * Created by ljx on 2018/5/14.
@@ -74,5 +77,18 @@ public class BaseController {
         result.setSucceed(false);
         result.setMsg(errorMsg);
         return result;
+    }
+
+    public void downFile(byte[] content, String fileName)throws Exception{
+        HttpServletResponse response = getResponse();
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        response.reset();
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+        response.addHeader("Content-Length", "" + content.length);
+        response.setContentType("application/octet-stream;charset=UTF-8");
+        OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+        outputStream.write(content);
+        outputStream.flush();
+        outputStream.close();
     }
 }

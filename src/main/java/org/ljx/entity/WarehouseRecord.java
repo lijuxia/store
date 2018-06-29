@@ -194,6 +194,14 @@ public class WarehouseRecord implements Serializable {
         return dateFormat.format(this.creatTime);
     }
 
+    public String getDateStr(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        if(this.date==null){
+            return "";
+        }
+        return dateFormat.format(this.date);
+    }
+
     public String getTypeStr(){
         switch (this.type){
             case TYPE_SALE: return "销售";

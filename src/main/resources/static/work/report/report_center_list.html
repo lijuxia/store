@@ -8,7 +8,18 @@
     <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
     <style>
     	.report-table{
+    		width: 100%;table-layout:fixed;background-color: #efeff4;
+    	}
+    	#report-hide-table{
     		width: 100%;
+    		table-layout:fixed;
+    		position: fixed;
+    		top: 84px;
+    	}
+    	#hide-date{
+    		width: 100%;
+    		position: fixed;
+    		top: 44px;
     	}
     	.report-table td{
     		line-height: 30px;
@@ -26,15 +37,57 @@
 	    <h1 class="mui-title">报表</h1>
 	</header>
 	<div class="mui-content">
-			<div class="mui-input-group">
-        <div class="mui-input-row">
-            <label id="userResult" style="width: 40%;">日期</label>
-            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
-    	</div>
+		<div style="height: 40px;"></div>
+		<div class="mui-input-group" id="hide-date">
+	        <div class="mui-input-row">
+	            <label id="userResult" style="width: 40%;">日期</label>
+	            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
+	    	</div>
     	</div>
     	<div id="list"></div>
 	</div>
     <script type="text/html" id="listTemp">
+    	<table class="report-table" border="1" id="report-hide-table">
+    		<thead><!--头部，放置产品名称-->
+    			<tr>
+    				<th rowspan="3">日期</th>
+    			<% for(var i=0;i<productList.length;i++){%>
+					<%var pid = productList[i].id;%>
+					<%var lis = makeList[pid];%>
+					<%var cols = 3%>
+					<%if(lis!=null){%>
+    					<%cols=cols+lis.length%>
+					<%}%>
+    				<th colspan="<%=cols%>"><%=productList[i].name %></th>
+    			<% } %>
+    			</tr>
+    			<tr>
+    			<% for(var i=0;i<productList.length;i++){%>
+					<%var pid = productList[i].id;%>
+					<%var lis = makeList[pid];%>
+					<%var cols = 3%>
+					<%if(lis!=null){%>
+    					<%cols=cols+lis.length%>
+					<%}%>
+    				<th colspan="<%=cols%>"><%=productList[i].unit %></th>
+    			<% } %>
+    			</tr>
+    			<tr>
+    			<% for(var i=0;i<productList.length;i++){%>
+    				<th>进</th>
+    				<th>出</th>
+					<%var pid = productList[i].id;%>
+					<%var lis = makeList[pid];%>
+					<%if(lis!=null){%>
+    					<%for(var x=0;x<lis.length;x++){ %>
+    						<th><%=lis[x].name%></th>
+    					<%}%>
+					<%}%>
+    				<th style="background-color: #ddd;">存</th>
+    			<% } %>
+    			</tr>
+    	</thead>
+    	</table>
     	<table class="report-table" border="1">
     		<thead><!--头部，放置产品名称-->
     			<tr>
@@ -71,7 +124,7 @@
     						<th><%=lis[x].name%></th>
     					<%}%>
 					<%}%>
-    				<th>存</th>
+    				<th style="background-color: #ddd;">存</th>
     			<% } %>
     			</tr>
     		</thead>
@@ -79,7 +132,11 @@
     			<% for(var i=0;i<valueList.length;i++){ %>
     				<%var value = valueList[i];%>
     				<tr>
+    					<% if(i==(valueList.length-1)){ %>
+    					<td>合计</td>
+    					<% }else{ %>
     					<td><%=i+1%></td>
+    					<% } %>
     				<%for(var p=0;p<productList.length;p++){ %>
     					<%var id = productList[p].id;%>
     					<%var cell = value[id]; %>
@@ -92,7 +149,7 @@
 		    					<%}%>
 							<%}%>
     						<td></td>
-    						<td></td>
+    						<td style="background-color: #ddd;"></td>
     					<%}else{%>
     						<td><%=cell.in%></td>
     						<td><%=cell.out%></td>
@@ -101,7 +158,7 @@
 		    						<td><%=cell.makeMap[lis[x].id]%></td>
 		    					<%}%>
 							<%}%>
-    						<td><%=cell.save%></td>
+    						<td style="background-color: #ddd;"><%=cell.save%></td>
     					<%} %>
     				<%}%>
     				</tr>
@@ -130,6 +187,14 @@
     	$("#date").val(dd);
     })
 	}, false);
+	$(window).scroll(function(){
+		var top = $(window).scrollTop();
+		if(top<=0){
+			$("#report-hide-table").hide();
+		}else{
+			$("#report-hide-table").show();
+		}
+	});
 	$(function(){
 		getList();
 	})

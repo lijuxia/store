@@ -7,12 +7,16 @@
     <link rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
     <link rel="stylesheet" href="../plugin/picker/dist/css/mui.picker.min.css" />
     <script type="text/javascript" src="../js/template-web.js" ></script>
+    <style>
+    	.mui-input-row:hover{ background-color: #007aff;}
+    	.mui-input-row:hover > label{color: white; }
+    </style>
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav">
 	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">销售</h1>
-	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
+	    <button type="button" data-loading-text="确认中" id="submit-btn" class="mui-btn mui-btn-primary mui-pull-right" >确认</button>
 	    <!--<a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-right"></a>-->
 	</header>
 	<div class="mui-content">
@@ -32,8 +36,8 @@
 		<% for(var i=0;i<value.length;i++){ %>
 			<div class="mui-input-group">
         <div class="mui-input-row">
-            <label><%=value[i].name%>(<%=value[i].unit%>)</label>
-			<div class="mui-numbox" style="width: 200px;" data-numbox-step='1' data-numbox-min='0' >
+            <label style="width: 55%;"><%=value[i].name%>(<%=value[i].unit%>)</label>
+			<div class="mui-numbox" style="width: 140px;" data-numbox-step='1' data-numbox-min='0' >
 				<input type="hidden" name="listDetails[<%=i%>].productId" value="<%=value[i].id%>" />
 				<input type="hidden" name="listDetails[<%=i%>].productName" value="<%=value[i].name%>" />
 				<input type="hidden" name="listDetails[<%=i%>].unit" value="<%=value[i].unit%>" />
@@ -57,6 +61,11 @@
 	<script type="text/javascript" src="/js/ljx.error.js" ></script>
     <script type="text/javascript">
     mui.init()
+	mui(document.body).on('tap', '#submit-btn', function(e) {
+		var btn = this;
+		mui(btn).button('loading');
+		submit();
+	});
     $("#date").val(getNowFormatDate());
     var dtPicker = new mui.DtPicker({type:'date'}); 
     var sendStoreName = document.getElementById('date');
@@ -97,6 +106,7 @@
 					mui.toast("提交成功",{ duration:'long', type:'div' }) 
 					window.location.href = "../main.html";
 				}else{
+					mui($("#submit-btn")).button('reset');
 					errorHandle(data);
 				}
 			}

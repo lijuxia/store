@@ -11,7 +11,7 @@
 	<header class="mui-bar mui-bar-nav">
 	    <a href="../main.html" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">产品信息</h1>
-	    <button type="button" class="mui-btn mui-btn-primary mui-pull-right" onclick="submit()" >确认</button>
+	    <button type="button" data-loading-text="确认中" id="submit-btn" class="mui-btn mui-btn-primary mui-pull-right" >确认</button>
 	</header>
 	<div class="mui-content">
 		<div style="height: 20px;"></div>
@@ -38,6 +38,11 @@
 	<script type="text/javascript" src="/js/ljx.error.js" ></script>
     <script type="text/javascript">
     mui.init()
+	mui(document.body).on('tap', '#submit-btn', function(e) {
+		var btn = this;
+		mui(btn).button('loading');
+		submit();
+	});
 
     /**
      * 获取URL中的参数
@@ -83,6 +88,7 @@
     var submit = function(){
     	var flag =checkForm();
     	if(!flag){
+    		mui($("#submit-btn")).button('reset');
     		return; 
     	}
     	var formData = $("#productForm").serializeArray();
@@ -100,6 +106,7 @@
 					mui.toast("保存成功",{ duration:'long', type:'div' }) 
 					window.location.href = "/work/product/product_list.html";
 				}else{
+					mui($("#submit-btn")).button('reset');
 					errorHandle(data);
 				}
 			}

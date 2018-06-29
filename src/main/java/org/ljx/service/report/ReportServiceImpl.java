@@ -119,30 +119,42 @@ public class ReportServiceImpl implements ReportService {
     private List<Map<String,ReportCell>> addCell(List<Map<String,ReportCell>> dataList,int index,int productId,byte op,BigDecimal num){
         String key = productId+"";//产品ID
         ReportCell cell = dataList.get(index).get(key);//产品对应统计内容
+        ReportCell sumCell = dataList.get(dataList.size()-1).get(key);//总汇统计内容
         if(cell==null){
             cell = new ReportCell();
+        }
+        if(sumCell==null){
+            sumCell = new ReportCell();
         }
         switch (op){//判断统计的位置
             case OP_IN:
                 cell.addIn(num);
+                sumCell.addIn(num);
                 break;
             case OP_OUT:
                 cell.addOut(num);
+                sumCell.addOut(num);
                 break;
             case OP_SAVE:
                 cell.setSave(num);
+                sumCell.setSave(num);
             default:
                 break;
         }
         dataList.get(index).put(key,cell);
+        dataList.get(dataList.size()-1).put(key,sumCell);
         return dataList;
     }
 
     private List<Map<String,ReportCell>> addCellMap(List<Map<String,ReportCell>> dataList,int index,int productId,int makeProductId,BigDecimal makeNum){
         String key = productId+"";//产品ID
         ReportCell cell = dataList.get(index).get(key);//产品对应统计内容
+        ReportCell sumCell = dataList.get(dataList.size()-1).get(key);//总汇统计内容
         if(cell==null){
             cell = new ReportCell();
+        }
+        if(sumCell==null){
+            sumCell = new ReportCell();
         }
         if(cell.getMakeMap().get(makeProductId+"")!=null){
             makeNum = cell.getMakeMap().get(makeProductId+"").add(makeNum);
@@ -150,14 +162,21 @@ public class ReportServiceImpl implements ReportService {
         }else{
             cell.getMakeMap().put(makeProductId+"",makeNum);
         }
+        if(sumCell.getMakeMap().get(makeProductId+"")!=null){
+            makeNum = sumCell.getMakeMap().get(makeProductId+"").add(makeNum);
+            sumCell.getMakeMap().put(makeProductId+"",makeNum);
+        }else{
+            sumCell.getMakeMap().put(makeProductId+"",makeNum);
+        }
         dataList.get(index).put(key,cell);
+        dataList.get(dataList.size()-1).put(key,sumCell);
         return dataList;
     }
 
 
     private List initList(int day){
         List list = new ArrayList();
-        for(int i=0;i<day;i++){
+        for(int i=0;i<day+1;i++){
             list.add(new HashMap<String,ReportCell>());
         }
         return list;

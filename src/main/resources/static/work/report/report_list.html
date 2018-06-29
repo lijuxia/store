@@ -8,7 +8,18 @@
     <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
     <style>
     	.report-table{
+    		width: 100%;table-layout:fixed;background-color: #efeff4;
+    	}
+    	#report-hide-table{
     		width: 100%;
+    		table-layout:fixed;
+    		position: fixed;
+    		top: 84px;
+    	}
+    	#hide-date{
+    		width: 100%;
+    		position: fixed;
+    		top: 44px;
     	}
     	.report-table td{
     		line-height: 30px;
@@ -24,18 +35,44 @@
 	<header class="mui-bar mui-bar-nav">
 	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">报表</h1>
+	    <button type="button" data-loading-text="加载中" id="submit-btn" class="mui-btn mui-btn-primary mui-pull-right" >下载</button>
 	</header>
 	<div class="mui-content">
-			<div class="mui-input-group">
-        <div class="mui-input-row">
-            <label id="userResult" style="width: 40%;">日期</label>
-            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
-    	</div>
+		<div style="height: 40px;"></div>
+		<div class="mui-input-group" id="hide-date">
+	        <div class="mui-input-row">
+	        	<form id="down" action="/report/updateFile">
+	            <label id="userResult" style="width: 40%;">日期</label>
+	            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
+	        	</form>
+	    	</div>
     	</div>
     	<div id="list"></div>
 	</div>
     <script type="text/html" id="listTemp">
-    	<table class="report-table" border="1">
+    	<table class="report-table" id="report-hide-table" border="1" style="display: none;">
+    		<thead><!--隐藏头部，滚动后，显示-->
+    			<tr>
+    				<th rowspan="3">日期</th>
+    			<% for(var i=0;i<productList.length;i++){%>
+    				<th colspan="3"><%=productList[i].name %></th>
+    			<% } %>
+    			</tr>
+    			<tr>
+    			<% for(var i=0;i<productList.length;i++){%>
+    				<th colspan="3"><%=productList[i].unit %></th>
+    			<% } %>
+    			</tr>
+    			<tr>
+    			<% for(var i=0;i<productList.length;i++){%>
+    				<th>进</th>
+    				<th>出</th>
+    				<th>存</th>
+    			<% } %>
+    			</tr>
+    		</thead>
+    	</table>
+    	<table class="report-table" id="report-table" border="1">
     		<thead><!--头部，放置产品名称-->
     			<tr>
     				<th rowspan="3">日期</th>
@@ -60,18 +97,22 @@
     			<% for(var i=0;i<valueList.length;i++){ %>
     				<%var value = valueList[i];%>
     				<tr>
+    					<% if(i==(valueList.length-1)){ %>
+    					<td>合计</td>
+    					<% }else{ %>
     					<td><%=i+1%></td>
+    					<% } %>
     				<%for(var p=0;p<productList.length;p++){ %>
     					<%var id = productList[p].id;%>
     					<%var cell = value[id]; %>
     					<% if(cell == null){%>
     						<td></td>
     						<td></td>
-    						<td></td>
+    						<td style="background-color: #ddd;"></td>
     					<%}else{%>
     						<td><%=cell.in%></td>
     						<td><%=cell.out%></td>
-    						<td><%=cell.save%></td>
+    						<td style="background-color: #ddd;"><%=cell.save%></td>
     					<%} %>
     				<%}%>
     				</tr>
@@ -100,6 +141,23 @@
     	$("#date").val(dd);
     })
 	}, false);
+	
+	$(window).scroll(function(){
+		var top = $(window).scrollTop();
+		if(top<=0){
+			$("#report-hide-table").hide();
+		}else{
+			$("#report-hide-table").show();
+		}
+	});
+	
+	mui(document.body).on('tap', '#submit-btn', function(e) {
+		var btn = this;
+		mui(btn).button('loading');
+		$("#down").submit();
+		mui($("#submit-btn")).button('reset');
+	});
+	
 	$(function(){
 		getList();
 	})
