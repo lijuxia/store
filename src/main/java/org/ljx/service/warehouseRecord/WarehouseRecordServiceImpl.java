@@ -211,7 +211,7 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
                         }
                     }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_MAKE){//生产 回退
                         warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);//原料出库
-                    }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_SEND){//配送回退
+                    }else if(warehouseRecordOld.getType()==WarehouseRecord.TYPE_SEND && warehouseRecordOld.getConfirmFlag()==WarehouseRecord.CONFIRMFLAG_YES){//配送回退
                         //配送单位库存回退增加
                         warehouseService.into(warehouseRecordOld.getStoreId(),detail.getProductId(),detail.getNum(),updateTime);
                         //接收单位库存回退减少

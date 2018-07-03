@@ -62,7 +62,7 @@ CREATE TABLE `sys_product_detail`(
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `productId` int(11) NOT NULL DEFAULT 0,
   `detailId` int(11) NOT NULL DEFAULT 0,
-  `num` DOUBLE NOT NULL DEFAULT 0,
+  `num` DECIMAL(10,2) NOT NULL DEFAULT 0,
   `status` TINYINT(4) DEFAULT 0,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
@@ -74,7 +74,7 @@ CREATE TABLE `sys_warehouse`(
 	`storeId` int(11) DEFAULT 0,
 	`productId` int(11) DEFAULT 0,
 	`status` TINYINT(4) DEFAULT 0,
-  `time` TIMESTAMP not null,
+  `time` TIMESTAMP(3) not null,
 PRIMARY KEY(id)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 
@@ -86,7 +86,7 @@ CREATE TABLE `sys_warehouse_record`(
 `type` TINYINT(4) not null DEFAULT 0,
 `status` TINYINT(4) not null DEFAULT 0,
 `inOrOut` TINYINT(4) not null DEFAULT 0,
-`creatTime` TIMESTAMP not null,
+`creatTime` TIMESTAMP(3) not null,
 `confirmFlag` TINYINT(4) not null DEFAULT 0,
 `remark` VARCHAR(255) not null DEFAULT '',
 `sendStoreId` int(11) not null DEFAULT 0,
