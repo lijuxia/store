@@ -15,12 +15,11 @@ public class StartListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        QuartzManager.addJob("sendCheck",SendCheck.class,"0 1 0 * * ?");   //添加定时统计日志定时器
+        QuartzManager.addJob("sendCheck",SendCheck.class,"0 40 23 * * ?");   //添加定时统计日志定时器
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         QuartzManager.shutdownJobs();
-
     }
 }

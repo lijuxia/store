@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 
 /**
  * 仓库（库存）
+ * 商品每日记录一条库存记录，没有有且只有一条记录
  * Created by ljx on 2018/5/14.
  */
 public class Warehouse implements Serializable {
