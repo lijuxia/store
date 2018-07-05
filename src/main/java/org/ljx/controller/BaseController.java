@@ -1,6 +1,5 @@
 package org.ljx.controller;
 
-import com.sun.deploy.net.URLEncoder;
 import org.ljx.entity.Store;
 import org.ljx.entity.web.ResponseMessage;
 import org.slf4j.Logger;
@@ -13,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.BufferedOutputStream;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 
 /**
  * Created by ljx on 2018/5/14.

@@ -189,7 +189,7 @@ public class ReportController extends BaseController {
             e.printStackTrace();
         }
         byte[] content = os.toByteArray();
-        String fileName = "ceshi.xls";
+        String fileName = "mendian_"+getNowStr()+".xls";
         downFile(content,fileName);
     }
 
@@ -212,6 +212,11 @@ public class ReportController extends BaseController {
         Cell cell = row.createCell(index);
         cell.setCellValue(value);
         cell.setCellStyle(style);
+    }
+
+    private String getNowStr(){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+        return sdf.format(new Date(System.currentTimeMillis()));
     }
 
     private Date StringToDate(String dateStr){
