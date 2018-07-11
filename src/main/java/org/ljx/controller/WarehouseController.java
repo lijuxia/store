@@ -4,6 +4,7 @@ import org.ljx.entity.Warehouse;
 import org.ljx.entity.web.PageSearch;
 import org.ljx.entity.web.ResponseMessage;
 import org.ljx.service.warehouse.WarehouseService;
+import org.ljx.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.beans.propertyeditors.PropertiesEditor;
@@ -11,6 +12,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,8 +36,8 @@ public class WarehouseController extends BaseController{
 
     @RequestMapping(value = "/listAll", method = RequestMethod.GET)
     public ResponseMessage listAll(){
-
-        List<Warehouse> list =  warehouseService.list(getCurrentStore().getId(),Warehouse.STATUS_ON);
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        List<Warehouse> list =  warehouseService.list(getCurrentStore().getId(),(byte)0, TimeUtil.getBeginTime(time),TimeUtil.getEndTime(time));
         return success(list);
     }
 

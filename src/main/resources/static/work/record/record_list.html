@@ -30,7 +30,8 @@
 	    			<a class="mui-btn mui-btn-red del-btn" recordId="<%=value[i].oddId%>">删除</a>
 	    		</div>
 	    		<div class="mui-slider-handle">
-					<span class="mui-badge mui-badge-primary" style="float: left;"><%=value[i].storeName%></span>
+					<span class="mui-badge mui-badge-purple mui-badge-inverted" style="float: left;"><%=value[i].dateStr%></span>
+					<span class="mui-badge mui-badge-primary" style="float: left;margin-left: 5px;"><%=value[i].storeName%></span>
 					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;"><%=value[i].typeStr%></span>
 					<% if(value[i].type==2){%>
 					<span class="mui-badge mui-badge-success" style="float: left;margin-left: 5px;"><%=value[i].sendStoreName%></span>

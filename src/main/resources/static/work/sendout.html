@@ -57,7 +57,7 @@
 				<input type="hidden" name="listDetails[<%=i%>].productName" value="<%=value[i].name%>" />
 				<input type="hidden" name="listDetails[<%=i%>].unit" value="<%=value[i].unit%>" />
 			  <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
-			  <input class="mui-numbox-input details" type="number" name="listDetails[<%=i%>].num" value="<%=num%>"/>
+			  <input class="mui-numbox-input details" onblur="detail_blur(this)" type="number" name="listDetails[<%=i%>].num" value="<%=num%>"/>
 			  <button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
 			</div>
         </div>
@@ -120,6 +120,16 @@
 		});
 	}, false);
 	
+   	var tempValue; 
+	mui(document.body).on('tap', '.details', function(e) {
+		tempValue = $(this).val();
+		$(this).val("");
+	});
+	var detail_blur = function(ob){
+		if($(ob).val()==""){
+			$(ob).val(tempValue);
+		}
+	}
 	
     /**
      * 获取URL中的参数

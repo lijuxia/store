@@ -53,10 +53,10 @@ public interface WarehouseMapper {
             @Result(property = "storeId",column = "storeId")
     })
     List<Warehouse> list(@Param("storeId")int storeId, @Param("productId")int productId, @Param("status") byte status
-            , @Param("beginDate")Timestamp beginDate, @Param("endDate")Timestamp endDate);
+            , @Param("beginDate")Timestamp beginDate, @Param("endDate")Timestamp endDate,@Param("oders")String oders);
 
     static String buildList(@Param("storeId")int storeId,@Param("productId")int productId,@Param("status") byte status
-            , @Param("beginDate")Timestamp beginDate, @Param("endDate")Timestamp endDate) {
+            , @Param("beginDate")Timestamp beginDate, @Param("endDate")Timestamp endDate,@Param("oders")String oders) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse");
@@ -75,7 +75,9 @@ public interface WarehouseMapper {
             if(endDate!=null && !"".equals(endDate)){
                 WHERE("time <= #{endDate}");
             }
-            ORDER_BY("storeId,productId,time");
+            if(oders!=null && !"".equals(oders)){
+                ORDER_BY(oders);
+            }
         }}.toString();
     }
 

@@ -18,6 +18,8 @@ public interface WarehouseRecordService {
 
     public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate,String order);
 
+    public void reflesh(int storeId);
+
     public void insert(WarehouseRecord warehouseRecord);
 
     public void update(WarehouseRecord warehouseRecord);
@@ -27,4 +29,6 @@ public interface WarehouseRecordService {
     public WarehouseRecord findById(String oddId);
 
     public void confirmeRecord(String oddId);
+
+    public WarehouseRecord findLastCheck(int storeId,Timestamp time);
 }

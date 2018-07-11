@@ -12,7 +12,6 @@ import springfox.documentation.spring.web.plugins.Docket;
 /**
  * Created by ljx on 2018/5/15.
  */
-@Configuration
 public class Swagger2 {
 
     @Bean

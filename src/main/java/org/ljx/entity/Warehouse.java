@@ -25,6 +25,22 @@ public class Warehouse implements Serializable {
     private Product product;
     private Timestamp time;
 
+    public Warehouse(){
+
+    }
+
+    public Warehouse(BigDecimal balance,int storeId,int productId,byte status,Timestamp time){
+        if(balance==null){
+            this.balance = new BigDecimal(0);
+        }else{
+            this.balance = balance;
+        }
+        this.storeId = storeId;
+        this.productId = productId;
+        this.status = status;
+        this.time = time;
+    }
+
     public int getId() {
         return id;
     }
@@ -108,19 +124,4 @@ public class Warehouse implements Serializable {
         }
     }
 
-    public List<Timestamp> duringTimes(Timestamp start,Timestamp end){
-        List<Timestamp> result = new ArrayList<Timestamp>();
-        Calendar tempStart = Calendar.getInstance();
-        tempStart.setTime(start);
-        tempStart.add(Calendar.DAY_OF_YEAR, 1);
-
-        Calendar tempEnd = Calendar.getInstance();
-        tempEnd.setTime(end);
-
-        while (!isToday(new Timestamp(tempStart.getTimeInMillis()),new Timestamp(tempEnd.getTimeInMillis()))) {
-            result.add(new Timestamp(tempStart.getTimeInMillis()));
-            tempStart.add(Calendar.DAY_OF_YEAR, 1);
-        }
-        return result;
-    }
 }

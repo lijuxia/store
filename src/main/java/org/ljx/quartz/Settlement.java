@@ -28,7 +28,7 @@ public class Settlement implements Job {
         List<Warehouse> list = warehouseService.list(0,Warehouse.STATUS_ON);
         for(int i=0;i<list.size();i++){
             Warehouse warehouse = list.get(i);
-            warehouseService.updateSave(WarehouseServiceImpl.OP_INTO,warehouse.getStoreId(),warehouse.getProductId(),new BigDecimal(0),new Timestamp(System.currentTimeMillis()));
+            warehouseService.updateSave(WarehouseServiceImpl.OP_INTO,warehouse.getStoreId(),warehouse.getProductId(),new BigDecimal(0),new Timestamp(System.currentTimeMillis()),new Timestamp(System.currentTimeMillis()));
         }
     }
 }

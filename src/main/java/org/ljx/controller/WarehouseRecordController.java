@@ -63,6 +63,13 @@ public class WarehouseRecordController extends BaseController {
         return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,null,time,"creatTime desc"));
     }
 
+
+    @RequestMapping(value = "/reflesh", method = RequestMethod.GET)
+    public ResponseMessage reflesh(String oddId){
+        warehouseRecordService.reflesh(getCurrentStore().getId());
+        return success();
+    }
+
     @RequestMapping(value = "/addConsume", method = RequestMethod.POST)
     public ResponseMessage addConsume(WarehouseRecord warehouseRecord){
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
