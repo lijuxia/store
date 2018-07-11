@@ -1,5 +1,6 @@
 package org.ljx.dao;
 
+import com.sun.tools.corba.se.idl.constExpr.Times;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 import org.ljx.entity.Product;
@@ -7,7 +8,10 @@ import org.ljx.entity.Store;
 import org.ljx.entity.Warehouse;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -23,6 +27,7 @@ public interface WarehouseMapper {
     final String FIND_SQL = "select * from sys_warehouse  where id = #{id}";
     final String DELETE_SQL = "delete from sys_warehouse where id = #{id}";
     final String FIND_STORE_PRODUCT_SQL = "select * from sys_warehouse  where storeId = #{storeId} and productId = #{productId} and status = 1";
+    final String UPDATE_DURING_DATE_SQL = "update sys_warehouse set balance = balance +#{balance} where storeId = #{storeId} and productId = #{productId} and time>=#{beginTime} and time<=#{endTime}";
 
     @Insert(INSERT_SQL)
     @Options(useGeneratedKeys = true, keyProperty = "id")
@@ -34,6 +39,9 @@ public interface WarehouseMapper {
     @Update(UPDATE_SQL)
     void update(Warehouse warehouse);
 
+    @Update(UPDATE_DURING_DATE_SQL)
+    void updateHistory(@Param("storeId")int storeId, @Param("productId")int productId, @Param("balance")BigDecimal balance, @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime);
+
     @SelectProvider(type = WarehouseMapper.class ,method = "buildList")
     @ResultType(Warehouse.class)
     @Results({
@@ -44,16 +52,19 @@ public interface WarehouseMapper {
             @Result(property = "productId",column = "productId"),
             @Result(property = "storeId",column = "storeId")
     })
-    List<Warehouse> list(@Param("storeId")int storeId, @Param("status") byte status
-            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate);
+    List<Warehouse> list(@Param("storeId")int storeId, @Param("productId")int productId, @Param("status") byte status
+            , @Param("beginDate")Timestamp beginDate, @Param("endDate")Timestamp endDate);
 
-    static String buildList(@Param("storeId")int storeId,@Param("status") byte status
-            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate) {
+    static String buildList(@Param("storeId")int storeId,@Param("productId")int productId,@Param("status") byte status
+            , @Param("beginDate")Timestamp beginDate, @Param("endDate")Timestamp endDate) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse");
             if(storeId != 0){
                 WHERE("storeId = #{storeId}");
+            }
+            if(productId != 0){
+                WHERE("productId = #{productId}");
             }
             if (status != 0) {
                 WHERE("status = #{status}");

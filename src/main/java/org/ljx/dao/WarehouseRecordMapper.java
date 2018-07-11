@@ -44,11 +44,11 @@ public interface WarehouseRecordMapper {
     })
     List<WarehouseRecord> list(@Param("storeId") int storeId, @Param("type") byte type
             , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
-            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate);
+            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate, @Param("order")String order);
 
     static String buildList(@Param("storeId") int storeId,@Param("type") byte type
             , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
-            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate) {
+            , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate, @Param("order")String order) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse_record");
@@ -71,7 +71,7 @@ public interface WarehouseRecordMapper {
                 WHERE("date <= #{endDate}");
             }
             WHERE("status = 1");
-            ORDER_BY(" creatTime desc");
+            ORDER_BY(order);
         }}.toString();
     }
 

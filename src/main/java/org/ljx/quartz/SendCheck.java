@@ -25,7 +25,7 @@ public class SendCheck implements Job {
 
     public void execute(JobExecutionContext context) throws JobExecutionException {
         Date lastDay = getLastDay();
-        List<WarehouseRecord> list = warehouseRecordService.list(null,WarehouseRecord.TYPE_SEND,0,lastDay,lastDay);
+        List<WarehouseRecord> list = warehouseRecordService.list(null,WarehouseRecord.TYPE_SEND,0,lastDay,lastDay,"creatTime desc");
         for(int i=0;i<list.size();i++){
             WarehouseRecord record = list.get(i);
             if(record.getConfirmFlag()==WarehouseRecord.CONFIRMFLAG_NO){
@@ -34,11 +34,9 @@ public class SendCheck implements Job {
         }
     }
 
-
     private Date getLastDay(){
         //获取当前月第一天：
         Calendar c = Calendar.getInstance();
-        c.add(Calendar.DAY_OF_MONTH,-1);
         Date date = new Date(c.getTime().getTime());
         return date;
     }

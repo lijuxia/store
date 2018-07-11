@@ -154,6 +154,10 @@ public class WarehouseRecord implements Serializable {
         this.date = date;
     }
 
+    public Timestamp getDateTime(){
+        return new Timestamp(date.getTime());
+    }
+
     public int getMakeProductId() {
         return makeProductId;
     }

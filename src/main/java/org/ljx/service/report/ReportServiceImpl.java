@@ -5,6 +5,7 @@ import org.ljx.entity.report.ReportCell;
 import org.ljx.service.product.ProductService;
 import org.ljx.service.warehouse.WarehouseService;
 import org.ljx.service.warehouseRecord.WarehouseRecordService;
+import org.ljx.util.TimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,8 +31,8 @@ public class ReportServiceImpl implements ReportService {
     private final byte OP_SAVE = 3;
 
     public List<Map<String,ReportCell>> list(byte type, int storeId, Date beginDate, Date endDate){
-        List<Warehouse> warehouseList = warehouseService.list(storeId,(byte)0,beginDate,endDate);
-        List<WarehouseRecord> list = warehouseRecordService.list(null,type,storeId,beginDate,endDate);
+        List<Warehouse> warehouseList = warehouseService.list(storeId,(byte)0, TimeUtil.getBeginTime(new Timestamp(beginDate.getTime())),TimeUtil.getEndTime(new Timestamp(endDate.getTime())));
+        List<WarehouseRecord> list = warehouseRecordService.list(null,type,storeId,beginDate,endDate,"creatTime desc");
         //初始化数据
         List<Map<String,ReportCell>> dataList = initList(getDayFromDate(endDate));
         //遍历流水记录，统计结果写入数据中

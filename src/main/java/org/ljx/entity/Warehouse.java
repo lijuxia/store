@@ -3,6 +3,10 @@ package org.ljx.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * 仓库（库存）
@@ -83,5 +87,40 @@ public class Warehouse implements Serializable {
 
     public void setTime(Timestamp time) {
         this.time = time;
+    }
+
+    public boolean isToday(){
+        return isToday(new Timestamp(System.currentTimeMillis()));
+    }
+
+    public boolean isToday(Timestamp newTime){
+        return isToday(newTime,this.time);
+    }
+
+    public boolean isToday(Timestamp start,Timestamp end){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String now = dateFormat.format(end);
+        String recordTime = dateFormat.format(start);
+        if(now.equals(recordTime)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public List<Timestamp> duringTimes(Timestamp start,Timestamp end){
+        List<Timestamp> result = new ArrayList<Timestamp>();
+        Calendar tempStart = Calendar.getInstance();
+        tempStart.setTime(start);
+        tempStart.add(Calendar.DAY_OF_YEAR, 1);
+
+        Calendar tempEnd = Calendar.getInstance();
+        tempEnd.setTime(end);
+
+        while (!isToday(new Timestamp(tempStart.getTimeInMillis()),new Timestamp(tempEnd.getTimeInMillis()))) {
+            result.add(new Timestamp(tempStart.getTimeInMillis()));
+            tempStart.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        return result;
     }
 }

@@ -12,11 +12,11 @@ import java.util.List;
  */
 public interface WarehouseRecordService {
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId);
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId,String order);
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Timestamp beginTime, Timestamp endTime);
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Timestamp beginTime, Timestamp endTime,String order);
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate);
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate,String order);
 
     public void insert(WarehouseRecord warehouseRecord);
 

@@ -30,7 +30,7 @@ public class WarehouseRecordController extends BaseController {
     public ResponseMessage listMain(){
         Store store = getCurrentStore();
         PageSearch pageSearch = new PageSearch(5,1);
-        return success(warehouseRecordService.list(pageSearch,(byte)0,store.getId()));
+        return success(warehouseRecordService.list(pageSearch,(byte)0,store.getId(),"creatTime desc"));
     }
 
     @RequestMapping(value = "/listPull", method = RequestMethod.GET)
@@ -45,7 +45,7 @@ public class WarehouseRecordController extends BaseController {
         if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
         }
-        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,time,null));
+        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,time,null,"creatTime desc"));
     }
 
     @RequestMapping(value = "/listPullUp", method = RequestMethod.GET)
@@ -60,7 +60,7 @@ public class WarehouseRecordController extends BaseController {
         if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
         }
-        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,null,time));
+        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,null,time,"creatTime desc"));
     }
 
     @RequestMapping(value = "/addConsume", method = RequestMethod.POST)
