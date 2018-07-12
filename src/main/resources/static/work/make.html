@@ -187,6 +187,10 @@
 			makeProductLabel.innerHTML = record.makeProduct.name;
 			picker.pickers[0].setSelectedValue(record.makeProductId, 200);
     		showDetails(record.makeProductId);
+			var store = getLoginUser();
+			if(store.id!=record.storeId){
+				$("#submit-btn").hide();
+			}
     	}
    });
    

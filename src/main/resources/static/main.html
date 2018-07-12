@@ -337,6 +337,7 @@
 
 			function initMenu() {
 				var store = getLoginUser();
+				$("#head-title").html(store.name);
 				var Carouselhtml = template('grid-9-temp', store);
 				$("#grid-9-ul").html(Carouselhtml);
 				var Carouselhtml = template('menuListTemp', store);

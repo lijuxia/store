@@ -21,7 +21,6 @@ var getLoginUser = function (){
 	success:function (data){
 		if(data.succeed){
 			store =  data.value;
-			$("#head-title").html(store.name);
 			}else{
 				errorHandle(data);
 			}

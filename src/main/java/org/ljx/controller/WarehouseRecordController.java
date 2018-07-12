@@ -71,7 +71,7 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/addConsume", method = RequestMethod.POST)
-    public ResponseMessage addConsume(WarehouseRecord warehouseRecord){
+    public ResponseMessage addConsume(WarehouseRecord warehouseRecord) throws Exception{
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
         warehouseRecord.setType(WarehouseRecord.TYPE_CONSUME);
         warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
@@ -90,7 +90,7 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/addBuy", method = RequestMethod.POST)
-    public ResponseMessage addBuy(WarehouseRecord warehouseRecord){
+    public ResponseMessage addBuy(WarehouseRecord warehouseRecord) throws Exception{
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
         warehouseRecord.setType(WarehouseRecord.TYPE_BUY);
         warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
@@ -135,7 +135,7 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/addSale", method = RequestMethod.POST)
-    public ResponseMessage addSale(WarehouseRecord warehouseRecord){
+    public ResponseMessage addSale(WarehouseRecord warehouseRecord) throws Exception{
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
         warehouseRecord.setType(WarehouseRecord.TYPE_SALE);
         warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
@@ -154,7 +154,7 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/addScrap", method = RequestMethod.POST)
-    public ResponseMessage addScrap(WarehouseRecord warehouseRecord){
+    public ResponseMessage addScrap(WarehouseRecord warehouseRecord) throws Exception{
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
         warehouseRecord.setType(WarehouseRecord.TYPE_SCRAP);
         warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
@@ -196,7 +196,7 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/addMake", method = RequestMethod.POST)
-    public ResponseMessage addMake(WarehouseRecord warehouseRecord){
+    public ResponseMessage addMake(WarehouseRecord warehouseRecord) throws Exception{
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
         warehouseRecord.setType(WarehouseRecord.TYPE_MAKE);
         warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);

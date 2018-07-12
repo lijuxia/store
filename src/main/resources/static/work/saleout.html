@@ -126,6 +126,10 @@
     		record = getRecord(parms["oddId"]);
     		$("#oddId").val(record.oddId);
     		$("#date").val(record.dateStr);
+			var store = getLoginUser();
+			if(store.id!=record.storeId){
+				$("#submit-btn").hide();
+			}
     	}
         var dd = {record:record,value:list};
         console.log(dd);

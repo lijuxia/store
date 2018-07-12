@@ -163,6 +163,10 @@
     		$("#date").val(record.dateStr);
     		$("#sendStoreName").val(record.sendStoreName);
     		$("#sendStoreId").val(record.sendStoreId);
+			var store = getLoginUser();
+			if(store.id!=record.storeId){
+				$("#submit-btn").hide();
+			}
     		
     	}
         var dd = {record:record,value:list};

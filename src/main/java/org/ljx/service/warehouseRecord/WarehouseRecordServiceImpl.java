@@ -180,9 +180,13 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
     }
 
     @Transactional
-    public void update(WarehouseRecord warehouseRecord){
+    public void update(WarehouseRecord warehouseRecord) throws Exception{
         WarehouseRecord warehouseRecordOld = warehouseRecordMapper.findById(warehouseRecord.getOddId());
         if(warehouseRecordOld!=null){
+            //判断权限
+            if(warehouseRecordOld.getStoreId()!=warehouseRecord.getStoreId()){
+                throw new Exception("您无权限修改该记录");
+            }
             //修改详细列表
             //假删记录，使库存回退
             delete(warehouseRecord.getOddId());

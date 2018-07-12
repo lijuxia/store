@@ -22,7 +22,7 @@ public interface WarehouseRecordService {
 
     public void insert(WarehouseRecord warehouseRecord);
 
-    public void update(WarehouseRecord warehouseRecord);
+    public void update(WarehouseRecord warehouseRecord) throws Exception;
 
     public void delete(String oddId);
 
