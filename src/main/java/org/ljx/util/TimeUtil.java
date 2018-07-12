@@ -84,4 +84,11 @@ public class TimeUtil {
         return result;
     }
 
+    public static Timestamp addDay(Timestamp time,int day){
+        Calendar c = Calendar.getInstance();
+        c.setTime(time);
+        c.add(Calendar.DAY_OF_YEAR, day);
+        return new Timestamp(c.getTimeInMillis());
+    }
+
 }

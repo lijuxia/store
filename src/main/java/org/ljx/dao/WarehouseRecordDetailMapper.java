@@ -20,12 +20,16 @@ public interface WarehouseRecordDetailMapper {
     final String SELECT_SQL = "select * from sys_warehouse_record_detail";
     final String FIND_SQL = "select * from sys_warehouse_record_detail  where uuid = #{uuid}";
     final String DELETE_SQL = "delete from sys_warehouse_record_detail where uuid = #{uuid}";
+    final String DELETE_BY_ODDID_SQL = "delete from sys_warehouse_record_detail where oddId = #{oddId}";
 
     @Insert(INSERT_SQL)
     void insert(WarehouseRecordDetail warehouseRecordDetail);
 
     @Delete(DELETE_SQL)
-    void delete(int id);
+    void delete(String uuid);
+
+    @Delete(DELETE_BY_ODDID_SQL)
+    void deleteByOddId(String oddId);
 
     @Update(UPDATE_SQL)
     void update(WarehouseRecordDetail warehouseRecordDetail);

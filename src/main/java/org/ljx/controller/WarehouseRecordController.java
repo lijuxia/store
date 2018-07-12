@@ -78,10 +78,14 @@ public class WarehouseRecordController extends BaseController {
         warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
         warehouseRecord.setStoreId(getCurrentStore().getId());
         warehouseRecord.setStoreName(getCurrentStore().getName());
-        if(warehouseRecord.getRemark()==null){
+        if (warehouseRecord.getRemark() == null) {
             warehouseRecord.setRemark("");
         }
-        warehouseRecordService.insert(warehouseRecord);
+        if(warehouseRecord.getOddId()!=null&&!warehouseRecord.getOddId().equals("")){
+            warehouseRecordService.update(warehouseRecord);
+        }else {
+            warehouseRecordService.insert(warehouseRecord);
+        }
         return success();
     }
 
@@ -96,7 +100,11 @@ public class WarehouseRecordController extends BaseController {
         if(warehouseRecord.getRemark()==null){
             warehouseRecord.setRemark("");
         }
-        warehouseRecordService.insert(warehouseRecord);
+        if(warehouseRecord.getOddId()!=null&&!warehouseRecord.getOddId().equals("")){
+            warehouseRecordService.update(warehouseRecord);
+        }else{
+            warehouseRecordService.insert(warehouseRecord);
+        }
         return success();
     }
 
@@ -109,18 +117,18 @@ public class WarehouseRecordController extends BaseController {
         if(sendStore==null){
             throw new Exception("门店不存在，请重新选择");
         }
+        warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
+        warehouseRecord.setType(WarehouseRecord.TYPE_SEND);
+        warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_NO);
+        warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
+        warehouseRecord.setStoreId(getCurrentStore().getId());
+        warehouseRecord.setStoreName(getCurrentStore().getName());
+        if(warehouseRecord.getRemark()==null){
+            warehouseRecord.setRemark("");
+        }
         if(warehouseRecord.getOddId()!=null&&!warehouseRecord.getOddId().equals("")){
             warehouseRecordService.update(warehouseRecord);
         }else{
-            warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
-            warehouseRecord.setType(WarehouseRecord.TYPE_SEND);
-            warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_NO);
-            warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
-            warehouseRecord.setStoreId(getCurrentStore().getId());
-            warehouseRecord.setStoreName(getCurrentStore().getName());
-            if(warehouseRecord.getRemark()==null){
-                warehouseRecord.setRemark("");
-            }
             warehouseRecordService.insert(warehouseRecord);
         }
         return success();
@@ -134,10 +142,14 @@ public class WarehouseRecordController extends BaseController {
         warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
         warehouseRecord.setStoreId(getCurrentStore().getId());
         warehouseRecord.setStoreName(getCurrentStore().getName());
-        if(warehouseRecord.getRemark()==null){
+        if (warehouseRecord.getRemark() == null) {
             warehouseRecord.setRemark("");
         }
-        warehouseRecordService.insert(warehouseRecord);
+        if(warehouseRecord.getOddId()!=null&&!warehouseRecord.getOddId().equals("")){
+            warehouseRecordService.update(warehouseRecord);
+        }else {
+            warehouseRecordService.insert(warehouseRecord);
+        }
         return success();
     }
 
@@ -149,25 +161,37 @@ public class WarehouseRecordController extends BaseController {
         warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
         warehouseRecord.setStoreId(getCurrentStore().getId());
         warehouseRecord.setStoreName(getCurrentStore().getName());
-        if(warehouseRecord.getRemark()==null){
+        if (warehouseRecord.getRemark() == null) {
             warehouseRecord.setRemark("");
         }
-        warehouseRecordService.insert(warehouseRecord);
+        if(warehouseRecord.getOddId()!=null&&!warehouseRecord.getOddId().equals("")){
+            warehouseRecordService.update(warehouseRecord);
+        }else {
+            warehouseRecordService.insert(warehouseRecord);
+        }
         return success();
     }
 
     @RequestMapping(value = "/addCheck", method = RequestMethod.POST)
-    public ResponseMessage addCheck(WarehouseRecord warehouseRecord){
+    public ResponseMessage addCheck(WarehouseRecord warehouseRecord) throws Exception{
         warehouseRecord.setStatus(WarehouseRecord.STATUS_ON);
         warehouseRecord.setType(WarehouseRecord.TYPE_CHECK);
         warehouseRecord.setConfirmFlag(WarehouseRecord.CONFIRMFLAG_YES);
         warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
         warehouseRecord.setStoreId(getCurrentStore().getId());
         warehouseRecord.setStoreName(getCurrentStore().getName());
-        if(warehouseRecord.getRemark()==null){
+        if (warehouseRecord.getRemark() == null) {
             warehouseRecord.setRemark("");
         }
-        warehouseRecordService.insert(warehouseRecord);
+        WarehouseRecord timeCheck = warehouseRecordService.findLastCheck(warehouseRecord.getStoreId(),warehouseRecord.getDateTime());
+        if(timeCheck!=null && !timeCheck.getOddId().equals(warehouseRecord.getOddId())){
+            throw new Exception("当天已盘点,不能重复盘点");
+        }
+        if(warehouseRecord.getOddId()!=null&&!warehouseRecord.getOddId().equals("")){
+            warehouseRecordService.update(warehouseRecord);
+        }else {
+            warehouseRecordService.insert(warehouseRecord);
+        }
         return success();
     }
 
@@ -179,10 +203,14 @@ public class WarehouseRecordController extends BaseController {
         warehouseRecord.setInOrOut(WarehouseRecord.INOROUT_OUT);
         warehouseRecord.setStoreId(getCurrentStore().getId());
         warehouseRecord.setStoreName(getCurrentStore().getName());
-        if(warehouseRecord.getRemark()==null){
+        if (warehouseRecord.getRemark() == null) {
             warehouseRecord.setRemark("");
         }
-        warehouseRecordService.insert(warehouseRecord);
+        if(warehouseRecord.getOddId()!=null&&!warehouseRecord.getOddId().equals("")){
+            warehouseRecordService.update(warehouseRecord);
+        }else {
+            warehouseRecordService.insert(warehouseRecord);
+        }
         return success();
     }
 
@@ -199,12 +227,6 @@ public class WarehouseRecordController extends BaseController {
             throw new Exception("您无权限删除该记录");
         }
         warehouseRecordService.delete(oddId);
-        return success();
-    }
-
-    @RequestMapping(value = "update",method = RequestMethod.POST)
-    public ResponseMessage update(WarehouseRecord warehouseRecord){
-        warehouseRecordService.update(warehouseRecord);
         return success();
     }
 

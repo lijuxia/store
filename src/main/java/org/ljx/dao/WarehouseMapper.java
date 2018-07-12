@@ -89,4 +89,8 @@ public interface WarehouseMapper {
     @ResultType(Warehouse.class)
     Warehouse findByStoreIdAndProductId(@Param("storeId")int storeId,@Param("productId")int productId);
 
+    @Select("select * from sys_warehouse group by storeId,productId")
+    @ResultType(Store.class)
+    List<Warehouse> listGroupBy();
+
 }

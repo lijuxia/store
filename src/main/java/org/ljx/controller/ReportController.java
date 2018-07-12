@@ -26,10 +26,7 @@ import java.io.*;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.SimpleFormatter;
 
 /**
@@ -112,6 +109,128 @@ public class ReportController extends BaseController {
 //        }
 //        return null;
 //    }
+
+    @RequestMapping(value = "/updateCenterFile")
+    public void updateCenterFile(String date) throws Exception{
+        //获取数据
+        Map<String,Object> map = new HashMap();
+        Date dateSql = StringToDate(date);
+        List<Map<String,ReportCell>> list = reportService.list((byte)0,getCurrentStore().getId(),getMonthBegin(dateSql),getMonthEnd(dateSql));
+        byte[] types = new byte[]{Product.TYPE_MATERIAL,Product.TYPE_HALF};
+        Map<String,Set<Product>> makeList = new HashMap<>();
+        if(getCurrentStore().getType()== Store.TYPE_DISTRIBUTION_CENTRE){
+            makeList = reportService.list();
+        }
+        List<Product> productList = productService.list(types);
+
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("sheet1");
+        //单元格样式
+        CellStyle cellStyle = getCellStyle(wb,false);
+        CellStyle thCellStyle = getCellStyle(wb,true);
+        int index = 1;
+        sheet.addMergedRegion(new CellRangeAddress(0,2,0,0));
+        for(int i=0;i<productList.size();i++){
+            Set<Product> lis = makeList.get(productList.get(i).getId()+"");
+            int size = 0;
+            int endIndex = index+2;
+            if(lis!=null){
+                size = lis.size();
+                endIndex += size;
+            }
+            sheet.addMergedRegion(new CellRangeAddress(0,0,index,endIndex));
+            sheet.addMergedRegion(new CellRangeAddress(1,1,index,endIndex));
+            index +=size;
+            index+=3;
+        }
+
+        // 创建第一行，设置内容
+        Row row = sheet.createRow((short) 0);
+        //设置第一栏
+        setCell(row,0,"日期",thCellStyle);
+        index = 1;
+        for(int i=0;i<productList.size();i++){
+            Set<Product> lis = makeList.get(productList.get(i).getId()+"");
+            setCell(row,index,productList.get(i).getName(),thCellStyle);
+            int cols = 3;
+            if(lis!=null){
+                cols+=lis.size();
+            }
+            index +=cols;
+        }
+        //设置第二行，设置内容
+        row = sheet.createRow((short) 1);
+        index = 1;
+        for(int i=0;i<productList.size();i++){
+            Set<Product> lis = makeList.get(productList.get(i).getId()+"");
+            setCell(row,index,productList.get(i).getUnit(),thCellStyle);
+            int cols = 3;
+            if(lis!=null){
+                cols+=lis.size();
+            }
+            index +=cols;
+        }
+        //设置第三行，设置内容
+        row = sheet.createRow((short) 2);
+        index = 0;
+        for(int i=0;i<productList.size();i++){
+            setCell(row,index+1,"进",thCellStyle);
+            setCell(row,index+2,"出",thCellStyle);
+            Set<Product> lis = makeList.get(productList.get(i).getId()+"");
+            int size = 0;
+            if(lis!=null){
+                List<Product> lisArray = new ArrayList(lis);
+                size = lis.size();
+                for(int x=0;x<lis.size();x++){
+                    setCell(row,index+3+x,lisArray.get(x).getName(),thCellStyle);
+                }
+            }
+            setCell(row,index+3+size,"存",thCellStyle);
+            index+=3+size;
+        }
+        //遍历统计内容，设置单元格
+        for(int i=0;i<list.size();i++){
+            row = sheet.createRow((short) 3+i);
+            String day = i+1+"";
+            if(i==(list.size()-1)){
+                day = "合计";
+            }
+            setCell(row,0,day,cellStyle);
+            index = 0;
+            for(int p=0;p<productList.size();p++){
+                Map<String,ReportCell> valueMap = list.get(i);
+                ReportCell reportCell = valueMap.get(productList.get(p).getId()+"");
+                if(reportCell!=null){
+                    setCell(row,index+1,reportCell.getIn()+"",cellStyle);
+                    setCell(row,index+2,reportCell.getOut()+"",cellStyle);
+                    Set<Product> lis = makeList.get(productList.get(p).getId()+"");
+                    int size = 0;
+                    if(lis!=null){
+                        size = lis.size();
+                        List<Product> lisArray = new ArrayList(lis);
+                        for(int x=0;x<lisArray.size();x++){
+                            String value = "";
+                            if(reportCell.getMakeMap().get(productList.get(p).getId()+"")!=null){
+                                value =reportCell.getMakeMap().get(productList.get(p).getId()+"")+"";
+                            }
+                            setCell(row,index+3+x,value,cellStyle);
+                        }
+                    }
+                    setCell(row,index+3+size,reportCell.getSave()+"",cellStyle);
+                }
+            }
+        }
+        //同理可以设置数据行
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            wb.write(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] content = os.toByteArray();
+        String fileName = "zongpei_"+getNowStr()+".xls";
+        downFile(content,fileName);
+    }
 
     @RequestMapping(value = "/updateFile")
     public void updateFile(String date) throws Exception{
@@ -204,6 +323,7 @@ public class ReportController extends BaseController {
         }else{
             font.setBoldweight(Font.BOLDWEIGHT_NORMAL);
         }
+        cellStyle.setWrapText(true);
         cellStyle.setFont(font);
         return cellStyle;
     }

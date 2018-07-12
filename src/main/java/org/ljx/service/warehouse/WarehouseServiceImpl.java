@@ -47,6 +47,10 @@ public class WarehouseServiceImpl implements WarehouseService{
         return mapper.list(storeId,0,status,beginDate,endDate,"storeId,productId,time");
     }
 
+    public List<Warehouse> listGroupBy(){
+        return mapper.listGroupBy();
+    }
+
     private BigDecimal getAfterSave(byte op,BigDecimal beforeSaveNum,BigDecimal num){
         BigDecimal afterSaveNum = new BigDecimal(0);
         switch (op){

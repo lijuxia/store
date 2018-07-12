@@ -18,6 +18,8 @@ public interface WarehouseService {
 
     public List<Warehouse> list(int storeId, byte status, Timestamp beginDate, Timestamp endDate);
 
+    public List<Warehouse> listGroupBy();
+
     public BigDecimal updateSave(byte op,int storeId,int productId,BigDecimal num,Timestamp time,Timestamp creatTime);
 
     public void delete(int id);

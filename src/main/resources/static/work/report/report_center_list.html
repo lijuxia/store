@@ -35,13 +35,16 @@
 	<header class="mui-bar mui-bar-nav">
 	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 	    <h1 class="mui-title">报表</h1>
+	    <button type="button" data-loading-text="加载中" id="submit-btn" class="mui-btn mui-btn-primary mui-pull-right" >下载</button>
 	</header>
 	<div class="mui-content">
 		<div style="height: 40px;"></div>
 		<div class="mui-input-group" id="hide-date">
 	        <div class="mui-input-row">
+	        	<form id="down" action="/report/updateCenterFile">
 	            <label id="userResult" style="width: 40%;">日期</label>
 	            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
+	            </form>
 	    	</div>
     	</div>
     	<div id="list"></div>
@@ -194,6 +197,12 @@
 		}else{
 			$("#report-hide-table").show();
 		}
+	});
+	mui(document.body).on('tap', '#submit-btn', function(e) {
+		var btn = this;
+		mui(btn).button('loading');
+		$("#down").submit();
+		mui($("#submit-btn")).button('reset');
 	});
 	$(function(){
 		getList();

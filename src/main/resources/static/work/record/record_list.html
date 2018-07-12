@@ -25,7 +25,7 @@
     <script type="text/html" id="listTemp">
 		<% if(value.length > 0){ %>
 		<% for(var i=0;i<value.length;i++){ %>
-	    	<li class="mui-table-view-cell mui-transitioning edit-btn" recordId="<%=value[i].oddId%>">
+	    	<li class="mui-table-view-cell mui-transitioning edit-btn" recordId="<%=value[i].oddId%>" recordType="<%=value[i].type%>">
 	    		<div class="mui-slider-right mui-disabled">
 	    			<a class="mui-btn mui-btn-red del-btn" recordId="<%=value[i].oddId%>">删除</a>
 	    		</div>
@@ -92,7 +92,22 @@
 	mui(document.body).on('tap', '.edit-btn', function(e) {
 		var btn = this;
 	    var id = this.getAttribute("recordId");
-//      window.location.href = "/work/sendout.html?oddId="+id
+	    var type = this.getAttribute("recordType");
+	    if(type==1){
+        	window.location.href = "/work/saleout.html?oddId="+id
+	    }else if(type==2){
+        	window.location.href = "/work/sendout.html?oddId="+id
+	    }else if(type==3){
+        	window.location.href = "/work/scrap.html?oddId="+id
+	    }else if(type==4){
+	        window.location.href = "/work/purchase.html?oddId="+id
+	    }else if(type==5){
+	        window.location.href = "/work/consume.html?oddId="+id
+	    }else if(type==6){
+	        window.location.href = "/work/check.html?oddId="+id
+	    }else if(type==7){
+	        window.location.href = "/work/make.html?oddId="+id
+	    }
 	});
 	
 	function pullfresh_up() {
