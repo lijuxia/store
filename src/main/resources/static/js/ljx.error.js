@@ -46,3 +46,38 @@ var getNowFormatDate = function () {
     return currentdate;
 }
 
+var getFirstDayOfMonthFormat = function(){
+	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+	var firstDay = new Date(y, m, 1);
+    var seperator1 = "-";
+    var year = firstDay.getFullYear();
+    var month = firstDay.getMonth() + 1;
+    var strDate = firstDay.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = year + seperator1 + month + seperator1 + strDate;
+    return currentdate;
+}
+
+var getLastDayOfMonthFormat = function(){
+	var date = new Date(), y = date.getFullYear(), m = date.getMonth();
+	var lastDay = new Date(y, m + 1, 0);
+    var seperator1 = "-";
+    var year = lastDay.getFullYear();
+    var month = lastDay.getMonth() + 1;
+    var strDate = lastDay.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+    var currentdate = year + seperator1 + month + seperator1 + strDate;
+    return currentdate;
+}
+
+

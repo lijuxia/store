@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 /**
@@ -34,7 +35,7 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/listPull", method = RequestMethod.GET)
-    public ResponseMessage listPull(String oddId){
+    public ResponseMessage listPull(String oddId, byte type, Date beginDate, Date endDate){
         Timestamp time = null;
         int storeId = 0;
         WarehouseRecord record = warehouseRecordService.findById(oddId);
@@ -42,14 +43,14 @@ public class WarehouseRecordController extends BaseController {
             time = record.getCreatTime();
         }
         PageSearch pageSearch = new PageSearch(10,1);
-        if(getCurrentStore().getType()==Store.TYPE_STORE){
+//        if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
-        }
-        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,time,null,"creatTime desc"));
+//        }
+        return success(warehouseRecordService.list(pageSearch,type,storeId,beginDate,endDate,time,null,"creatTime desc"));
     }
 
     @RequestMapping(value = "/listPullUp", method = RequestMethod.GET)
-    public ResponseMessage listPullUp(String oddId){
+    public ResponseMessage listPullUp(String oddId, byte type, Date beginDate, Date endDate){
         Timestamp time = null;
         int storeId = 0;
         WarehouseRecord record = warehouseRecordService.findById(oddId);
@@ -57,10 +58,10 @@ public class WarehouseRecordController extends BaseController {
             time = record.getCreatTime();
         }
         PageSearch pageSearch = new PageSearch(10,1);
-        if(getCurrentStore().getType()==Store.TYPE_STORE){
+//        if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
-        }
-        return success(warehouseRecordService.list(pageSearch,(byte)0,storeId,null,time,"creatTime desc"));
+//        }
+        return success(warehouseRecordService.list(pageSearch,type,storeId,beginDate,endDate,null,time,"creatTime desc"));
     }
 
 

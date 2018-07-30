@@ -5,23 +5,86 @@
     <title>老南塘馄饨担</title>
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
+    <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
+    <link rel="stylesheet" href="../../fonts/iconfont.css" />
+    <style>
+    	.shaixuan-button-div{
+    		width: 100%;
+    		height: 60px;
+    		background-color: #007AFF;
+    		position: fixed;
+    		bottom: 0px;
+    		text-align: center;
+    		line-height: 60px;
+    		color: white;
+    		font-size: 20px;
+    	}
+    </style>
 </head>
 <body>
-	<header class="mui-bar mui-bar-nav">
-	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-	    <h1 class="mui-title">单据记录</h1>
-	</header>
-	<div class="mui-content">
-		<!--下拉刷新容器-->
-		<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
-		  <div class="mui-scroll">
-		  	<input type="hidden" id="pullOddId" />
-		  	<input type="hidden" id="pullOddId_up" />
-		    <ul class="mui-table-view" style="margin-top: 50px;" id="list">
-		    </ul>
-		  </div>
+		<!-- 主界面不动、菜单移动 -->
+		<!-- 侧滑导航根容器 -->
+		<div class="mui-off-canvas-wrap mui-draggable mui-slide-in">
+			<!-- 菜单容器 -->
+			<aside class="mui-off-canvas-right" id="offCanvasSide" style="background-color: white;">
+				<div class="mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<!-- 菜单具体展示内容 -->
+						<form class="mui-input-group">
+						    <div class="mui-input-row">
+						        <label style="width: 100%;">单据类型</label>
+						    </div>
+						    <div class="mui-input-row">
+						    	<input type="hidden" id="type" value="0">
+						    	<input type="text" id="typeName" class="mui-input-clear" placeholder="选择单据类型" style="text-align: center;" value="不限">
+						    </div>
+						    <div class="mui-input-row">
+						        <label style="width: 100%;">开始时间</label>
+						    </div>
+						    <div class="mui-input-row">
+						        <input type="text" id="beginDate" placeholder="开始时间" style="text-align: center;">
+						    </div>
+						    <div class="mui-input-row">
+						        <label style="width: 100%;">结束时间</label>
+						    </div>
+						    <div class="mui-input-row">
+						        <input type="text" id="endDate" placeholder="结束时间" style="text-align: center;">
+						    </div>
+						</form>
+						<div class="shaixuan-button-div" onclick="pullNewList()">
+							确定
+						</div>
+					</div>
+				</div>
+			</aside>
+			<!-- 主页面容器 -->
+			<div class="mui-inner-wrap">
+				<!-- 主页面标题 -->
+				<header class="mui-bar mui-bar-nav">
+					<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+					<h1 class="mui-title" id="head-title">单据记录</h1>
+					<a class="mui-pull-right" href="#offCanvasSide">
+						<button class="mui-btn mui-btn-link mui-btn-nav mui-pull-right" style="color: #000000;">
+							筛选
+							<span class="iconfont icon-shaixuan"></span>
+						</button>
+					</a>
+				</header>
+				<div class="mui-content mui-scroll-wrapper">
+					<!-- 主界面具体展示内容 -->
+					<!--下拉刷新容器-->
+					<div id="refreshContainer" class="mui-content mui-scroll-wrapper">
+					  <div class="mui-scroll">
+					  	<input type="hidden" id="pullOddId" />
+					  	<input type="hidden" id="pullOddId_up" />
+					    <ul class="mui-table-view" style="margin-top: 50px;" id="list">
+					    </ul>
+					  </div>
+					</div>
+				</div>
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
 		</div>
-	</div>
     <script type="text/html" id="listTemp">
 		<% if(value.length > 0){ %>
 		<% for(var i=0;i<value.length;i++){ %>
@@ -45,6 +108,7 @@
 		<%}%>
     </script>
     <script src="../../js/mui.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="../../plugin/picker/dist/js/mui.picker.min.js" ></script>
     <script type="text/javascript" src="../../js/jquery-3.3.1.min.js" ></script>
     <script type="text/javascript" src="../../js/template-web.js" ></script>
     <script type="text/javascript" src="../../js/ljx.error.js" ></script>
@@ -89,6 +153,41 @@
     	});
 	});
 	
+	var picker = new mui.PopPicker();
+	var typePickData = [{value:'0',text:'不限'}
+						,{value:'1',text:'销售'}
+						,{value:'2',text:'配送'}
+						,{value:'3',text:'报废'}
+						,{value:'4',text:'采购'}
+						,{value:'5',text:'消耗'}
+						,{value:'6',text:'盘点'}
+						,{value:'7',text:'生产'}];
+	picker.setData(typePickData);
+	mui(document.body).on('tap','#typeName', function(event) {
+		picker.show(function(items) {
+			$("#typeName").val(items[0].text);
+			$("#type").val(items[0].value);
+		});
+	}, false);
+	
+    $("#beginDate").val(getFirstDayOfMonthFormat());
+    var beginPicker = new mui.DtPicker({type:'date'}); 
+	mui(document.body).on('tap','#beginDate', function(event) {
+	    beginPicker.show(function (selectItems) { 
+	    	var dd = selectItems.y.value+"-"+selectItems.m.value+"-"+selectItems.d.value
+	    	$("#beginDate").val(dd);
+	    })
+	}, false);
+	
+    $("#endDate").val(getLastDayOfMonthFormat());
+    var endPicker = new mui.DtPicker({type:'date'}); 
+	mui(document.body).on('tap','#endDate', function(event) {
+	    endPicker.show(function (selectItems) { 
+	    	var dd = selectItems.y.value+"-"+selectItems.m.value+"-"+selectItems.d.value
+	    	$("#endDate").val(dd);
+	    })
+	}, false);
+	
 	mui(document.body).on('tap', '.edit-btn', function(e) {
 		var btn = this;
 	    var id = this.getAttribute("recordId");
@@ -113,9 +212,15 @@
 	function pullfresh_up() {
 	     //业务逻辑代码，比如通过ajax从服务器获取新数据；
 	     var pullOddId_up = $("#pullOddId_up").val();
+	     var type = $("#type").val();
+	     var beginDate = $("#beginDate").val();
+	     var endDate = $("#endDate").val();
 		mui.ajax("/warehouserecord/listPullUp",{
 			data:{
-				oddId:pullOddId_up
+				oddId:pullOddId_up,
+				type:type,
+				beginDate:beginDate,
+				endDate:endDate
 			},
 			dataType:'json',
 			type:'get',
@@ -144,9 +249,51 @@
 	function pullfresh() {
 	     //业务逻辑代码，比如通过ajax从服务器获取新数据；
 	    var pullOddId = $("#pullOddId").val();
+	     var type = $("#type").val();
+	     var beginDate = $("#beginDate").val();
+	     var endDate = $("#endDate").val();
 		mui.ajax("/warehouserecord/listPull",{
 			data:{
-				oddId:pullOddId
+				oddId:pullOddId,
+				type:type,
+				beginDate:beginDate,
+				endDate:endDate
+			},
+			dataType:'json',
+			type:'get',
+			success:function (data){
+				if(data.succeed){
+					if(data.value.length>0){
+						$("#pullOddId").val(data.value[0].oddId);
+					}
+					if(data.value.length>0){
+						$("#pullOddId_up").val(data.value[data.value.length-1].oddId);
+					}
+					var Carouselhtml = template('listTemp', data);
+	     			mui('#refreshContainer').pullRefresh().endPulldownToRefresh(true);
+					$("#list").prepend(Carouselhtml);
+				}else{
+	     			mui('#refreshContainer').pullRefresh().endPulldownToRefresh()
+					errorHandle(data);
+				}
+	     //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+	     //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
+			}
+		});
+	}
+	function pullNewList(){
+		$("#list").html("");
+		mui('.mui-off-canvas-wrap').offCanvas('close');
+	     //业务逻辑代码，比如通过ajax从服务器获取新数据；
+	     var type = $("#type").val();
+	     var beginDate = $("#beginDate").val();
+	     var endDate = $("#endDate").val();
+		mui.ajax("/warehouserecord/listPull",{
+			data:{
+				oddId:"",
+				type:type,
+				beginDate:beginDate,
+				endDate:endDate
 			},
 			dataType:'json',
 			type:'get',

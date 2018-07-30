@@ -52,6 +52,12 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
         return warehouseRecordMapper.list(storeId,type,null,null,beginDate,endDate,order);
     }
 
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate, Timestamp beginTime, Timestamp endTime,String order){
+        if(pageSearch!=null)
+            PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
+        return warehouseRecordMapper.list(storeId,type,beginTime,endTime,beginDate,endDate,order);
+    }
+
     @Transactional
     public void reflesh(int storeId){
         List<WarehouseRecord> list = warehouseRecordMapper.list(0,(byte)0,null,null,null,null,"creatTime asc");

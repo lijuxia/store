@@ -1,6 +1,7 @@
 package org.ljx.service.report;
 
 import org.ljx.entity.*;
+import org.ljx.entity.report.CheckReportCell;
 import org.ljx.entity.report.ReportCell;
 import org.ljx.service.product.ProductService;
 import org.ljx.service.warehouse.WarehouseService;
@@ -29,6 +30,59 @@ public class ReportServiceImpl implements ReportService {
     private final byte OP_IN = 1;
     private final byte OP_OUT = 2;
     private final byte OP_SAVE = 3;
+
+    private final byte TYPE_BEFORE = 1;
+    private final byte TYPE_CHECK = 2;
+    private final byte TYPE_ERROR = 3;
+
+    public List<Map<String,CheckReportCell>> listCheck(int storeId, Date beginDate, Date endDate){
+        List<WarehouseRecord> list = warehouseRecordService.list(null,WarehouseRecord.TYPE_CHECK,storeId,beginDate,endDate,"creatTime desc");
+        //初始化数据
+        List<Map<String,CheckReportCell>> dataList = initCheckList(getDayFromDate(endDate));
+        for(int i=0;i<list.size();i++){
+            WarehouseRecord record = list.get(i);
+            int index = getDayFromDate(record.getDate())-1;//记录在数据的位置
+            //遍历记录中包含的产品
+            for(int p=0;p<record.getListDetails().size();p++){
+                WarehouseRecordDetail detail = record.getListDetails().get(p);//产品详细记录
+                //将流水详细处理到数据中
+                //盘点前库存
+                addCheckCell(dataList,index,detail.getProductId(),TYPE_BEFORE,detail.getBeforeSaveNum());
+                //盘点数量
+                addCheckCell(dataList,index,detail.getProductId(),TYPE_CHECK,detail.getNum());
+                //问题数量
+                addCheckCell(dataList,index,detail.getProductId(),TYPE_ERROR,detail.getNum().subtract(detail.getBeforeSaveNum()));
+            }
+        }
+        return dataList;
+    }
+    private List<Map<String,CheckReportCell>> addCheckCell(List<Map<String,CheckReportCell>> dataList,int index,int productId,byte type,BigDecimal num){
+        String key = productId+"";//产品ID
+        CheckReportCell cell = dataList.get(index).get(key);//产品对应统计内容
+        CheckReportCell sumCell = dataList.get(dataList.size()-1).get(key);//总汇统计内容
+        if(cell==null){
+            cell = new CheckReportCell();
+        }
+        if(sumCell==null){
+            sumCell = new CheckReportCell();
+        }
+        switch (type){//判断统计的位置
+            case TYPE_BEFORE:
+                cell.setBefore(num);
+                break;
+            case TYPE_CHECK:
+                cell.setCheck(num);
+                break;
+            case TYPE_ERROR:
+                cell.setError(num);
+                sumCell.addError(num);
+            default:
+                break;
+        }
+        dataList.get(index).put(key,cell);
+        dataList.get(dataList.size()-1).put(key,sumCell);
+        return dataList;
+    }
 
     public List<Map<String,ReportCell>> list(byte type, int storeId, Date beginDate, Date endDate){
         List<Warehouse> warehouseList = warehouseService.list(storeId,(byte)0, TimeUtil.getBeginTime(new Timestamp(beginDate.getTime())),TimeUtil.getEndTime(new Timestamp(endDate.getTime())));
@@ -89,7 +143,7 @@ public class ReportServiceImpl implements ReportService {
             }else if(record.getSendStoreId()==storeId){//进货方
                 addProduct(dataList,index,record,detail.getProduct(),OP_IN,detail.getNum());
             }
-        }else{
+        }else if(record.getType() != WarehouseRecord.TYPE_CHECK){
             if(record.getInOrOut()==WarehouseRecord.INOROUT_IN){
                 addProduct(dataList,index,record,detail.getProduct(),OP_IN,detail.getNum());
             }else if(record.getInOrOut()==WarehouseRecord.INOROUT_OUT){
@@ -183,6 +237,13 @@ public class ReportServiceImpl implements ReportService {
         return list;
     }
 
+    private List initCheckList(int day){
+        List list = new ArrayList();
+        for(int i=0;i<day+1;i++){
+            list.add(new HashMap<String,CheckReportCell>());
+        }
+        return list;
+    }
     private int getDayFromDate(Date date){
         Calendar ca = Calendar.getInstance();
         ca.setTimeInMillis(date.getTime());

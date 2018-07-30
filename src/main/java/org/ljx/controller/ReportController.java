@@ -8,6 +8,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.ljx.entity.Product;
 import org.ljx.entity.Store;
 import org.ljx.entity.WarehouseRecord;
+import org.ljx.entity.report.CheckReportCell;
 import org.ljx.entity.report.ReportCell;
 import org.ljx.entity.web.PageSearch;
 import org.ljx.entity.web.ResponseMessage;
@@ -55,60 +56,17 @@ public class ReportController extends BaseController {
         return success(map);
     }
 
-//    @RequestMapping(value = "/exportExcel",method = RequestMethod.POST)
-//    public void exportExcel(HttpServletRequest request, HttpServletResponse response){
-//        String columnNames[]={"ID","项目名","销售人","负责人","所用技术","备注"};//列名
-//        //生成一个Excel文件
-//        // 创建excel工作簿
-//        Workbook wb = new HSSFWorkbook();
-//        // 创建第一个sheet（页），并命名
-//        Sheet sheet = wb.createSheet("0");
-//        // 手动设置列宽。第一个参数表示要为第几列设；，第二个参数表示列的宽度，n为列高的像素数。
-//        for(int i=0;i<columnNames.length;i++){
-//            sheet.setColumnWidth((short) i, (short) (35.7 * 150));
-//        }
-//        // 创建第一行
-//        Row row = sheet.createRow((short) 0);
-//        //设置列名
-//        for(int i=0;i<columnNames.length;i++){
-//            Cell cell = row.createCell(i);
-//            cell.setCellValue(columnNames[i]);
-//        }
-//        //同理可以设置数据行
-//        ByteArrayOutputStream os = new ByteArrayOutputStream();
-//        try {
-//            wb.write(os);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        byte[] content = os.toByteArray();
-//        InputStream is = new ByteArrayInputStream(content);
-//        // 设置response参数，可以打开下载页面
-//        response.reset();
-//        response.setContentType("application/vnd.ms-excel;charset=utf-8");
-//        response.setHeader("Content-Disposition", "attachment;filename="+ new String((fileName + ".xls").getBytes(), "iso-8859-1"));
-//        ServletOutputStream out = response.getOutputStream();
-//        BufferedInputStream bis = null;
-//        BufferedOutputStream bos = null;
-//        try {
-//            bis = new BufferedInputStream(is);
-//            bos = new BufferedOutputStream(out);
-//            byte[] buff = new byte[2048];
-//            int bytesRead;
-//            // Simple read/write loop.
-//            while (-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
-//                bos.write(buff, 0, bytesRead);
-//            }
-//        } catch (final IOException e) {
-//            throw e;
-//        } finally {
-//            if (bis != null)
-//                bis.close();
-//            if (bos != null)
-//                bos.close();
-//        }
-//        return null;
-//    }
+    @RequestMapping(value = "/checkList" ,method = RequestMethod.GET)
+    public ResponseMessage checkList(String date){
+        Map<String,Object> map = new HashMap();
+        Date dateSql = StringToDate(date);
+        List<Map<String,CheckReportCell>> list = reportService.listCheck(getCurrentStore().getId(),getMonthBegin(dateSql),getMonthEnd(dateSql));
+        byte[] types = new byte[]{Product.TYPE_MATERIAL,Product.TYPE_HALF};
+        List<Product> productList = productService.list(types);
+        map.put("productList",productList);
+        map.put("valueList",list);
+        return success(map);
+    }
 
     @RequestMapping(value = "/updateCenterFile")
     public void updateCenterFile(String date) throws Exception{
@@ -228,7 +186,7 @@ public class ReportController extends BaseController {
             e.printStackTrace();
         }
         byte[] content = os.toByteArray();
-        String fileName = "zongpei_"+getNowStr()+".xls";
+        String fileName = getCurrentStore().getName()+"_报表_"+date+".xls";
         downFile(content,fileName);
     }
 
@@ -308,7 +266,79 @@ public class ReportController extends BaseController {
             e.printStackTrace();
         }
         byte[] content = os.toByteArray();
-        String fileName = "mendian_"+getNowStr()+".xls";
+        String fileName = getCurrentStore().getName()+"_报表_"+date+".xls";
+        downFile(content,fileName);
+    }
+
+
+    @RequestMapping(value = "/updateCheckFile")
+    public void updateCheckFile(String date) throws Exception{
+        //获取数据
+        Map<String,Object> map = new HashMap();
+        Date dateSql = StringToDate(date);
+        List<Map<String,CheckReportCell>> list = reportService.listCheck(getCurrentStore().getId(),getMonthBegin(dateSql),getMonthEnd(dateSql));
+        byte[] types = new byte[]{Product.TYPE_MATERIAL,Product.TYPE_HALF};
+        List<Product> productList = productService.list(types);
+        map.put("productList",productList);
+        map.put("valueList",list);
+
+        Workbook wb = new HSSFWorkbook();
+        Sheet sheet = wb.createSheet("sheet1");
+        //单元格样式
+        CellStyle cellStyle = getCellStyle(wb,false);
+        CellStyle thCellStyle = getCellStyle(wb,true);
+        sheet.addMergedRegion(new CellRangeAddress(0,2,0,0));
+        for(int i=0;i<productList.size();i++){
+            sheet.addMergedRegion(new CellRangeAddress(0,0,i*3+1,i*3+3));
+            sheet.addMergedRegion(new CellRangeAddress(1,1,i*3+1,i*3+3));
+        }
+
+        // 创建第一行，设置内容
+        Row row = sheet.createRow((short) 0);
+        //设置第一栏
+        setCell(row,0,"日期",thCellStyle);
+        for(int i=0;i<productList.size();i++){
+            setCell(row,i*3+1,productList.get(i).getName(),thCellStyle);
+        }
+        //设置第二行，设置内容
+        row = sheet.createRow((short) 1);
+        for(int i=0;i<productList.size();i++){
+            setCell(row,i*3+1,productList.get(i).getUnit(),thCellStyle);
+        }
+        //设置第三行，设置内容
+        row = sheet.createRow((short) 2);
+        for(int i=0;i<productList.size();i++){
+            setCell(row,i*3+1,"前",thCellStyle);
+            setCell(row,i*3+2,"盘",thCellStyle);
+            setCell(row,i*3+3,"错",thCellStyle);
+        }
+        //遍历统计内容，设置单元格
+        for(int i=0;i<list.size();i++){
+            row = sheet.createRow((short) 3+i);
+            String day = i+1+"";
+            if(i==(list.size()-1)){
+                day = "合计";
+            }
+            setCell(row,0,day,cellStyle);
+            for(int p=0;p<productList.size();p++){
+                Map<String,CheckReportCell> valueMap = list.get(i);
+                CheckReportCell reportCell = valueMap.get(productList.get(p).getId()+"");
+                if(reportCell!=null){
+                    setCell(row,p*3+1,reportCell.getBefore()+"",cellStyle);
+                    setCell(row,p*3+2,reportCell.getCheck()+"",cellStyle);
+                    setCell(row,p*3+3,reportCell.getError()+"",cellStyle);
+                }
+            }
+        }
+        //同理可以设置数据行
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        try {
+            wb.write(os);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        byte[] content = os.toByteArray();
+        String fileName = getCurrentStore().getName()+"_盘点统计_"+date+".xls";
         downFile(content,fileName);
     }
 
