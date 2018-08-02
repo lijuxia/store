@@ -168,13 +168,14 @@ public class ReportController extends BaseController {
                         List<Product> lisArray = new ArrayList(lis);
                         for(int x=0;x<lisArray.size();x++){
                             String value = "";
-                            if(reportCell.getMakeMap().get(productList.get(p).getId()+"")!=null){
-                                value =reportCell.getMakeMap().get(productList.get(p).getId()+"")+"";
+                            if(reportCell.getMakeMap().get(lisArray.get(x).getId()+"")!=null){
+                                value =reportCell.getMakeMap().get(lisArray.get(x).getId()+"")+"";
                             }
                             setCell(row,index+3+x,value,cellStyle);
                         }
                     }
                     setCell(row,index+3+size,reportCell.getSave()+"",cellStyle);
+                    index = index +3+size;
                 }
             }
         }
