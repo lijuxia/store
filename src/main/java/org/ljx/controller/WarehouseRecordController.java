@@ -184,7 +184,7 @@ public class WarehouseRecordController extends BaseController {
         if (warehouseRecord.getRemark() == null) {
             warehouseRecord.setRemark("");
         }
-        WarehouseRecord timeCheck = warehouseRecordService.findLastCheck(warehouseRecord.getStoreId(),warehouseRecord.getDateTime());
+        WarehouseRecord timeCheck = warehouseRecordService.findCheckByDate(warehouseRecord.getStoreId(),warehouseRecord.getDateTime());
         if(timeCheck!=null && !timeCheck.getOddId().equals(warehouseRecord.getOddId())){
             throw new Exception("当天已盘点,不能重复盘点");
         }

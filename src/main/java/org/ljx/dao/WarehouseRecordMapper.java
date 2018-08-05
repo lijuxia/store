@@ -86,4 +86,31 @@ public interface WarehouseRecordMapper {
             @Result(property = "makeProductId",column = "makeProductId")
     })
     WarehouseRecord findById(String oddId);
+
+    @SelectProvider(type = WarehouseRecordMapper.class, method = "buildFindByDate")
+    @ResultType(WarehouseRecord.class)
+    @Results({
+            @Result(property="listDetails",column="oddId",javaType=List.class,
+                    many=@Many(select="org.ljx.dao.WarehouseRecordDetailMapper.list")),
+            @Result(property = "oddId",column = "oddId"),
+    })
+    List<WarehouseRecord> findByDate(@Param("storeId") int storeId
+            , @Param("date")Date date, @Param("order")String order);
+
+    static String buildFindByDate(@Param("storeId") int storeId
+            , @Param("date")Date date, @Param("order")String order) {
+        return new SQL(){{
+            SELECT("*");
+            FROM("sys_warehouse_record ");
+            if (storeId != 0) {
+                WHERE("storeId = #{storeId}");
+            }
+            if(date!=null && !"".equals(date)){
+                WHERE("date = #{date}");
+            }
+            WHERE("type = "+WarehouseRecord.TYPE_CHECK);
+            WHERE("status = 1");
+            ORDER_BY(order);
+        }}.toString();
+    }
 }

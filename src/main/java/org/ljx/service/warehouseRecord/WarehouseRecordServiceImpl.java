@@ -60,6 +60,12 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
 
     @Transactional
     public void reflesh(int storeId){
+        //将盘点单删除，先处理所有其他单据，最后再重新处理盘点单
+        List<WarehouseRecord> checkList = warehouseRecordMapper.list(0,WarehouseRecord.TYPE_CHECK,null,null,null,null,"creatTime asc");
+        for(WarehouseRecord check :checkList){
+            check.setStatus(WarehouseRecord.STATUS_OFF);
+            warehouseRecordMapper.update(check);
+        }
         List<WarehouseRecord> list = warehouseRecordMapper.list(0,(byte)0,null,null,null,null,"creatTime asc");
         for(int x=0;x<list.size();x++){
             WarehouseRecord warehouseRecord = list.get(x);
@@ -97,6 +103,8 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
                     }else if(warehouseRecord.getType()==WarehouseRecord.TYPE_CHECK){//盘点,库存直接修改为盘点量,并生成之前的库存量,用作后面统计数据,分析盘点的缺失问题
                         if(detail.getNum().compareTo(BigDecimal.ZERO)!=-1){//大于等于0,可以修改库存,小于0不能修改库存,认为是无效数据
                             BigDecimal beforeSaveNum = warehouseService.updateSave(WarehouseServiceImpl.OP_CHANGE,warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getDateTime(),warehouseRecord.getCreatTime());//原料出库
+                            detail.setBeforeSaveNum(beforeSaveNum);
+                            warehouseRecordDetailMapper.update(detail);
                         }
                     }
                     if(warehouseRecord.getType()==WarehouseRecord.TYPE_CHECK
@@ -106,9 +114,52 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
                 }else{
                     if(warehouseRecord.getType()==WarehouseRecord.TYPE_CHECK){//盘点,库存直接修改为盘点量,并生成之前的库存量,用作后面统计数据,分析盘点的缺失问题
                         BigDecimal beforeSaveNum = warehouseService.updateSave(WarehouseServiceImpl.OP_CHANGE,warehouseRecord.getStoreId(),detail.getProductId(),detail.getNum(),warehouseRecord.getDateTime(),warehouseRecord.getCreatTime());//原料出库
+                        detail.setBeforeSaveNum(beforeSaveNum);
+                        warehouseRecordDetailMapper.update(detail);
                     }
                 }
             }
+        }
+
+        //重新处理所有盘点单
+        for(WarehouseRecord check :checkList){
+            check.setStatus(WarehouseRecord.STATUS_ON);
+            //1、删除所有详细记录
+            warehouseRecordDetailMapper.deleteByOddId(check.getOddId());
+            //2、保存新的详细记录
+            //保存详细列表
+            List<WarehouseRecordDetail> details = check.getListDetails();
+            if(check.getType()==WarehouseRecord.TYPE_MAKE){//生产，半成品入库
+                warehouseService.updateSave(WarehouseServiceImpl.OP_INTO,check.getStoreId(),check.getMakeProductId(),check.getMakeNum(),check.getDateTime(),check.getCreatTime());//半成品入库
+            }
+            for(int i = 0;i<details.size();i++){
+                WarehouseRecordDetail detail = details.get(i);
+                if(detail.getNum().compareTo(BigDecimal.ZERO)!=0){
+                    detail.setOddId(check.getOddId());
+                    detail.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
+                    //库存修改
+                    if(check.getType()==WarehouseRecord.TYPE_CHECK){//盘点,库存直接修改为盘点量,并生成之前的库存量,用作后面统计数据,分析盘点的缺失问题
+                        if(detail.getNum().compareTo(BigDecimal.ZERO)!=-1){//大于等于0,可以修改库存,小于0不能修改库存,认为是无效数据
+                            BigDecimal beforeSaveNum = warehouseService.updateSave(WarehouseServiceImpl.OP_CHANGE,check.getStoreId(),detail.getProductId(),detail.getNum(),check.getDateTime(),check.getCreatTime());//原料出库
+                            detail.setBeforeSaveNum(beforeSaveNum);
+                        }
+                    }
+                    if(check.getType()==WarehouseRecord.TYPE_CHECK
+                            &&detail.getNum().compareTo(BigDecimal.ZERO)==-1){
+                    }else{
+                        warehouseRecordDetailMapper.insert(detail);
+                    }
+                }else{
+                    if(check.getType()==WarehouseRecord.TYPE_CHECK){//盘点,库存直接修改为盘点量,并生成之前的库存量,用作后面统计数据,分析盘点的缺失问题
+                        detail.setOddId(check.getOddId());
+                        detail.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
+                        BigDecimal beforeSaveNum = warehouseService.updateSave(WarehouseServiceImpl.OP_CHANGE,check.getStoreId(),detail.getProductId(),detail.getNum(),check.getDateTime(),check.getCreatTime());//原料出库
+                        detail.setBeforeSaveNum(beforeSaveNum);
+                        warehouseRecordDetailMapper.insert(detail);
+                    }
+                }
+            }
+            warehouseRecordMapper.update(check);
         }
     }
 
@@ -196,6 +247,8 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
             //修改详细列表
             //假删记录，使库存回退
             delete(warehouseRecord.getOddId());
+            //如果是盘点单的话，需要对当天盘点之后录入的单据进行处理，不然会造成差值bug
+
             warehouseRecordOld.setStatus(WarehouseRecord.STATUS_ON);
             warehouseRecord.setCreatTime(new Timestamp(System.currentTimeMillis()));
             //1、删除所有详细记录
@@ -355,6 +408,23 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
         PageSearch pageSearch = new PageSearch();
         pageSearch.setPageSize(1);
         List<WarehouseRecord> list = list(pageSearch,WarehouseRecord.TYPE_CHECK,storeId,new Date(time.getTime()),null,"date asc");
+        if(list.size()>0){
+            return list.get(0);
+        }else{
+            return null;
+        }
+    }
+
+    /**
+     * 获取指定日期的盘点单
+     * @param storeId
+     * @param time
+     * @return
+     */
+    public WarehouseRecord findCheckByDate(int storeId,Timestamp time){
+        PageSearch pageSearch = new PageSearch();
+        pageSearch.setPageSize(1);
+        List<WarehouseRecord> list = warehouseRecordMapper.findByDate(storeId,new Date(time.getTime()),"date asc");
         if(list.size()>0){
             return list.get(0);
         }else{

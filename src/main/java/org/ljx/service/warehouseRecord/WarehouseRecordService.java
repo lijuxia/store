@@ -33,4 +33,12 @@ public interface WarehouseRecordService {
     public void confirmeRecord(String oddId);
 
     public WarehouseRecord findLastCheck(int storeId,Timestamp time);
+
+    /**
+     * 获取指定日期的盘点单
+     * @param storeId
+     * @param time
+     * @return
+     */
+    public WarehouseRecord findCheckByDate(int storeId,Timestamp time);
 }

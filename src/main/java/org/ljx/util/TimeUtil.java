@@ -91,4 +91,11 @@ public class TimeUtil {
         return new Timestamp(c.getTimeInMillis());
     }
 
+    /**
+     * 获取当前时间
+     * @return
+     */
+    public static Timestamp getNow(){
+        return new Timestamp(System.currentTimeMillis());
+    }
 }
