@@ -10,25 +10,40 @@
     	.report-table{
     		width: 100%;table-layout:fixed;background-color: #efeff4;
     	}
-    	#report-hide-table{
-    		width: 100%;
-    		table-layout:fixed;
-    		position: fixed;
-    		top: 84px;
-    	}
     	#hide-date{
     		width: 100%;
     		position: fixed;
     		top: 44px;
     	}
-    	.report-table td{
+    	.report-table td,.report-table .tt th{
     		line-height: 30px;
     		text-align: center;
+    		width: 70px;
     	}
-    	.report-table th{
-    		line-height: 30px;
-    		text-align: center;
+    	.tt{
+    		height: 0px;
+    		/*display: none;*/
     	}
+    	#list{
+    		height: 100%;
+            position: relative;
+            overflow-x: auto;
+            overflow-y: hidden;
+            table-layout: fixed;
+    	}
+        #list-head {
+            position: absolute;
+            left: 0;
+        }
+
+        #list-content{
+            position: absolute;
+            overflow-y: auto;
+            overflow-x: hidden;
+            top: 98px;
+            height: 77px;
+            left: 0;
+        }
     </style>
 </head>
 <body>
@@ -50,8 +65,17 @@
     	<div id="list"></div>
 	</div>
     <script type="text/html" id="listTemp">
-    	<table class="report-table" id="report-hide-table" border="1" style="display: none;">
+    	<div id="list-head">
+    	<table class="report-table report-hide-table" border="1" >
     		<thead><!--隐藏头部，滚动后，显示-->
+    			<tr class="tt">
+    				<th></th>
+    			<% for(var i=0;i<productList.length;i++){%>
+    				<th>进</th>
+    				<th>出</th>
+    				<th>存</th>
+    			<% } %>
+    			</tr>
     			<tr>
     				<th rowspan="3">日期</th>
     			<% for(var i=0;i<productList.length;i++){%>
@@ -72,27 +96,9 @@
     			</tr>
     		</thead>
     	</table>
-    	<table class="report-table" id="report-table" border="1">
-    		<thead><!--头部，放置产品名称-->
-    			<tr>
-    				<th rowspan="3">日期</th>
-    			<% for(var i=0;i<productList.length;i++){%>
-    				<th colspan="3"><%=productList[i].name %></th>
-    			<% } %>
-    			</tr>
-    			<tr>
-    			<% for(var i=0;i<productList.length;i++){%>
-    				<th colspan="3"><%=productList[i].unit %></th>
-    			<% } %>
-    			</tr>
-    			<tr>
-    			<% for(var i=0;i<productList.length;i++){%>
-    				<th>进</th>
-    				<th>出</th>
-    				<th>存</th>
-    			<% } %>
-    			</tr>
-    		</thead>
+    	</div>
+    	<div id="list-content">
+    	<table class="report-table" border="1">
     		<tbody>
     			<% for(var i=0;i<valueList.length;i++){ %>
     				<%var value = valueList[i];%>
@@ -119,6 +125,7 @@
     			<%}%>
     		</tbody>
     	</table>
+    	</div>
     	<% %>
     </script>
     <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
@@ -142,14 +149,13 @@
     })
 	}, false);
 	
-	$(window).scroll(function(){
-		var top = $(window).scrollTop();
-		if(top<=0){
-			$("#report-hide-table").hide();
-		}else{
-			$("#report-hide-table").show();
-		}
-	});
+	function initList(){
+		var w = $(window).width()
+		var h = $(window).height()
+		$("#list").width(w);
+		$("#list").height(h-84);
+		$("#list-content").height(h-200)
+	}
 	
 	mui(document.body).on('tap', '#submit-btn', function(e) {
 		var btn = this;
@@ -175,6 +181,7 @@
 					var Carouselhtml = template('listTemp', data.value);
 					console.log(Carouselhtml);
 					$("#list").html(Carouselhtml);
+					initList()
 				}else{
 					errorHandle(data);
 				}

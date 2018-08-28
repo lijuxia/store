@@ -40,7 +40,7 @@
             position: absolute;
             overflow-y: auto;
             overflow-x: hidden;
-            top: 77px;
+            top: 68px;
             height: 77px;
             left: 0;
         }
@@ -49,17 +49,17 @@
 <body>
 	<header class="mui-bar mui-bar-nav">
 	    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-	    <h1 class="mui-title">报表</h1>
+	    <h1 class="mui-title">盘点报表</h1>
 	    <button type="button" data-loading-text="加载中" id="submit-btn" class="mui-btn mui-btn-primary mui-pull-right" >下载</button>
 	</header>
 	<div class="mui-content">
 		<div style="height: 40px;"></div>
 		<div class="mui-input-group" id="hide-date">
 	        <div class="mui-input-row">
-	        	<form id="down" action="/report/updateCenterFile">
+	        	<form id="down" action="/report/updateCheckFile">
 	            <label id="userResult" style="width: 40%;">日期</label>
 	            <input type="text" class="mui-input-clear" style="width: 60%;" placeholder="选择日期" name="date" id="date">
-	            </form>
+	        	</form>
 	    	</div>
     	</div>
     	<div id="list"></div>
@@ -67,60 +67,34 @@
     <script type="text/html" id="listTemp">
     	<div id="list-head">
     	<table class="report-table report-hide-table" border="1">
-    		<thead><!--头部，放置产品名称-->
+    		<thead><!--隐藏头部，滚动后，显示-->
     			<tr class="tt">
     				<th></th>
     			<% for(var i=0;i<productList.length;i++){%>
     				<th></th>
     				<th></th>
-					<%var pid = productList[i].id;%>
-					<%var lis = makeList[pid];%>
-					<%if(lis!=null){%>
-    					<%for(var x=0;x<lis.length;x++){ %>
-    						<th></th>
-    					<%}%>
-					<%}%>
-    				<th style="background-color: #ddd;"></th>
+    				<th></th>
     			<% } %>
     			</tr>
     			<tr>
     				<th rowspan="3">日期</th>
     			<% for(var i=0;i<productList.length;i++){%>
-					<%var pid = productList[i].id;%>
-					<%var lis = makeList[pid];%>
-					<%var cols = 3%>
-					<%if(lis!=null){%>
-    					<%cols=cols+lis.length%>
-					<%}%>
-    				<th colspan="<%=cols%>"><%=productList[i].name %></th>
+    				<th colspan="3"><%=productList[i].name %></th>
     			<% } %>
     			</tr>
     			<tr>
     			<% for(var i=0;i<productList.length;i++){%>
-					<%var pid = productList[i].id;%>
-					<%var lis = makeList[pid];%>
-					<%var cols = 3%>
-					<%if(lis!=null){%>
-    					<%cols=cols+lis.length%>
-					<%}%>
-    				<th colspan="<%=cols%>"><%=productList[i].unit %></th>
+    				<th colspan="3"><%=productList[i].unit %></th>
     			<% } %>
     			</tr>
-    			<tr class="tt">
+    			<tr>
     			<% for(var i=0;i<productList.length;i++){%>
-    				<th>进</th>
-    				<th>出</th>
-					<%var pid = productList[i].id;%>
-					<%var lis = makeList[pid];%>
-					<%if(lis!=null){%>
-    					<%for(var x=0;x<lis.length;x++){ %>
-    						<th><%=lis[x].name%></th>
-    					<%}%>
-					<%}%>
-    				<th style="background-color: #ddd;">存</th>
+    				<th>前</th>
+    				<th>盘</th>
+    				<th>错</th>
     			<% } %>
     			</tr>
-    	</thead>
+    		</thead>
     	</table>
     	</div>
     	<div id="list-content">
@@ -137,25 +111,14 @@
     				<%for(var p=0;p<productList.length;p++){ %>
     					<%var id = productList[p].id;%>
     					<%var cell = value[id]; %>
-						<%var lis = makeList[id];%>
     					<% if(cell == null){%>
     						<td></td>
-							<%if(lis!=null){%>
-		    					<%for(var x=0;x<lis.length;x++){ %>
-		    						<td></td>
-		    					<%}%>
-							<%}%>
     						<td></td>
     						<td style="background-color: #ddd;"></td>
     					<%}else{%>
-    						<td><%=cell.in%></td>
-    						<td><%=cell.out%></td>
-							<%if(lis!=null){%>
-		    					<%for(var x=0;x<lis.length;x++){ %>
-		    						<td><%=cell.makeMap[lis[x].id]%></td>
-		    					<%}%>
-							<%}%>
-    						<td style="background-color: #ddd;"><%=cell.save%></td>
+    						<td><%=cell.before%></td>
+    						<td><%=cell.check%></td>
+    						<td style="background-color: #ddd;"><%=cell.error%></td>
     					<%} %>
     				<%}%>
     				</tr>
@@ -185,25 +148,28 @@
     	$("#date").val(dd);
     })
 	}, false);
+	
+	function initList(){
+		var w = $(window).width()
+		var h = $(window).height()
+		$("#list").width(w);
+		$("#list").height(h-84);
+		$("#list-content").height(h-170)
+	}
+	
 	mui(document.body).on('tap', '#submit-btn', function(e) {
 		var btn = this;
 		mui(btn).button('loading');
 		$("#down").submit();
 		mui($("#submit-btn")).button('reset');
 	});
-	function initList(){
-		var w = $(window).width()
-		var h = $(window).height()
-		$("#list").width(w);
-		$("#list").height(h-84);
-		$("#list-content").height(h-179)
-	}
+	
 	$(function(){
 		getList();
 	})
 	var getList = function(){
 		var date = $("#date").val();
-		mui.ajax("/report/list",{
+		mui.ajax("/report/checkList",{
 			data:{
 				date:date
 			},
@@ -215,7 +181,7 @@
 					var Carouselhtml = template('listTemp', data.value);
 					console.log(Carouselhtml);
 					$("#list").html(Carouselhtml);
-					initList();
+					initList()
 				}else{
 					errorHandle(data);
 				}
