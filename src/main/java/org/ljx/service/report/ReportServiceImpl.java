@@ -36,7 +36,7 @@ public class ReportServiceImpl implements ReportService {
     private final byte TYPE_ERROR = 3;
 
     public List<Map<String,CheckReportCell>> listCheck(int storeId, Date beginDate, Date endDate){
-        List<WarehouseRecord> list = warehouseRecordService.list(null,WarehouseRecord.TYPE_CHECK,storeId,beginDate,endDate,"creatTime desc");
+        List<WarehouseRecord> list = warehouseRecordService.list(null,new byte[]{WarehouseRecord.TYPE_CHECK},storeId,beginDate,endDate,"creatTime desc");
         //初始化数据
         List<Map<String,CheckReportCell>> dataList = initCheckList(getDayFromDate(endDate));
         for(int i=0;i<list.size();i++){
@@ -86,7 +86,7 @@ public class ReportServiceImpl implements ReportService {
 
     public List<Map<String,ReportCell>> list(byte type, int storeId, Date beginDate, Date endDate){
         List<Warehouse> warehouseList = warehouseService.list(storeId,(byte)0, TimeUtil.getBeginTime(new Timestamp(beginDate.getTime())),TimeUtil.getEndTime(new Timestamp(endDate.getTime())));
-        List<WarehouseRecord> list = warehouseRecordService.list(null,type,storeId,beginDate,endDate,"creatTime desc");
+        List<WarehouseRecord> list = warehouseRecordService.list(null,new byte[]{type},storeId,beginDate,endDate,"creatTime desc");
         //初始化数据
         List<Map<String,ReportCell>> dataList = initList(getDayFromDate(endDate));
         //遍历流水记录，统计结果写入数据中

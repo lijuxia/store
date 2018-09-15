@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * Created by ljx on 2018/5/29.
@@ -30,8 +31,16 @@ public class WarehouseRecordController extends BaseController {
     @RequestMapping(value = "/listMain", method = RequestMethod.GET)
     public ResponseMessage listMain(){
         Store store = getCurrentStore();
-        PageSearch pageSearch = new PageSearch(5,1);
-        return success(warehouseRecordService.list(pageSearch,(byte)0,store.getId(),"creatTime desc"));
+        PageSearch pageSearch = new PageSearch(2,1);
+        List<WarehouseRecord> listSend = warehouseRecordService.list(pageSearch,
+                new byte[]{WarehouseRecord.TYPE_SEND},
+                store.getId(),"creatTime desc");
+        pageSearch = new PageSearch(4,1);
+        List<WarehouseRecord> listOther = warehouseRecordService.list(pageSearch,
+                new byte[]{WarehouseRecord.TYPE_CHECK,WarehouseRecord.TYPE_MAKE,WarehouseRecord.TYPE_BUY,WarehouseRecord.TYPE_SCRAP,WarehouseRecord.TYPE_SALE,WarehouseRecord.TYPE_CONSUME},
+                store.getId(),"creatTime desc");
+        listSend.addAll(listOther);
+        return success(listSend);
     }
 
     @RequestMapping(value = "/listPull", method = RequestMethod.GET)
@@ -46,7 +55,7 @@ public class WarehouseRecordController extends BaseController {
 //        if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
 //        }
-        return success(warehouseRecordService.list(pageSearch,type,storeId,beginDate,endDate,time,null,"creatTime desc"));
+        return success(warehouseRecordService.list(pageSearch,new byte[]{type},storeId,beginDate,endDate,time,null,"creatTime desc"));
     }
 
     @RequestMapping(value = "/listPullUp", method = RequestMethod.GET)
@@ -61,7 +70,7 @@ public class WarehouseRecordController extends BaseController {
 //        if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
 //        }
-        return success(warehouseRecordService.list(pageSearch,type,storeId,beginDate,endDate,null,time,"creatTime desc"));
+        return success(warehouseRecordService.list(pageSearch,new byte[]{type},storeId,beginDate,endDate,null,time,"creatTime desc"));
     }
 
 

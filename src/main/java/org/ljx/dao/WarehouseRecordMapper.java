@@ -42,11 +42,11 @@ public interface WarehouseRecordMapper {
                     one=@One(select = "org.ljx.dao.ProductMapper.findById")),
             @Result(property = "makeProductId",column = "makeProductId")
     })
-    List<WarehouseRecord> list(@Param("storeId") int storeId, @Param("type") byte type
+    List<WarehouseRecord> list(@Param("storeId") int storeId, @Param("types") byte[] types
             , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
             , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate, @Param("order")String order);
 
-    static String buildList(@Param("storeId") int storeId,@Param("type") byte type
+    static String buildList(@Param("storeId") int storeId,@Param("types") byte[] types
             , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
             , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate, @Param("order")String order) {
         return new SQL(){{
@@ -55,8 +55,18 @@ public interface WarehouseRecordMapper {
             if (storeId != 0) {
                 WHERE("(storeId = #{storeId} or sendStoreId = #{storeId})");
             }
-            if (type != 0) {
-                WHERE("type = #{type}");
+            if (types != null && types.length > 0) {
+                StringBuffer typeStr = new StringBuffer();
+                typeStr.append("(");
+                for(int i=0;i<types.length;i++){
+                    byte type = types[i];
+                    if(i>0){
+                        typeStr.append(" or ");
+                    }
+                    typeStr.append("type = '"+type+"'");
+                }
+                typeStr.append(")");
+                WHERE(typeStr.toString());
             }
             if(beginTime!=null && !"".equals(beginTime)){
                 WHERE("creatTime > #{beginTime}");

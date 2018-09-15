@@ -12,13 +12,13 @@ import java.util.List;
  */
 public interface WarehouseRecordService {
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId,String order);
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId,String order);
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Timestamp beginTime, Timestamp endTime,String order);
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Timestamp beginTime, Timestamp endTime,String order);
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate,String order);
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate,String order);
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate, Timestamp beginTime, Timestamp endTime,String order);
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate, Timestamp beginTime, Timestamp endTime,String order);
 
     public void reflesh(int storeId);
 

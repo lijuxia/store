@@ -17,7 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by ljx on 2018/5/29.
@@ -34,39 +37,39 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
     @Autowired
     ProductService productService;
 
-    public List<WarehouseRecord> list(PageSearch pageSearch,byte type,int storeId,String order){
+    public List<WarehouseRecord> list(PageSearch pageSearch,byte[] types,int storeId,String order){
         if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,type,null,null,null,null,order);
+        return warehouseRecordMapper.list(storeId,types,null,null,null,null,order);
     }
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Timestamp beginTime, Timestamp endTime,String order){
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Timestamp beginTime, Timestamp endTime,String order){
         if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,type,beginTime,endTime,null,null,order);
+        return warehouseRecordMapper.list(storeId,types,beginTime,endTime,null,null,order);
     }
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate,String order){
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate,String order){
         if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,type,null,null,beginDate,endDate,order);
+        return warehouseRecordMapper.list(storeId,types,null,null,beginDate,endDate,order);
     }
 
-    public List<WarehouseRecord> list(PageSearch pageSearch, byte type, int storeId, Date beginDate, Date endDate, Timestamp beginTime, Timestamp endTime,String order){
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate, Timestamp beginTime, Timestamp endTime,String order){
         if(pageSearch!=null)
             PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,type,beginTime,endTime,beginDate,endDate,order);
+        return warehouseRecordMapper.list(storeId,types,beginTime,endTime,beginDate,endDate,order);
     }
 
     @Transactional
     public void reflesh(int storeId){
         //将盘点单删除，先处理所有其他单据，最后再重新处理盘点单
-        List<WarehouseRecord> checkList = warehouseRecordMapper.list(0,WarehouseRecord.TYPE_CHECK,null,null,null,null,"creatTime asc");
+        List<WarehouseRecord> checkList = warehouseRecordMapper.list(0,new byte[]{WarehouseRecord.TYPE_CHECK},null,null,null,null,"creatTime asc");
         for(WarehouseRecord check :checkList){
             check.setStatus(WarehouseRecord.STATUS_OFF);
             warehouseRecordMapper.update(check);
         }
-        List<WarehouseRecord> list = warehouseRecordMapper.list(0,(byte)0,null,null,null,null,"creatTime asc");
+        List<WarehouseRecord> list = warehouseRecordMapper.list(0,new byte[]{},null,null,null,null,"creatTime asc");
         for(int x=0;x<list.size();x++){
             WarehouseRecord warehouseRecord = list.get(x);
             if(warehouseRecord.getType()==WarehouseRecord.TYPE_SEND){
@@ -407,7 +410,7 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
     public WarehouseRecord findLastCheck(int storeId,Timestamp time){
         PageSearch pageSearch = new PageSearch();
         pageSearch.setPageSize(1);
-        List<WarehouseRecord> list = list(pageSearch,WarehouseRecord.TYPE_CHECK,storeId,new Date(time.getTime()),null,"date asc");
+        List<WarehouseRecord> list = list(pageSearch,new byte[]{WarehouseRecord.TYPE_CHECK},storeId,new Date(time.getTime()),null,"date asc");
         if(list.size()>0){
             return list.get(0);
         }else{
