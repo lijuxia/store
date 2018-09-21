@@ -85,8 +85,12 @@ public class ReportServiceImpl implements ReportService {
     }
 
     public List<Map<String,ReportCell>> list(byte type, int storeId, Date beginDate, Date endDate){
+        byte[] types = new byte[]{};
+        if(type != 0){
+            types = new byte[]{type};
+        }
         List<Warehouse> warehouseList = warehouseService.list(storeId,(byte)0, TimeUtil.getBeginTime(new Timestamp(beginDate.getTime())),TimeUtil.getEndTime(new Timestamp(endDate.getTime())));
-        List<WarehouseRecord> list = warehouseRecordService.list(null,new byte[]{type},storeId,beginDate,endDate,"creatTime desc");
+        List<WarehouseRecord> list = warehouseRecordService.list(null,types,storeId,beginDate,endDate,"creatTime desc");
         //初始化数据
         List<Map<String,ReportCell>> dataList = initList(getDayFromDate(endDate));
         //遍历流水记录，统计结果写入数据中

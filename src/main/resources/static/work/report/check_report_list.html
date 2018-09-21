@@ -6,6 +6,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
     <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
+    <!-- 引入样式 -->
+	<link rel="stylesheet" href="https://unpkg.com/element-ui@2.4.7/lib/theme-chalk/index.css">
+	<!-- 引入组件库 -->
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://unpkg.com/element-ui@2.4.7/lib/index.js"></script>
+
     <style>
     	.report-table{
     		width: 100%;table-layout:fixed;background-color: #efeff4;
@@ -44,6 +50,12 @@
             height: 77px;
             left: 0;
         }
+        .bg-red{
+        	background-color: #f5f4f4;
+        }
+        .red{
+        	color: red;
+        }
     </style>
 </head>
 <body>
@@ -62,77 +74,93 @@
 	        	</form>
 	    	</div>
     	</div>
-    	<div id="list"></div>
+    	<div id="list">
+    		<el-table
+			    :data="tableData.valueList"
+			    style="width: 100%"
+			    :height="listHeight"
+			    v-loading="loading"
+			    element-loading-text="拼命加载中"
+			    element-loading-spinner="el-icon-loading"
+			    element-loading-background="rgba(0, 0, 0, 0.8)"
+    			>
+			    <el-table-column fixed type="index" label="日期" width="50">
+			    	
+		    		<template slot-scope="scope" >
+		    			<world :here="getIndex(scope.$index+1,tableData.valueList.length)"></world>
+		    			</template>
+			    </el-table-column>
+			    <el-table-column v-for="item in tableData.productList" :label="item.name">
+			    	<el-table-column :label="item.unit">
+					    	<el-table-column label="前" width="70">
+					    		<template slot-scope="scope" >
+					    			<world :here="getBefore(item.id,scope.row)"></world>
+							      </template>
+					    	</el-table-column>
+					    	<el-table-column label="盘" width="70">
+					    		<template slot-scope="scope" >
+					    			<world :here="getCheck(item.id,scope.row)"></world>
+							      </template>
+					    	</el-table-column>
+					    	<el-table-column label="错" width="70" class-name="bg-red">
+					    		<template slot-scope="scope" >
+					    			<world :here="getError(item.id,scope.row)"></world>
+							      </template>
+					    	</el-table-column>
+			    	</el-table-column>
+			    </el-table-column>
+			  </el-table>
+    	</div>
 	</div>
-    <script type="text/html" id="listTemp">
-    	<div id="list-head">
-    	<table class="report-table report-hide-table" border="1">
-    		<thead><!--隐藏头部，滚动后，显示-->
-    			<tr class="tt">
-    				<th></th>
-    			<% for(var i=0;i<productList.length;i++){%>
-    				<th></th>
-    				<th></th>
-    				<th></th>
-    			<% } %>
-    			</tr>
-    			<tr>
-    				<th rowspan="3">日期</th>
-    			<% for(var i=0;i<productList.length;i++){%>
-    				<th colspan="3"><%=productList[i].name %></th>
-    			<% } %>
-    			</tr>
-    			<tr>
-    			<% for(var i=0;i<productList.length;i++){%>
-    				<th colspan="3"><%=productList[i].unit %></th>
-    			<% } %>
-    			</tr>
-    			<tr>
-    			<% for(var i=0;i<productList.length;i++){%>
-    				<th>前</th>
-    				<th>盘</th>
-    				<th>错</th>
-    			<% } %>
-    			</tr>
-    		</thead>
-    	</table>
-    	</div>
-    	<div id="list-content">
-    	<table class="report-table" border="1">
-    		<tbody>
-    			<% for(var i=0;i<valueList.length;i++){ %>
-    				<%var value = valueList[i];%>
-    				<tr>
-    					<% if(i==(valueList.length-1)){ %>
-    					<td>合计</td>
-    					<% }else{ %>
-    					<td><%=i+1%></td>
-    					<% } %>
-    				<%for(var p=0;p<productList.length;p++){ %>
-    					<%var id = productList[p].id;%>
-    					<%var cell = value[id]; %>
-    					<% if(cell == null){%>
-    						<td></td>
-    						<td></td>
-    						<td style="background-color: #ddd;"></td>
-    					<%}else{%>
-    						<td><%=cell.before%></td>
-    						<td><%=cell.check%></td>
-    						<td style="background-color: #ddd;"><%=cell.error%></td>
-    					<%} %>
-    				<%}%>
-    				</tr>
-    			<%}%>
-    		</tbody>
-    	</table>
-    	</div>
-    	<% %>
-    </script>
     <script src="../../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src="../../js/jquery-3.3.1.min.js" ></script>
-    <script type="text/javascript" src="../../js/template-web.js" ></script>
 	<script type="text/javascript" src="../../plugin/picker/dist/js/mui.picker.min.js" ></script>
 	<script type="text/javascript" src="../../js/ljx.error.js" ></script>
+	<script>
+		world = {
+        // props接收父组件传过来的here
+        props:['here'],
+        template:`<div :class="{ red: here<0 }"> {{here}} </div>`
+      }
+	    var vue = new Vue({
+	      el: '#list',
+        components:{
+          'world': world
+        },
+	      data: function() {
+	        return { tableData: [],listHeight:500,loading:true }
+	      },
+	      methods: {
+      		getIndex(index,length){
+      			if(index === length){
+      				return "合计"
+      			}
+		      return index
+		    },
+      		getBefore(id,row){
+      			var va = row[id]
+      			if(va !== undefined){
+      				return row[id].before
+      			}
+		      return ""
+		    },
+      		getCheck(id,row){
+      			var va = row[id]
+      			if(va !== undefined){
+      				return row[id].check
+      			}
+		      return ""
+		    },
+      		getError(id,row){
+      			var va = row[id]
+      			if(va !== undefined){
+      				return row[id].error
+      			}
+		      return ""
+		    }
+	      }
+	    })
+	  </script>
     <script type="text/javascript">
     mui.init()
     $("#date").val(getNowFormatDate().substring(0,7));
@@ -152,9 +180,7 @@
 	function initList(){
 		var w = $(window).width()
 		var h = $(window).height()
-		$("#list").width(w);
-		$("#list").height(h-84);
-		$("#list-content").height(h-170)
+		vue.listHeight = h-90
 	}
 	
 	mui(document.body).on('tap', '#submit-btn', function(e) {
@@ -165,9 +191,11 @@
 	});
 	
 	$(function(){
+		initList()
 		getList();
 	})
 	var getList = function(){
+		vue.loading = true
 		var date = $("#date").val();
 		mui.ajax("/report/checkList",{
 			data:{
@@ -177,11 +205,8 @@
 			type:'get',
 			success:function (data){
 				if(data.succeed){
-					console.log(data);
-					var Carouselhtml = template('listTemp', data.value);
-					console.log(Carouselhtml);
-					$("#list").html(Carouselhtml);
-					initList()
+					vue.tableData = data.value
+					vue.loading = false
 				}else{
 					errorHandle(data);
 				}

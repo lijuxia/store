@@ -51,11 +51,15 @@ public class WarehouseRecordController extends BaseController {
         if(record!=null){
             time = record.getCreatTime();
         }
-        PageSearch pageSearch = new PageSearch(10,1);
+        PageSearch pageSearch = new PageSearch(100,1);
 //        if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
 //        }
-        return success(warehouseRecordService.list(pageSearch,new byte[]{type},storeId,beginDate,endDate,time,null,"creatTime desc"));
+        byte[] types = new byte[]{};
+        if(type > 0){
+            types = new byte[]{type};
+        }
+        return success(warehouseRecordService.list(pageSearch,types,storeId,beginDate,endDate,time,null,"creatTime desc"));
     }
 
     @RequestMapping(value = "/listPullUp", method = RequestMethod.GET)
@@ -66,11 +70,15 @@ public class WarehouseRecordController extends BaseController {
         if(record!=null){
             time = record.getCreatTime();
         }
-        PageSearch pageSearch = new PageSearch(10,1);
+        PageSearch pageSearch = new PageSearch(100,1);
 //        if(getCurrentStore().getType()==Store.TYPE_STORE){
             storeId = getCurrentStore().getId();
 //        }
-        return success(warehouseRecordService.list(pageSearch,new byte[]{type},storeId,beginDate,endDate,null,time,"creatTime desc"));
+        byte[] types = new byte[]{};
+        if(type > 0){
+            types = new byte[]{type};
+        }
+        return success(warehouseRecordService.list(pageSearch,types,storeId,beginDate,endDate,null,time,"creatTime desc"));
     }
 
 

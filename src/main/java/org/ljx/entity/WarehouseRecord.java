@@ -232,7 +232,11 @@ public class WarehouseRecord implements Serializable {
                     if(!"".equals(check.toString())){
                         check.append(" , ");
                     }
-                    check.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum())+this.listDetails.get(i).getUnit());
+                    if(this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum()).doubleValue()<0){
+                        check.append("<font color='red'>"+this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum())+this.listDetails.get(i).getUnit()+"</font>");
+                    }else{
+                        check.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum())+this.listDetails.get(i).getUnit());
+                    }
                 }
             }
         }

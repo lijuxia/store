@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../css/mui.min.css"/>
     <link rel="stylesheet" href="../../plugin/picker/dist/css/mui.picker.min.css" />
     <link rel="stylesheet" href="../../fonts/iconfont.css" />
+    <script type="text/javascript" src="../../js/ljx.cookie.js" ></script>
     <style>
     	.shaixuan-button-div{
     		width: 100%;
@@ -101,7 +102,7 @@
 					<%}%>
 					<span style="float: right;color: #8f8f94;font-size: 14px;"><%=value[i].creatTimeStr%></span>
 	    			<br>
-	    			<h5><%=value[i].detailsStr%></h5>
+	    			<h5><%-value[i].detailsStr%></h5>
 	    		</div>
 	    	</li>
 		<%}%>
@@ -131,7 +132,7 @@
 	    }
 	  }
 	});
-	
+	     
 	mui(document.body).on('tap', '.del-btn', function(e) {
 		var btn = this;
 	    var id = this.getAttribute("recordId")
@@ -188,10 +189,30 @@
 	    })
 	}, false);
 	
+//	从cookie读取参数,初始化参数
+	var recordListCookie = getCookie("recordListCookie");
+	if(recordListCookie != undefined){
+		var cookiesValues = recordListCookie.split(",");
+	    var type = cookiesValues[0];
+		var beginDate = cookiesValues[1];
+		var endDate = cookiesValues[2];
+		if(type!=''){
+			$("#type").val(type);
+		}
+		if(beginDate!=''){
+			$("#beginDate").val(beginDate);
+		}
+		if(endDate!=''){
+			$("#endDate").val(endDate);
+		}
+	}
+	
 	mui(document.body).on('tap', '.edit-btn', function(e) {
 		var btn = this;
 	    var id = this.getAttribute("recordId");
 	    var type = this.getAttribute("recordType");
+	    var beginDate = $("#beginDate").val();
+	    var endDate = $("#endDate").val();
 	    if(type==1){
         	window.location.href = "/work/saleout.html?oddId="+id
 	    }else if(type==2){
@@ -249,9 +270,9 @@
 	function pullfresh() {
 	     //业务逻辑代码，比如通过ajax从服务器获取新数据；
 	    var pullOddId = $("#pullOddId").val();
-	     var type = $("#type").val();
-	     var beginDate = $("#beginDate").val();
-	     var endDate = $("#endDate").val();
+	    var type = $("#type").val();
+	    var beginDate = $("#beginDate").val();
+	    var endDate = $("#endDate").val();
 		mui.ajax("/warehouserecord/listPull",{
 			data:{
 				oddId:pullOddId,
@@ -284,10 +305,12 @@
 	function pullNewList(){
 		$("#list").html("");
 		mui('.mui-off-canvas-wrap').offCanvas('close');
-	     //业务逻辑代码，比如通过ajax从服务器获取新数据；
-	     var type = $("#type").val();
-	     var beginDate = $("#beginDate").val();
-	     var endDate = $("#endDate").val();
+	    //业务逻辑代码，比如通过ajax从服务器获取新数据；
+	    var type = $("#type").val();
+	    var beginDate = $("#beginDate").val();
+	    var endDate = $("#endDate").val();
+	    var recordListCookie = type+","+beginDate+","+endDate
+	    setCookie("recordListCookie",recordListCookie);
 		mui.ajax("/warehouserecord/listPull",{
 			data:{
 				oddId:"",
