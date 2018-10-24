@@ -19,6 +19,14 @@
     		color: white;
     		font-size: 20px;
     	}
+    	.kuaijie-button-div{
+    		width: 50%;
+    		position: fixed;
+    		bottom: 80px;
+    		text-align: center;
+    		line-height: 40px;
+    		font-size: 20px;
+    	}
     </style>
 </head>
 <body>
@@ -51,6 +59,10 @@
 						        <input type="text" id="endDate" placeholder="结束时间" style="text-align: center;">
 						    </div>
 						</form>
+						<div>
+							<button type="button" onclick="subtractDay()" class="mui-btn kuaijie-button-div">上一天</button>
+							<button type="button" onclick="addDay()" class="mui-btn mui-btn-royal kuaijie-button-div" style="left: 50%;">下一天</button>
+						</div>
 						<div class="">
 							<button type="button" onclick="pullNewList()" class="mui-btn mui-btn-primary shaixuan-button-div">确定</button>
 						</div>
@@ -338,6 +350,43 @@
 	     //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
 			}
 		});
+	}
+	function addDay(){
+	    var beginDate = $("#beginDate").val();
+	    var now = new Date(beginDate);
+		now.setDate(now.getDate()+1);
+		$("#beginDate").val(getFormatDate(now))
+	    var endDate = $("#endDate").val();
+	    var now1 = new Date(endDate);
+		now1.setDate(now1.getDate()+1);
+		$("#endDate").val(getFormatDate(now1))
+		pullNewList()
+	}
+	function subtractDay(){
+	    var beginDate = $("#beginDate").val();
+	    var now = new Date(beginDate);
+		now.setDate(now.getDate()-1);
+		$("#beginDate").val(getFormatDate(now))
+	    var endDate = $("#endDate").val();
+	    var now1 = new Date(endDate);
+		now1.setDate(now1.getDate()-1);
+		$("#endDate").val(getFormatDate(now1))
+		pullNewList()
+	}
+	//获取当前时间，格式YYYY-MM-DD
+	var getFormatDate = function (date) {
+	    var seperator1 = "-";
+	    var year = date.getFullYear();
+	    var month = date.getMonth() + 1;
+	    var strDate = date.getDate();
+	    if (month >= 1 && month <= 9) {
+	        month = "0" + month;
+	    }
+	    if (strDate >= 0 && strDate <= 9) {
+	        strDate = "0" + strDate;
+	    }
+	    var currentdate = year + seperator1 + month + seperator1 + strDate;
+	    return currentdate;
 	}
     </script>
 </body>
