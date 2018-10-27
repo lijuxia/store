@@ -103,8 +103,14 @@
 	    	<li class="mui-table-view-cell mui-transitioning edit-btn" recordId="<%=value[i].oddId%>" recordType="<%=value[i].type%>">
 	    		<div class="mui-slider-right mui-disabled">
 	    			<a class="mui-btn mui-btn-red del-btn" recordId="<%=value[i].oddId%>">删除</a>
+	    			<% if(value[i].confirmFlag == 2){%>
+	    				<a class="mui-btn mui-btn-primary confirme-btn confirm_<%=value[i].oddId%>" oddId="<%=value[i].oddId%>">确认</a>
+	    			<%}%>
 	    		</div>
 	    		<div class="mui-slider-handle">
+	    			<% if(value[i].confirmFlag == 2){%>
+						<span class="mui-badge mui-badge-danger confirm_<%=value[i].oddId%>" style="float: left;margin-right: 5px;">未确认</span>
+	    			<%}%>
 					<span class="mui-badge mui-badge-purple mui-badge-inverted" style="float: left;"><%=value[i].dateStr%></span>
 					<span class="mui-badge mui-badge-primary" style="float: left;margin-left: 5px;"><%=value[i].storeName%></span>
 					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;"><%=value[i].typeStr%></span>
@@ -144,6 +150,30 @@
 	  }
 	});
 	     
+	mui(document.body).on('tap', '.confirme-btn', function(e) {
+		var btn = this;
+		mui.confirm("是否确认无误", "确认配送单", ['确认', '取消'], function(e) {
+			if(e.index == 0) {
+				mui.ajax("/warehouserecord/confirmeRecord", {
+					data: {
+						oddId: btn.getAttribute("oddId")
+					},
+					dataType: 'json',
+					type: 'post',
+					success: function(data) {
+						if(data.succeed) {
+    						var li = btn.parentNode.parentNode;
+    						$(".confirm_"+btn.getAttribute("oddId")).remove();
+    						mui.swipeoutClose(li);
+						} else {
+							errorHandle(data);
+						}
+					}
+				});
+			}
+		})
+	});
+	
 	mui(document.body).on('tap', '.del-btn', function(e) {
 		var btn = this;
 	    var id = this.getAttribute("recordId")

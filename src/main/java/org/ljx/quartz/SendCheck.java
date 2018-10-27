@@ -25,12 +25,12 @@ public class SendCheck implements Job {
 
     public void execute(JobExecutionContext context) throws JobExecutionException {
         Date lastDay = getLastDay();
-        List<WarehouseRecord> list = warehouseRecordService.list(null,new byte[]{WarehouseRecord.TYPE_SEND},0,lastDay,lastDay,"creatTime desc");
+        List<WarehouseRecord> list = warehouseRecordService.list(null,new byte[]{WarehouseRecord.TYPE_SEND},0,WarehouseRecord.CONFIRMFLAG_NO,"creatTime desc");
         for(int i=0;i<list.size();i++){
             WarehouseRecord record = list.get(i);
-            if(record.getConfirmFlag()==WarehouseRecord.CONFIRMFLAG_NO){
+//            if(record.getConfirmFlag()==WarehouseRecord.CONFIRMFLAG_NO){
                 warehouseRecordService.confirmeRecord(record.getOddId());
-            }
+//            }
         }
     }
 

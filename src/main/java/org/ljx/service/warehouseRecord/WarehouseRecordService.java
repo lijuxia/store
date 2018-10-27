@@ -18,6 +18,8 @@ public interface WarehouseRecordService {
 
     public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate,String order);
 
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, byte confirmFlag,String order);
+
     public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate, Timestamp beginTime, Timestamp endTime,String order);
 
     public void reflesh(int storeId);

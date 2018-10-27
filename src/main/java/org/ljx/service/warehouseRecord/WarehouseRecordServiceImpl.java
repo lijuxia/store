@@ -40,36 +40,42 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
     public List<WarehouseRecord> list(PageSearch pageSearch,byte[] types,int storeId,String order){
         if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,types,null,null,null,null,order);
+        return warehouseRecordMapper.list(storeId,types,null,null,null,null,(byte)0,order);
     }
 
     public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Timestamp beginTime, Timestamp endTime,String order){
         if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,types,beginTime,endTime,null,null,order);
+        return warehouseRecordMapper.list(storeId,types,beginTime,endTime,null,null,(byte)0,order);
     }
 
     public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate,String order){
         if(pageSearch!=null)
         PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,types,null,null,beginDate,endDate,order);
+        return warehouseRecordMapper.list(storeId,types,null,null,beginDate,endDate,(byte)0,order);
+    }
+
+    public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, byte confirmFlag,String order){
+        if(pageSearch!=null)
+            PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
+        return warehouseRecordMapper.list(storeId,types,null,null,null,null,confirmFlag,order);
     }
 
     public List<WarehouseRecord> list(PageSearch pageSearch, byte[] types, int storeId, Date beginDate, Date endDate, Timestamp beginTime, Timestamp endTime,String order){
         if(pageSearch!=null)
             PageHelper.startPage(pageSearch.getPageNum(),pageSearch.getPageSize());
-        return warehouseRecordMapper.list(storeId,types,beginTime,endTime,beginDate,endDate,order);
+        return warehouseRecordMapper.list(storeId,types,beginTime,endTime,beginDate,endDate,(byte)0,order);
     }
 
     @Transactional
     public void reflesh(int storeId){
         //将盘点单删除，先处理所有其他单据，最后再重新处理盘点单
-        List<WarehouseRecord> checkList = warehouseRecordMapper.list(0,new byte[]{WarehouseRecord.TYPE_CHECK},null,null,null,null,"creatTime asc");
+        List<WarehouseRecord> checkList = warehouseRecordMapper.list(0,new byte[]{WarehouseRecord.TYPE_CHECK},null,null,null,null,(byte)0,"creatTime asc");
         for(WarehouseRecord check :checkList){
             check.setStatus(WarehouseRecord.STATUS_OFF);
             warehouseRecordMapper.update(check);
         }
-        List<WarehouseRecord> list = warehouseRecordMapper.list(0,new byte[]{},null,null,null,null,"creatTime asc");
+        List<WarehouseRecord> list = warehouseRecordMapper.list(0,new byte[]{},null,null,null,null,(byte)0,"creatTime asc");
         for(int x=0;x<list.size();x++){
             WarehouseRecord warehouseRecord = list.get(x);
             if(warehouseRecord.getType()==WarehouseRecord.TYPE_SEND){
