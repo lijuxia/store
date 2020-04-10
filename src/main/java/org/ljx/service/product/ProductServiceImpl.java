@@ -49,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
             productOld.setName(product.getName());
             productOld.setUnit(product.getUnit());
             productOld.setType(product.getType());
+            productOld.setIndexFlag(product.getIndexFlag());
             mapper.update(productOld);
         }
     }
@@ -65,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
             productOld.setName(product.getName());
             productOld.setUnit(product.getUnit());
             productOld.setType(product.getType());
+            productOld.setIndexFlag(product.getIndexFlag());
             mapper.update(productOld);
         }
         //删除原来的
@@ -113,6 +115,7 @@ public class ProductServiceImpl implements ProductService {
             productOld.setName(product.getName());
             productOld.setUnit(product.getUnit());
             productOld.setType(product.getType());
+            productOld.setIndexFlag(product.getIndexFlag());
             mapper.update(productOld);
         }
         //删除原来的

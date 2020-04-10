@@ -17,8 +17,8 @@ import java.util.Set;
 @Repository
 public interface ProductMapper {
 
-    final String INSERT_SQL = "insert into sys_product (name,code,unit,type,status)values(#{name},#{code},#{unit},#{type},#{status})";
-    final String UPDATE_SQL = "update sys_product set name = #{name},code = #{code},unit = #{unit},type = #{type},status = #{status} where id = #{id}";
+    final String INSERT_SQL = "insert into sys_product (name,code,unit,type,status,indexFlag)values(#{name},#{code},#{unit},#{type},#{status},#{indexFlag})";
+    final String UPDATE_SQL = "update sys_product set name = #{name},code = #{code},unit = #{unit},type = #{type},status = #{status},indexFlag = #{indexFlag} where id = #{id}";
     final String SELECT_SQL = "select * from sys_product where status = 1 ";
     final String FIND_SQL = "select * from sys_product  where id = #{id}";
     final String DELETE_SQL = "delete from sys_product where id = #{id}";
@@ -59,6 +59,7 @@ public interface ProductMapper {
                 WHERE(temp.toString());
             }
             WHERE("status = 1");
+            ORDER_BY("indexFlag asc");
         }}.toString();
     }
 

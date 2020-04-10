@@ -15,6 +15,7 @@ public class Product implements Serializable,Comparable {
     private String unit;//单位
     private byte status;
     private byte type;//原料、商品、半成品
+    private int indexFlag; // 排序
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
     public static final byte TYPE_MATERIAL = 1;
@@ -75,6 +76,14 @@ public class Product implements Serializable,Comparable {
 
     public void setDetails(List<ProductDetail> details) {
         this.details = details;
+    }
+
+    public int getIndexFlag() {
+        return indexFlag;
+    }
+
+    public void setIndexFlag(int indexFlag) {
+        this.indexFlag = indexFlag;
     }
 
     public String getTypeName(){
