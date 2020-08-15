@@ -78,6 +78,15 @@ public class WarehouseServiceImpl implements WarehouseService{
      * @param time
      */
     private Warehouse getWarehouse(int storeId, int productId, Timestamp time){
+        Warehouse today = getWarehouseByDate(storeId, productId, TimeUtil.getNow());
+        if(today == null){
+            Warehouse bwh = getYesterdayWarehouse(storeId, productId, TimeUtil.getNow());
+            // 昨天记录一定不为null
+            // 前一天库存记录存在，保存当前记录
+            // 判断当前日期之前是否有存在该商品的库存信息，如果之前没有库存信息，则直接添加当前日期的库存记录即可
+            Warehouse warehouse1 = new Warehouse(bwh.getBalance(),storeId,productId,Warehouse.STATUS_OFF,TimeUtil.getBeginTime(TimeUtil.getNow()));
+            mapper.insert(warehouse1);
+        }
         // 获取当前时间的库存信息wh
         Warehouse wh = getWarehouseByDate(storeId, productId, time);
         // 如果wh存在，则不需要初始化
@@ -121,9 +130,9 @@ public class WarehouseServiceImpl implements WarehouseService{
                 return new Warehouse(BigDecimal.ZERO, storeId, productId, Warehouse.STATUS_OFF, yesterday);
             }else if(earlyWarehouse.getTime().before(yesterday)){
                 // 获取昨天再往前一天的记录
-                Warehouse yywh = getYesterdayWarehouse(storeId, productId, TimeUtil.addDay(time, -1));
+                Warehouse yywh = getYesterdayWarehouse(storeId, productId, yesterday);
                 // 保存一条昨天的记录，库存数量是往前一天的数量
-                Warehouse ywh = new Warehouse(yywh.getBalance(),storeId,productId,Warehouse.STATUS_OFF,TimeUtil.getBeginTime(time));
+                Warehouse ywh = new Warehouse(yywh.getBalance(),storeId,productId,Warehouse.STATUS_OFF,TimeUtil.getBeginTime(yesterday));
                 mapper.insert(ywh);
                 return ywh;
             }else{
@@ -142,7 +151,7 @@ public class WarehouseServiceImpl implements WarehouseService{
      */
     private Warehouse getWarehouseByDate(int storeId,int productId,Timestamp time){
         PageHelper.startPage(1,1);
-        List<Warehouse> list = mapper.list(storeId,productId,(byte) 0,time, TimeUtil.getEndTime(time),"time desc");
+        List<Warehouse> list = mapper.list(storeId,productId,(byte) 0,TimeUtil.getBeginTime(time), TimeUtil.getEndTime(time),"time desc");
         for(Warehouse w : list){
             return w;
         }

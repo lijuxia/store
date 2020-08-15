@@ -1,6 +1,4 @@
 package org.ljx.dao;
-
-import com.sun.tools.corba.se.idl.constExpr.Times;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 import org.ljx.entity.Product;
@@ -9,8 +7,6 @@ import org.ljx.entity.Warehouse;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -89,7 +85,7 @@ public interface WarehouseMapper {
     @ResultType(Warehouse.class)
     Warehouse findByStoreIdAndProductId(@Param("storeId")int storeId,@Param("productId")int productId);
 
-    @Select("select * from sys_warehouse group by storeId,productId")
+    @Select("select storeId,productId from sys_warehouse w left join sys_product p on p.id = w.productId where p.`status` = 1 and p.type != 2  group by storeId,productId")
     @ResultType(Store.class)
     List<Warehouse> listGroupBy();
 
