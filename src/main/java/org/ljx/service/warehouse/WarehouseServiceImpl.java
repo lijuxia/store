@@ -72,59 +72,63 @@ public class WarehouseServiceImpl implements WarehouseService{
     }
 
     /**
-     * 初始化时间段间的所有库存日期记录
+     * 获取指定日期的商品库存记录
      * @param storeId
      * @param productId
      * @param time
-     * @param warehouse
      */
-    private void initWarehouse(int storeId,int productId,Timestamp time,Warehouse warehouse){
-        //前一天的库存
-        BigDecimal beforeSaveNum = new BigDecimal(0);
-        Warehouse earlyWarehouse = getWarehouseEarliest(storeId,productId);
-        Warehouse lastWarehouse = getWarehouseLast(storeId,productId);
-        Timestamp earlyTime = TimeUtil.getNow();
-        Timestamp lastTime = TimeUtil.getNow();
-        if(earlyWarehouse!=null){
-            earlyTime = earlyWarehouse.getTime();
-        }
-        if(lastWarehouse!=null){
-            lastTime = lastWarehouse.getTime();
-        }
-        //添加当前日期的库存
-        if(earlyWarehouse==null && lastWarehouse==null){
-            Warehouse warehouse1 = new Warehouse(beforeSaveNum,storeId,productId,Warehouse.STATUS_OFF,TimeUtil.getBeginTime(TimeUtil.getNow()));
+    private Warehouse getWarehouse(int storeId, int productId, Timestamp time){
+        // 获取当前时间的库存信息wh
+        Warehouse wh = getWarehouseByDate(storeId, productId, time);
+        // 如果wh存在，则不需要初始化
+        if(wh != null){
+            // 返回库存信息
+            return wh;
+        }else{
+            // 如果wh不存在，则需要新建当前日期的库存信息，库存数量为前一天的库存信息bwh
+            // 获取前一天的库存记录
+            Warehouse bwh = getYesterdayWarehouse(storeId, productId, time);
+            // 昨天记录一定不为null
+            // 前一天库存记录存在，保存当前记录
+            // 判断当前日期之前是否有存在该商品的库存信息，如果之前没有库存信息，则直接添加当前日期的库存记录即可
+            Warehouse warehouse1 = new Warehouse(bwh.getBalance(),storeId,productId,Warehouse.STATUS_OFF,TimeUtil.getBeginTime(time));
             mapper.insert(warehouse1);
-            initWarehouse(storeId,productId,time,warehouse);
-            return ;
+            return warehouse1;
         }
-        if(time.before(earlyTime)){
-            //如果记录时间是当前库存时间之前，初始化记录时间到当前库存时间
-            List<Timestamp> list = TimeUtil.duringTimes(time,earlyTime);
-            //如果没有当前库存，则生成当日的库存记录
-            if(warehouse==null){
-                list.add(time);
-            }
-            for(Timestamp t : list){
-                warehouse = new Warehouse(beforeSaveNum,storeId,productId,Warehouse.STATUS_OFF,t);
-                if(TimeUtil.isSameday(t,time)){
-                    warehouse.setStatus(Warehouse.STATUS_ON);
-                }
-                mapper.insert(warehouse);
-            }
-        }else if(time.after(lastTime)){
-            if(lastWarehouse!=null){
-                beforeSaveNum = lastWarehouse.getBalance();
-            }
-            //如果记录时间是当前库存时间之后，初始化当前库存时间到记录时间
-            List<Timestamp> list = TimeUtil.duringTimes(lastTime,time);
-            //如果没有当前库存，则生成当日的库存记录
-            if(warehouse==null){
-                list.add(time);
-            }
-            for(Timestamp t : list){
-                warehouse = new Warehouse(beforeSaveNum,storeId,productId,Warehouse.STATUS_OFF,t);
-                mapper.insert(warehouse);
+    }
+
+    /**
+     * 获取昨天的订单记录，如果昨天不存在，则会生成该商品最早的库存记录时间到昨天的所有库存记录，再返回昨天库存记录
+     * @param storeId
+     * @param productId
+     * @param time
+     * @return
+     */
+    private Warehouse getYesterdayWarehouse(int storeId, int productId, Timestamp time){
+        Timestamp yesterday = TimeUtil.getBeginTime(TimeUtil.addDay(time, -1));
+        // 获取前一天的库存记录
+        Warehouse bwh = getWarehouseByDate(storeId, productId, yesterday);
+        if(bwh != null){
+            // 存在前一天的记录，返回
+            return bwh;
+        }else{
+            // 没有前一天的库存记录
+            // 获取最早的库存
+            Warehouse earlyWarehouse = getWarehouseEarliest(storeId,productId);
+            // 判断最早的记录是否存在，是不是在前一天之前，昨天之前存在记录，则再初始化昨天的记录，直到时间到最早的时间点
+            if(earlyWarehouse == null){
+                // 之前不存在记录，返回记录为0的记录
+                return new Warehouse(BigDecimal.ZERO, storeId, productId, Warehouse.STATUS_OFF, yesterday);
+            }else if(earlyWarehouse.getTime().before(yesterday)){
+                // 获取昨天再往前一天的记录
+                Warehouse yywh = getYesterdayWarehouse(storeId, productId, TimeUtil.addDay(time, -1));
+                // 保存一条昨天的记录，库存数量是往前一天的数量
+                Warehouse ywh = new Warehouse(yywh.getBalance(),storeId,productId,Warehouse.STATUS_OFF,TimeUtil.getBeginTime(time));
+                mapper.insert(ywh);
+                return ywh;
+            }else{
+                // 之前不存在记录，返回记录为0的记录
+                return new Warehouse(BigDecimal.ZERO, storeId, productId, Warehouse.STATUS_OFF, yesterday);
             }
         }
     }
@@ -199,11 +203,8 @@ public class WarehouseServiceImpl implements WarehouseService{
     @Transactional
     public synchronized BigDecimal updateSave(byte op,int storeId,int productId,BigDecimal num,Timestamp time,Timestamp creatTime){
         BigDecimal resultSave = new BigDecimal(0);
-        //获取当前库存记录
-        Warehouse warehouse = getWarehouseByDate(storeId,productId,time);
-        //1、将修改日期与当前日期之间所有没有库存记录的日期，添加库存记录
-        initWarehouse(storeId,productId,time,warehouse);
-
+        //获取指定日期的库存记录
+        Warehouse warehouse = getWarehouse(storeId,productId,time);
         //2、查询当天是否有盘点单
         //获取当天盘点单
         WarehouseRecord check = warehouseRecordService.findCheckByDate(storeId,time);
@@ -229,26 +230,25 @@ public class WarehouseServiceImpl implements WarehouseService{
         }else{
             //盘点单不存在，修改当日库存
             changeNextDay = true;
+
         }
         //判断是否修改下一天库存（递归）
         if(changeNextDay){
-            //获取当日的库存记录
-            Warehouse timeWarehouse = getWarehouseByDate(storeId,productId,time);
-            resultSave = timeWarehouse.getBalance();
-            timeWarehouse.setBalance(getAfterSave(op, resultSave, num));
-            mapper.update(timeWarehouse);
+            //修改当日的库存记录
+            resultSave = warehouse.getBalance();
+            warehouse.setBalance(getAfterSave(op, resultSave, num));
+            mapper.update(warehouse);
             //库存日期不是今天，并且比今天早，则修改下一天库存
             if(!TimeUtil.isSameday(time,TimeUtil.getNow())
                     && time.before(TimeUtil.getNow())){
-                Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(time.getTime());
-                c.add(Calendar.DAY_OF_MONTH,1);
+                // 获取明天日期
+                Timestamp tomorrow = TimeUtil.addDay(time, 1);
                 //如果是盘点，修改下一天的时候，改为处理差值
                 if(op == OP_CHANGE){
                     num = num.subtract(resultSave);
                     op = OP_INTO;
                 }
-                updateSave(op,storeId,productId,num,new Timestamp(c.getTimeInMillis()),creatTime);
+                updateSave(op,storeId,productId,num,tomorrow,creatTime);
             }
         }
         //3、返回修改日期的原库存记录

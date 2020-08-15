@@ -181,8 +181,10 @@ public class WarehouseRecordServiceImpl implements WarehouseRecordService {
         if(warehouseRecord.getType()==WarehouseRecord.TYPE_MAKE){//生产，半成品入库
             warehouseService.updateSave(WarehouseServiceImpl.OP_INTO,warehouseRecord.getStoreId(),warehouseRecord.getMakeProductId(),warehouseRecord.getMakeNum(),warehouseRecord.getDateTime(),warehouseRecord.getCreatTime());//半成品入库
         }
+        // 遍历所有单据的详细产品数据
         for(int i = 0;i<details.size();i++){
             WarehouseRecordDetail detail = details.get(i);
+            // 判断单详细产品数量是否大于0
             if(detail.getNum().compareTo(BigDecimal.ZERO)!=0){
                 detail.setOddId(warehouseRecord.getOddId());
                 detail.setUuid(UUID.randomUUID().toString().replaceAll("-",""));
