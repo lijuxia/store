@@ -46,6 +46,13 @@
 						    	<input type="hidden" id="type" value="0">
 						    	<input type="text" id="typeName" class="mui-input-clear" placeholder="选择单据类型" style="text-align: center;" value="不限">
 						    </div>
+							<div class="mui-input-row">
+								<label style="width: 100%;">配送门店</label>
+							</div>
+							<div class="mui-input-row">
+								<input type="hidden" id="storeId" value="0">
+								<input type="text" id="storeName" class="mui-input-clear" placeholder="选择配送门店" style="text-align: center;" value="不限">
+							</div>
 						    <div class="mui-input-row">
 						        <label style="width: 100%;">开始时间</label>
 						    </div>
@@ -112,11 +119,37 @@
 						<span class="mui-badge mui-badge-danger confirm_<%=value[i].oddId%>" style="float: left;margin-right: 5px;">未确认</span>
 	    			<%}%>
 					<span class="mui-badge mui-badge-purple mui-badge-inverted" style="float: left;"><%=value[i].dateStr%></span>
-					<span class="mui-badge mui-badge-primary" style="float: left;margin-left: 5px;"><%=value[i].storeName%></span>
-					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;"><%=value[i].typeStr%></span>
+					<!--<span class="mui-badge mui-badge-primary" style="float: left;margin-left: 5px;"><%=value[i].storeName%></span>-->
+					<% if(value[i].type==1){%>
+					<!--销售-->
+						<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;background-color: #E6A23C"><%=value[i].typeStr%></span>
+					<%}%>
 					<% if(value[i].type==2){%>
+					<!--配送-->
+					<span class="mui-badge mui-badge-purple" style="float: left;margin-left: 5px;"><%=value[i].typeStr%></span>
 					<span class="mui-badge mui-badge-success" style="float: left;margin-left: 5px;"><%=value[i].sendStoreName%></span>
 					<%}%>
+					<% if(value[i].type==3){%>
+					<!--报废-->
+					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;background-color: #909399"><%=value[i].typeStr%></span>
+					<%}%>
+					<% if(value[i].type==4){%>
+					<!--采购-->
+					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;background-color: #00cee3"><%=value[i].typeStr%></span>
+					<%}%>
+					<% if(value[i].type==5){%>
+					<!--消耗-->
+					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;background-color: #909399"><%=value[i].typeStr%></span>
+					<%}%>
+					<% if(value[i].type==6){%>
+					<!--盘点-->
+					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;"><%=value[i].typeStr%></span>
+					<%}%>
+					<% if(value[i].type==7){%>
+					<!--生产-->
+					<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;background-color: burlywood"><%=value[i].typeStr%></span>
+					<%}%>
+
 					<span style="float: right;color: #8f8f94;font-size: 14px;"><%=value[i].creatTimeStr%></span>
 	    			<br>
 	    			<h5><%-value[i].detailsStr%></h5>
@@ -211,7 +244,40 @@
 			$("#type").val(items[0].value);
 		});
 	}, false);
-	
+
+
+    var pickerStore = new mui.PopPicker();
+    var storePickData = [{value: null, text: "不限"}];
+
+    mui.ajax("/store/listAll",{
+        data:{},
+        dataType:'json',
+        type:'get',
+        success:function (data){
+            if(data.succeed){
+                if(data.value.length>0){
+                    for(var i in data.value){
+                        var s = data.value[i]
+						storePickData.push({
+							value: s.id,
+							text: s.name
+						})
+					}
+                }
+            }
+            pickerStore.setData(storePickData);
+            mui(document.body).on('tap','#storeName', function(event) {
+                pickerStore.show(function(items) {
+                    $("#storeName").val(items[0].text);
+                    $("#storeId").val(items[0].value);
+                });
+            }, false);
+            //注意，加载完新数据后，必须执行如下代码，注意：若为ajax请求，则需将如下代码放置在处理完ajax响应数据之后
+            //没有更多内容了，endPulldown 传入true， 不再执行下拉刷新
+        }
+    });
+
+
     $("#beginDate").val(getFirstDayOfMonthFormat());
     var beginPicker = new mui.DtPicker({type:'date'}); 
 	mui(document.body).on('tap','#beginDate', function(event) {
@@ -277,12 +343,14 @@
 	     var type = $("#type").val();
 	     var beginDate = $("#beginDate").val();
 	     var endDate = $("#endDate").val();
+        var storeId = $("#storeId").val();
 		mui.ajax("/warehouserecord/listPullUp",{
 			data:{
 				oddId:pullOddId_up,
 				type:type,
 				beginDate:beginDate,
-				endDate:endDate
+				endDate:endDate,
+                sendStoreId: storeId
 			},
 			dataType:'json',
 			type:'get',
@@ -314,12 +382,14 @@
 	    var type = $("#type").val();
 	    var beginDate = $("#beginDate").val();
 	    var endDate = $("#endDate").val();
+        var storeId = $("#storeId").val();
 		mui.ajax("/warehouserecord/listPull",{
 			data:{
 				oddId:pullOddId,
 				type:type,
 				beginDate:beginDate,
-				endDate:endDate
+				endDate:endDate,
+                sendStoreId: storeId
 			},
 			dataType:'json',
 			type:'get',
@@ -350,6 +420,7 @@
 	    var type = $("#type").val();
 	    var beginDate = $("#beginDate").val();
 	    var endDate = $("#endDate").val();
+        var storeId = $("#storeId").val();
 	    var recordListCookie = type+","+beginDate+","+endDate
 	    setCookie("recordListCookie",recordListCookie);
 		mui.ajax("/warehouserecord/listPull",{
@@ -357,7 +428,8 @@
 				oddId:"",
 				type:type,
 				beginDate:beginDate,
-				endDate:endDate
+				endDate:endDate,
+                sendStoreId: storeId
 			},
 			dataType:'json',
 			type:'get',

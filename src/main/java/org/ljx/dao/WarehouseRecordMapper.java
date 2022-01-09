@@ -45,12 +45,12 @@ public interface WarehouseRecordMapper {
     List<WarehouseRecord> list(@Param("storeId") int storeId, @Param("types") byte[] types
             , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
             , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate
-            ,@Param("confirmFlag") byte confirmFlag, @Param("order")String order);
+            ,@Param("confirmFlag") byte confirmFlag, @Param("sendStoreId") Integer sendStoreId, @Param("order")String order);
 
     static String buildList(@Param("storeId") int storeId,@Param("types") byte[] types
             , @Param("beginTime")Timestamp beginTime,@Param("endTime")Timestamp endTime
             , @Param("beginDate")Date beginDate, @Param("endDate")Date endDate
-            ,@Param("confirmFlag") byte confirmFlag,@Param("order")String order) {
+            ,@Param("confirmFlag") byte confirmFlag, @Param("sendStoreId") Integer sendStoreId,@Param("order")String order) {
         return new SQL(){{
             SELECT("*");
             FROM("sys_warehouse_record");
@@ -81,6 +81,9 @@ public interface WarehouseRecordMapper {
             }
             if(endDate!=null && !"".equals(endDate)){
                 WHERE("date <= #{endDate}");
+            }
+            if(sendStoreId != null && sendStoreId > 0){
+                WHERE("sendStoreId = #{sendStoreId}");
             }
             if(confirmFlag>0){
                 WHERE("confirmFlag = #{confirmFlag}");

@@ -44,7 +44,7 @@ public class WarehouseRecordController extends BaseController {
     }
 
     @RequestMapping(value = "/listPull", method = RequestMethod.GET)
-    public ResponseMessage listPull(String oddId, byte type, Date beginDate, Date endDate){
+    public ResponseMessage listPull(String oddId, byte type, Date beginDate, Date endDate,Integer sendStoreId){
         Timestamp time = null;
         int storeId = 0;
         WarehouseRecord record = warehouseRecordService.findById(oddId);
@@ -59,11 +59,11 @@ public class WarehouseRecordController extends BaseController {
         if(type > 0){
             types = new byte[]{type};
         }
-        return success(warehouseRecordService.list(pageSearch,types,storeId,beginDate,endDate,time,null,"creatTime desc"));
+        return success(warehouseRecordService.list(pageSearch,types,storeId,beginDate,endDate,time,null,sendStoreId,"creatTime desc"));
     }
 
     @RequestMapping(value = "/listPullUp", method = RequestMethod.GET)
-    public ResponseMessage listPullUp(String oddId, byte type, Date beginDate, Date endDate){
+    public ResponseMessage listPullUp(String oddId, byte type, Date beginDate, Date endDate,Integer sendStoreId){
         Timestamp time = null;
         int storeId = 0;
         WarehouseRecord record = warehouseRecordService.findById(oddId);
@@ -78,7 +78,7 @@ public class WarehouseRecordController extends BaseController {
         if(type > 0){
             types = new byte[]{type};
         }
-        return success(warehouseRecordService.list(pageSearch,types,storeId,beginDate,endDate,null,time,"creatTime desc"));
+        return success(warehouseRecordService.list(pageSearch,types,storeId,beginDate,endDate,null,time,sendStoreId,"creatTime desc"));
     }
 
 

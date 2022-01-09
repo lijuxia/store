@@ -226,28 +226,28 @@ public class WarehouseRecord implements Serializable {
             if(!"".equals(str.toString())){
                 str.append(" , ");
             }
-            str.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum()+this.listDetails.get(i).getUnit());
+            str.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().stripTrailingZeros().toPlainString()+this.listDetails.get(i).getUnit());
             if(type==TYPE_CHECK){
                 if(this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum()).compareTo(BigDecimal.ZERO)!=0){//没有误差的不显示
                     if(!"".equals(check.toString())){
                         check.append(" , ");
                     }
                     if(this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum()).doubleValue()<0){
-                        check.append("<font color='red'>"+this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum())+this.listDetails.get(i).getUnit()+"</font>");
+                        check.append("<font color='red'>"+this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum()).stripTrailingZeros().toPlainString()+this.listDetails.get(i).getUnit()+"</font>");
                     }else{
-                        check.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum())+this.listDetails.get(i).getUnit());
+                        check.append(this.listDetails.get(i).getProductName()+" : "+this.listDetails.get(i).getNum().subtract(this.listDetails.get(i).getBeforeSaveNum()).stripTrailingZeros().toPlainString()+this.listDetails.get(i).getUnit());
                     }
                 }
             }
         }
         StringBuffer make = new StringBuffer("");
         if(type==TYPE_MAKE){
-            make.append("[生产] "+makeProduct.getName()+":"+makeNum+makeProduct.getUnit());
+            make.append("[生产] "+makeProduct.getName()+" : "+makeNum.stripTrailingZeros().toPlainString()+makeProduct.getUnit()+"<br><br>");
             make.append("  [原料] "+str);
             str = make;
         }else if(type==TYPE_CHECK){
             if(!"".equals(check.toString())){
-                make.append("[问题] "+check);
+                make.append("[问题] "+check+"<br><br>");
             }
             make.append("  [盘点] "+str);
             str = make;
