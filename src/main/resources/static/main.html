@@ -91,12 +91,12 @@
 			<div class="mui-slider-group">
 				<% if(data.value.length > 0){ %>
 				<% for(var i=0;i<data.value.length;i++){ %>
-				<div class="mui-slider-item" style="height: 184px;">
+				<div class="mui-slider-item" style="height: 244px;">
 					<!-- 具体内容 -->
-					<div class="mui-card">
+					<div class="mui-card" style="margin: 10px 2px;">
 						<!--内容区-->
 						<div class="mui-card-content">
-							<div class="mui-card-content-inner" style="height: 120px;">
+							<div class="mui-card-content-inner" style="height: 180px;">
 								<span class="mui-badge mui-badge-purple mui-badge-inverted" style="float: left;"><%=data.value[i].dateStr%></span>
 								<span class="mui-badge mui-badge-danger" style="float: left;margin-left: 5px;"><%=data.value[i].typeStr%></span>
 								<% if(data.value[i].type==2){%>
@@ -351,8 +351,8 @@
 
 			}
             $("#grid-9-scroll").css("min-height", "350px");
-			$("#grid-9-scroll").css("top", "184px");
-			var hei = $(window).height()-184-44;
+			$("#grid-9-scroll").css("top", "244px");
+			var hei = $(window).height()-244-44;
 			$("#grid-9-scroll").css("height", hei+"px");
 			mui('.mui-scroll-wrapper').scroll({
 				deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006

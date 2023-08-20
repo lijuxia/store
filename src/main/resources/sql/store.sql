@@ -44,6 +44,7 @@ CREATE TABLE `sys_product`(
 	`unit` VARCHAR(100) not null,
 	`status` tinyint(4) DEFAULT 0,
 	`type` tinyint(4) DEFAULT 0,
+    `inventory` tinyint(1) DEFAULT 0,
 PRIMARY KEY(id)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 

@@ -35,6 +35,10 @@
 	            <label>单位</label>
 	            <input type="text" class="mui-input-clear" name="unit" id="unit" placeholder="中文、英文">
 	        </div>
+			<div class="mui-input-row mui-checkbox">
+				<label>盘点</label>
+				<input name="inventory" value="true" id="check" type="checkbox">
+			</div>
 	    	</div>
 			<h5 style="margin: 5px;">原料：</h5>
 	<div class="mui-input-row" style="margin: 10px 0">
@@ -171,6 +175,7 @@
 		if($("#id").val() != 0){
 		    url = "/product/updateGoods";
 		}
+		console.log(formData)
 		mui.ajax(url,{
 			data:formData,
 			dataType:'json',

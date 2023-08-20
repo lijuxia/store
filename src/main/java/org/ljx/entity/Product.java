@@ -16,6 +16,7 @@ public class Product implements Serializable,Comparable {
     private byte status;
     private byte type;//原料、商品、半成品
     private int indexFlag; // 排序
+    private boolean inventory; // 盘点
     public static final byte STATUS_ON = 1;
     public static final byte STATUS_OFF = 2;
     public static final byte TYPE_MATERIAL = 1;
@@ -84,6 +85,14 @@ public class Product implements Serializable,Comparable {
 
     public void setIndexFlag(int indexFlag) {
         this.indexFlag = indexFlag;
+    }
+
+    public boolean isInventory() {
+        return inventory;
+    }
+
+    public void setInventory(boolean inventory) {
+        this.inventory = inventory;
     }
 
     public String getTypeName(){

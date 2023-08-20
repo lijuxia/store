@@ -50,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
             productOld.setUnit(product.getUnit());
             productOld.setType(product.getType());
             productOld.setIndexFlag(product.getIndexFlag());
+            productOld.setInventory(product.isInventory());
             mapper.update(productOld);
         }
     }
